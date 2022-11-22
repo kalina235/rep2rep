@@ -1,0 +1,34 @@
+import firstOrderLogic
+import measStick
+import metaLogic
+
+construction x:measStickG = 
+	t:shorters1s2implongers2s1:formula 
+		<-logicApplyQuant[q1:forall,
+							s1:segment1:seg,
+							f1:foralls2form:formula]
+
+construction shorterlonger:measStickG = 
+	t:shorters1s2implongers2s1:formula
+		<- logicApplyQuant[q1: forall,
+				   s1: segment1: seg,
+				   f1: foralls2form: formula
+			<- logicApplyQuant[q2: forall,
+				   s12: segment2: seg,
+				   f11: form: formula
+						<- logicInfixOp[leftformula: formula
+									<-prefixBinRel[sh111: shorter, s111: segment1: seg, s112:segment2: seg],
+										equiv: binary,
+										rightformula:formula
+									<-prefixBinRel[lg111: longer, s111: segment2: seg, s112:segment1 : seg]
+									]
+						]
+		]							
+
+transfer
+    sourceConstruction shorterlonger
+    targetConSpec measStickG
+    interConSpec measStickG
+    goal :metaBool 
+    output test
+    limit 1
