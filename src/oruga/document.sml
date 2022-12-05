@@ -17,7 +17,7 @@ sig
   val findTypeSystemDataWithName : documentContent -> string -> Type.typeSystemData
   val findConSpecWithName : documentContent -> string -> CSpace.conSpecData
   val findConstructionWithName : documentContent -> string -> constructionData
-  val findTransferSchemaWithName : documentContent -> string -> InterCSpace.tSchema
+  val findTransferSchemaWithName : documentContent -> string -> InterCSpace.tSchemaData
 
 end;
 
@@ -135,9 +135,7 @@ struct
        {typeSystemsData : Type.typeSystemData list,
         conSpecsData : CSpace.conSpecData list,
         knowledge : Knowledge.base,
-        constructionsData : {name : string,
-                             conSpecN : string,
-                             construction : Construction.construction} list,
+        constructionsData : constructionData list,
         transferRequests : (string list) list,
         strengths : string -> real option}
 
@@ -328,7 +326,9 @@ struct
             else getConstructors L
 
       val newConstructors = FiniteSet.ofList (getConstructors blocks)
-      val importedConstructorSets = map #constructors (getImports blocks)
+      val importBlocks = getImports blocks
+      val importedConSpecNames = map #name importBlocks
+      val importedConstructorSets = map #constructors importBlocks
       val allConstructors = foldl (uncurry FiniteSet.union) FiniteSet.empty (newConstructors :: importedConstructorSets)
 
       (*val chars = List.concat (map String.explode tss)
@@ -345,11 +345,14 @@ struct
                         raise CSpace.ImpossibleOverload)
       val updatedTSD = #typeSystemData updatedConSpec
 
+      val _ = if List.exists (fn x => Knowledge.conSpecIsImportedBy (Knowledge.conSpecImportsOf (#knowledge dc)) name x) importedConSpecNames
+              then raise ParseError ("conSpec " ^ name ^ " appears in a cycle of imports")
+              else ()
       val _ = Logging.write "...done\n"
 
   in {typeSystemsData = updatedTSD :: List.filter (fn x => #name x <> #name updatedTSD) (#typeSystemsData dc),
       conSpecsData = updatedConSpec :: #conSpecsData dc,
-      knowledge = #knowledge dc,
+      knowledge = Knowledge.addConSpecImports (#knowledge dc) (name,importedConSpecNames),
       constructionsData = #constructionsData dc,
       transferRequests = #transferRequests dc,
       strengths = #strengths dc}
@@ -402,17 +405,20 @@ struct
       val _ = if Construction.wellFormed idConSpec consequent
               then Logging.write "\n  consequent pattern is well formed\n"
               else Logging.write "\n  WARNING: consequent pattern is not well formed\n"
-      val isch = {name = name,
-                  context = context,
+      val isch = {context = context,
                   antecedent = antecedent,
                   consequent = consequent}
+      val ischData = {name = name,
+                      contextConSpecN = contextConSpecN,
+                      idConSpecN = idConSpecN,
+                      iSchema = isch}
       val strengthVal = getStrength blocks
       fun strengthsUpd c = if c = name then SOME strengthVal else (#strengths dc) c
       val _ = Logging.write ("done\n");
       fun ff (c,c') = Real.compare (valOf (strengthsUpd (#name c')), valOf (strengthsUpd (#name c)))
   in {typeSystemsData = #typeSystemsData dc,
       conSpecsData = #conSpecsData dc,
-      knowledge = Knowledge.addInferenceSchema (#knowledge dc) isch strengthVal ff,
+      knowledge = Knowledge.addInferenceSchema (#knowledge dc) ischData strengthVal ff,
       constructionsData = #constructionsData dc,
       transferRequests = #transferRequests dc,
       strengths = strengthsUpd}
@@ -475,18 +481,22 @@ struct
       val _ = if Construction.wellFormed interConSpec consequent
               then Logging.write "\n  consequent pattern is well formed\n"
               else Logging.write "\n  WARNING: consequent pattern is not well formed\n"
-      val tsch = {name = name,
-                  source = source,
+      val tsch = {source = source,
                   target = target,
                   antecedent = antecedent,
                   consequent = consequent}
+      val tschData = {name = name,
+                      sourceConSpecN = sourceConSpecN,
+                      targetConSpecN = targetConSpecN,
+                      interConSpecN = interConSpecN,
+                      tSchema = tsch}
       val strengthVal = getStrength blocks
       fun strengthsUpd c = if c = name then SOME strengthVal else (#strengths dc) c
       val _ = Logging.write ("done\n");
       fun ff (c,c') = Real.compare (valOf (strengthsUpd (InterCSpace.nameOf c')), valOf (strengthsUpd (InterCSpace.nameOf c)))
   in {typeSystemsData = #typeSystemsData dc,
       conSpecsData = #conSpecsData dc,
-      knowledge = Knowledge.addTransferSchema (#knowledge dc) tsch strengthVal ff,
+      knowledge = Knowledge.addTransferSchema (#knowledge dc) tschData strengthVal ff,
       constructionsData = #constructionsData dc,
       transferRequests = #transferRequests dc,
       strengths = strengthsUpd}
@@ -651,15 +661,7 @@ struct
                              (fn x => Set.elementOf (CSpace.typeOfToken x) (#Ty targetTypeSystem))
                              (Construction.leavesOfConstruction goal)
                           handle Empty => (Logging.write "WARNING : goal has no tokens in target construction space\n"; raise BadGoal)
-      val state = State.make {sourceConSpecData = sourceConSpecData,
-                              targetConSpecData = targetConSpecData,
-                              interConSpecData = interConSpecData,
-                              transferProof = TransferProof.ofPattern goal,
-                              construction = construction,
-                              originalGoal = goal,
-                              goals = [goal],
-                              compositions = map Composition.makePlaceholderComposition targetTokens,
-                              knowledge = KB}
+      val state = Transfer.initState sourceConSpecData targetConSpecData interConSpecData KB construction goal
       val results = Transfer.masterTransfer iterative unistructured targetPattern state;
       val nres = length (Seq.list_of results);
       val (listOfResults,_) = Seq.chop limit results;
