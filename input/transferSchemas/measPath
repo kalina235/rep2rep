@@ -1,0 +1,33 @@
+import measStick
+import motionPath
+import metaLogic
+
+typeSystem interMeasPathT =
+    imports measStick, motionPath, metaLogicT
+    types
+    order
+
+conSpec interMeasPath:interMeasPathT =
+    imports measStickG,motionPathG, metaLogic
+    constructors
+        alike : [variable,variable] -> metaBool
+        close :[formula, formula] -> metaBool
+
+
+tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
+    source t:seg <- prefixTerOp[t0: terOp, t1:seg,t2:seg,t3:seg]
+    target t':point <- prefixTerOp[t0': terOp, t1':point,t2':point,t3':point]
+    antecedent :metaTrue <-alike[t1:seg,t1':point],
+               :metaTrue <-alike[t2:seg,t2':point],
+               :metaTrue <-alike[t3:seg,t3':point]
+    consequent :metaTrue <-close[t:seg,t':point]
+    strength 1
+
+tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- prefixBinRel[t0: binRel, t1: point, t2: point]
+    target t':formula <- prefixBinRel[t0': binRel, t1': seg, t2': seg]
+    antecedent :metaTrue <-alike[t1:seg,t1':point],
+               :metaTrue <-alike[t2:seg,t2':point],
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 1
+
