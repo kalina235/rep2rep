@@ -10,8 +10,13 @@ typeSystem interMeasPathT =
 conSpec interMeasPath:interMeasPathT =
     imports measStickG,motionPathG, metaLogic
     constructors
-        alike : [variable,variable] -> metaBool
-        close :[formula, formula] -> metaBool
+        alike : [variable,variable] -> metaBool,
+        close :[formula, formula] -> metaBool,
+        similar :[seg, point] -> metaBool,
+        equal :[binRel, binRel] -> metaBool,
+        similarObj :[obj, obj] -> metaBool,
+        formulaIsValid : [formula] -> metaBool
+
 
 
 tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
@@ -19,8 +24,9 @@ tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
     target t':point <- prefixTerOp[t0': terOp, t1':point,t2':point,t3':point]
     antecedent :metaTrue <-alike[t1:seg,t1':point],
                :metaTrue <-alike[t2:seg,t2':point],
-               :metaTrue <-alike[t3:seg,t3':point]
-    consequent :metaTrue <-close[t:seg,t':point]
+               :metaTrue <-alike[t3:seg,t3':point],
+               :metaTrue <-close[t0:terOp,t0':terOp],
+    consequent :metaTrue <-similarObj[t:seg,t':point]
     strength 1
 
 tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
@@ -28,6 +34,40 @@ tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
     target t':formula <- prefixBinRel[t0': binRel, t1': seg, t2': seg]
     antecedent :metaTrue <-alike[t1:seg,t1':point],
                :metaTrue <-alike[t2:seg,t2':point],
+               :metaTrue <-close[t0:binRel,t0':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 1
+
+tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula,a':and, f2':formula]
+    antecedent :metaTrue <-close[f1':formula,f1:formula],
+               :metaTrue <-close[f2':formula,f2:formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 2
+
+tSchema punishMisallign:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula,a':and, f2':formula]
+    antecedent :metaTrue <-close[f1':formula,f1:formula],
+               :metaFalse <-close[f2':formula,f2:formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength -1
+
+tSchema Equiv:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula, e:equiv ,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula, e:equiv , f2':formula]
+    antecedent :metaTrue <-close[f1':formula,f1':formula],
+               :metaTrue <-close[t:formula,t':formula]
+    consequent :metaTrue <-close[f2:formula,f2':formula]
+    strength 1
+
+tSchema eqlRel:(measStickG,motionPathG,interMeasPath) =
+    source t:?P:binRel 
+    target t':?P:binRel 
+    antecedent :metaTrue <-equal[t:binRel,t':binRel]
+    consequent :metaTrue <-alike[t'binRel,t:binRel]
+    strength -1
+
+
 

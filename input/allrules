@@ -1,0 +1,113 @@
+import transferSchemas/measPath
+
+construction rule1:measStickG = 
+	r1t0:formula <- logicApplyQuant[r1q0:forall,  
+								r1s1:seg, r1t1:formula 
+									<- logicApplyQuant[r1q1:forall,  r1s2:seg, r1teqv2:formula 
+											<- logicInfixOp[r1tlog3:formula 
+													<- prefixBinRel[r1lg3:longer,  r1s112:s2:seg, r1s122:s1:seg], 
+														r1eqv1:equiv, r1tshr3:formula 
+														<- prefixBinRel[r1sh3:shorter,  r1s212:s1:seg, r1s222:s2:seg]]]]
+
+construction rule2:measStickG = 
+		r2t0:formula 
+		<- logicApplyQuant[r2q0:forall, r2s01:s1:seg, 
+		r2t1:formula <- logicApplyQuant[r2q1:forall, r2s02:s2:seg, 
+		r2t2:formula <- logicApplyQuant[r2q2:forall, r2s03:s3:seg, 
+		r2teqv3:formula <- logicInfixOp[0
+			r2text4:formula <- prefixTerOp[r2ext1:extend, r2s11:s1:seg, r2s12:s2:seg, r2s13:s3:seg], r2eq1:equiv,
+			r2text4':formula <- prefixTerOp[r2chp1:chop, r2s23:s3:seg, r2s22:s2:seg, r2s21:s1:seg]]]]]		
+
+construction rule3:measStickG = 
+r3t0:formula <-logicApplyQuant[r3q0:forall, r3s01:s1:seg,
+r3tqnt1:formula <- logicApplyQuant[r3q1:forall, r3s02:s2:seg, 
+r3timp1:formula <- logicInfixOp[
+	r3tnot2:formula <- logicUnPred[r3not0:not,  
+	r3tshr3:formula <- prefixBinRel[r3s13:sh3:shorter, r3s12:s2:seg, r3s11:s1:seg]], r3imp1:implies, 
+		r3timp2:formula <- logicInfixOp[
+			r3tnot3:formula <- logicUnPred[r3not1:not, 
+			r3tnot4:formula <- logicUnPred[r3not2:not, 
+			r3tshr5:formula <- prefixBinRel[r3sh5:shorter, r3s22:s2:seg, r3s21:s1:seg]]], r3imp2:implies, 
+				r3teq3:formula <- logicInfixOp[r3nt4':formula <- logicUnPred[r3not3:not, r3nt5':formula <- logicUnPred[r3not4:not, 
+				r3tshr6:formula <- prefixBinRel[r3sh6:shorter, r3s32:s2:seg, r3s31:s1:seg]]], r3eqs1:equals, r3nt5:formula <- logicUnPred[r3not5:not, 
+				r3tnot5:formula <- logicUnPred[r3not6:not, r3tshr6':formula <- prefixBinRel[r3sh7:shorter, r3s42:s2:seg, r3s41:s1:seg]]]]]]]]							
+
+construction rule4:measStickG = 
+r4t0:formula <- logicApplyQuant[r4q0:forall, r4s01:s1:seg, 
+r4tnot1:formula <- logicUnPred[r4nt1:not, 
+r4tlog2:formula <- prefixBinRel[r4lg2:longer, r4u1:unitSeg, r4s11:s1:seg]]]
+
+construction rule5:measStickG = 
+r5t0:formula <- logicApplyQuant[r5q1:forall, r5s1:seg, 
+	r5timp1:formula <- logicInfixOp[
+			r5tshr2:formula <- prefixBinRel[r5sh2:shorter, r5s11:s1:seg, r5s12:s2:seg], r5imp1:implies, 
+				r5tnot2:formula <- logicUnPred[r5not1:not, 
+					r5tshr3:formula <- prefixBinRel[r5sh3:shorter, r5s22:s2:seg, r5s21:s1:seg]]]]
+
+
+construction rule6:measStickG = 
+r6t0:formula <- logicApplyQuant[r6q0:forall, r6s01:s1:seg, r6t1:formula 
+<- logicApplyQuant[r6q1:forall, r6s02:s2:seg, r6t2:formula 
+<- logicApplyQuant[r6q2:forall, r6s03:s3:seg, r6timp3:formula <- logicInfixOp[
+	r6text4:formula <- logicInfixOp[r6exd4:extend, r6s11:s1:seg, r6s12:s2:seg, r6s13:s3:seg], r6imp1:implies, 
+	r6tand4:formula <- logicInfixOp[r6tlog5':formula <- prefixBinRel[r6lg5:longer, r6s23:s3:seg, r6s22:s2:seg], r6and1:and, 
+	r6tlog5:formula <- prefixBinRel[r6lg6:longer, r6s33:s3:seg, r6s31:s1:seg]]]]]]
+
+construction rule1and2:measStickG = 
+rule1andrest:rule12:formula <- logicInfixOp[r1t0:formula <- logicApplyQuant[r1q0:forall, r1s1:seg, r1t1:formula 
+<- logicApplyQuant[r1q1:forall, r1s2:seg, r1teqv2:formula <- logicInfixOp[r1tlog3:formula 
+<- prefixBinRel[r1lg3:longer, r1s112:s2:seg, r1s122:s1:seg], r1eqv1:equiv, r1tshr3:formula 
+<- prefixBinRel[r1sh3:shorter, r1s212:s1:seg, r1s222:s2:seg]]]], AND1:and, r2t0:formula 
+<- logicApplyQuant[r2q0:forall, r2s01:s1:seg, r2t1:formula <- logicApplyQuant[r2q1:forall, r2s02:s2:seg, r2t2:formula 
+<- logicApplyQuant[r2q2:forall, r2s03:s3:seg, r2teqv3:formula <- logicInfixOp[0r2text4:formula 
+<- prefixTerOp[r2ext1:extend, r2s11:s1:seg, r2s12:s2:seg, r2s13:s3:seg], r2eq1:equiv, r2text4':formula 
+<- prefixTerOp[r2chp1:chop, r2s23:s3:seg, r2s22:s2:seg, r2s21:s1:seg]]]]]]
+
+construction rule1and2and3:measStickG = 
+rule1andrest:rule123:formula <- logicInfixOp[r1t0:formula <- logicApplyQuant[r1q0:forall, r1s1:seg, r1t1:formula 
+<- logicApplyQuant[r1q1:forall, r1s2:seg, r1teqv2:formula <- logicInfixOp[r1tlog3:formula 
+<- prefixBinRel[r1lg3:longer, r1s112:s2:seg, r1s122:s1:seg], r1eqv1:equiv, r1tshr3:formula 
+<- prefixBinRel[r1sh3:shorter, r1s212:s1:seg, r1s222:s2:seg]]]], A1:and, rule1andrest':formula 
+<- logicInfixOp[r2t0:formula <- logicApplyQuant[r2q0:forall, r2s01:s1:seg, r2t1:formula 
+<- logicApplyQuant[r2q1:forall, r2s02:s2:seg, r2t2:formula <- logicApplyQuant[r2q2:forall, r2s03:s3:seg, r2teqv3:formula 
+<- logicInfixOp[0r2text4:formula <- prefixTerOp[r2ext1:extend, r2s11:s1:seg, r2s12:s2:seg, r2s13:s3:seg], r2eq1:equiv, r2text4':formula 
+<- prefixTerOp[r2chp1:chop, r2s23:s3:seg, r2s22:s2:seg, r2s21:s1:seg]]]]], A1':and, r3t0:formula 
+<- logicApplyQuant[r3q0:forall, r3s01:s1:seg, r3tqnt1:formula <- logicApplyQuant[r3q1:forall, r3s02:s2:seg, r3timp1:formula 
+<- logicInfixOp[r3tnot2:formula <- logicUnPred[r3not0:not, r3tshr3:formula <- prefixBinRel[r3s13:sh3:shorter, r3s12:s2:seg, r3s11:s1:seg]], r3imp1:implies, r3timp2:formula 
+<- logicInfixOp[r3tnot3:formula <- logicUnPred[r3not1:not, r3tnot4:formula <- logicUnPred[r3not2:not, r3tshr5:formula <- prefixBinRel[r3sh5:shorter, r3s22:s2:seg, r3s21:s1:seg]]], r3imp2:implies, r3teq3:formula 
+<- logicInfixOp[r3nt4':formula <- logicUnPred[r3not3:not, r3nt5':formula <- logicUnPred[r3not4:not, r3tshr6:formula <- prefixBinRel[r3sh6:shorter, r3s32:s2:seg, r3s31:s1:seg]]], r3eqs1:equals, r3nt5:formula 
+<- logicUnPred[r3not5:not, r3tnot5:formula <- logicUnPred[r3not6:not, r3tshr6':formula <- prefixBinRel[r3sh7:shorter, r3s42:s2:seg, r3s41:s1:seg]]]]]]]]]]
+
+construction allrules:measStickG = 
+rule1andrest:rule123456:formula <- logicInfixOp[r1t0:formula <- logicApplyQuant[r1q0:forall, r1s1:seg, r1t1:formula 
+<- logicApplyQuant[r1q1:forall, r1s2:seg, r1teqv2:formula <- logicInfixOp[r1tlog3:formula 
+<- prefixBinRel[r1lg3:longer, r1s112:s2:seg, r1s122:s1:seg], r1eqv1:equiv, r1tshr3:formula 
+<- prefixBinRel[r1sh3:shorter, r1s212:s1:seg, r1s222:s2:seg]]]], A1:and, rule1andrest':formula 
+<- logicInfixOp[r2t0:formula <- logicApplyQuant[r2q0:forall, r2s01:s1:seg, r2t1:formula 
+<- logicApplyQuant[r2q1:forall, r2s02:s2:seg, r2t2:formula <- logicApplyQuant[r2q2:forall, r2s03:s3:seg, r2teqv3:formula 
+<- logicInfixOp[0r2text4:formula <- prefixTerOp[r2ext1:extend, r2s11:s1:seg, r2s12:s2:seg, r2s13:s3:seg], r2eq1:equiv, r2text4':formula 
+<- prefixTerOp[r2chp1:chop, r2s23:s3:seg, r2s22:s2:seg, r2s21:s1:seg]]]]], A2:and, rule1andrest'':formula <- logicInfixOp[r3t0:formula 
+<- logicApplyQuant[r3q0:forall, r3s01:s1:seg, r3tqnt1:formula <- logicApplyQuant[r3q1:forall, r3s02:s2:seg, r3timp1:formula 
+<- logicInfixOp[r3tnot2:formula <- logicUnPred[r3not0:not, r3tshr3:formula <- prefixBinRel[r3s13:sh3:shorter, r3s12:s2:seg, r3s11:s1:seg]], r3imp1:implies, r3timp2:formula 
+<- logicInfixOp[r3tnot3:formula <- logicUnPred[r3not1:not, r3tnot4:formula <- logicUnPred[r3not2:not, r3tshr5:formula 
+<- prefixBinRel[r3sh5:shorter, r3s22:s2:seg, r3s21:s1:seg]]], r3imp2:implies, r3teq3:formula 
+<- logicInfixOp[r3nt4':formula <- logicUnPred[r3not3:not, r3nt5':formula <- logicUnPred[r3not4:not, r3tshr6:formula 
+<- prefixBinRel[r3sh6:shorter, r3s32:s2:seg, r3s31:s1:seg]]], r3eqs1:equals, r3nt5:formula 
+<- logicUnPred[r3not5:not, r3tnot5:formula <- logicUnPred[r3not6:not, r3tshr6':formula <- prefixBinRel[r3sh7:shorter, r3s42:s2:seg, r3s41:s1:seg]]]]]]]], A3:and, rule1andrest''':formula 
+<- logicInfixOp[r4t0:formula <- logicApplyQuant[r4q0:forall, r4s01:s1:seg, r4tnot1:formula <- logicUnPred[r4nt1:not, r4tlog2:formula 
+<- prefixBinRel[r4lg2:longer, r4u1:unitSeg, r4s11:s1:seg]]], A4:and, rule1andrest'''':formula <- logicInfixOp[r5t0:formula 
+<- logicApplyQuant[r5q1:forall, r5s1:seg, r5timp1:formula 
+<- logicInfixOp[r5tshr2:formula <- prefixBinRel[r5sh2:shorter, r5s11:s1:seg, r5s12:s2:seg], r5imp1:implies, r5tnot2:formula 
+<- logicUnPred[r5not1:not, r5tshr3:formula 
+<- prefixBinRel[r5sh3:shorter, r5s22:s2:seg, r5s21:s1:seg]]]], A5:and, r6t0:formula <- logicApplyQuant[r6q0:forall, r6s01:s1:seg, r6t1:formula 
+<- logicApplyQuant[r6q1:forall, r6s02:s2:seg, r6t2:formula <- logicApplyQuant[r6q2:forall, r6s03:s3:seg, r6timp3:formula <- logicInfixOp[r6text4:formula 
+<- logicInfixOp[r6exd4:extend, r6s11:s1:seg, r6s12:s2:seg, r6s13:s3:seg], r6imp1:implies, r6tand4:formula <- logicInfixOp[r6tlog5':formula 
+<- prefixBinRel[r6lg5:longer, r6s23:s3:seg, r6s22:s2:seg], r6and1:and, r6tlog5:formula <- prefixBinRel[r6lg6:longer, r6s33:s3:seg, r6s31:s1:seg]]]]]]]]]]]
+
+transfer
+    sourceConstruction allrules
+    targetConSpec measStickG
+    interConSpec interMeasPath
+    goal :metaBool <- formulaIsValid[t:rule123456:formula]
+    output allrulestransfer
+    limit 1
