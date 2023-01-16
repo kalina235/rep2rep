@@ -7,7 +7,7 @@ typeSystem objectConstr =
     order larger < binRel,
           smaller < binRel,
           combine < terOp,
-          split < terOp
+          split < terOp,
           half < binOp
 
 conSpec objectConstrG:objectConstr =

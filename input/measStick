@@ -2,18 +2,20 @@ import firstOrderLogic
 
 typeSystem measStick =
     imports firstOrderLogic
-    types _:unitSeg, _:seg, _:formula, longer, shorter, extend, chop, equals,
-            binRel, terOp
+    types _:unitSeg, _:seg, longer, shorter, extend, chop, equals,
+          _:binRel, terOp
     order unitSeg < seg,
-          seg < variable,
+          seg < concept,
+          formula < concept,
+          seg < obj,
           longer < binRel,
           shorter < binRel,
           extend < terOp,
           chop < terOp,
-          equals < binRel
+          equals < binary
 
 conSpec measStickG:measStick =
   imports firstOrderLogicG
   constructors
-    prefixBinRel : [binRel, seg, seg] -> formula,
-    prefixTerOp : [terOp, seg, seg, seg] -> seg
+    prefixBinRel : [binRel, obj, obj] -> formula,
+    prefixTerOp : [terOp, obj, obj, obj] -> obj
