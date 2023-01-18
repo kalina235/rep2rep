@@ -1,0 +1,45 @@
+copy/pastes: 
+
+import "constrParser.parserMeas";
+
+Document.read "allrules";
+
+parserMeas.stringIntoConstruction
+
+--------------------------------------
+"r1 V s1 V s2 L s1 s2 * S s2 s1 A  r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1 A r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2 A r4 V s1 ~ L u1 s1 A r5 V s1 V s2  S s1 s2 > ~ S s2 s1 A r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
+
+val rule1 = parserMeas.parseWrap "r1 V s1 V s2 L s1 s2 * S s2 s1";
+
+val rule2 = parserMeas.parseWrap "r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1";
+
+val rule3 = parserMeas.parseWrap "r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2";
+
+val rule4 = parserMeas.parseWrap "r4 V s1 ~ L u1 s1";
+
+val rule5 = parserMeas.parseWrap "r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
+
+val rule6 = parserMeas.parseWrap "r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
+
+val stri = "r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
+
+bigConstruction = parserMeas.joinAnds 1 [rule1, rule2, rule3, rule4, rule5, rule6]
+
+val {conSpecsData, constructionsData, knowledge, strengths, transferRequests, typeSystemsData} = it;
+val {conSpecN, constructions ,name} = r1
+val [r15,r6,r5,r4,r3,r33,r2,r1] = constructionsData
+
+parserMeas.joinAnds 1 [r1,r2,r3,r4,r5,r6];
+
+val {conSpecN, construction, name} = r1;
+val r1 = construction;
+
+
+construction is really:
+
+Construction.TCPair ({token = token, constructor = constructor}, cs)
+  datatype construction = Construction.TCPair of {token : string * string,
+                                     constructor : string * (string list * string)} 
+                                    * construction list
+                        | Construction.Source of string * string (ownname, generic)
+                        | Reference of string * string (ownname, generic)
