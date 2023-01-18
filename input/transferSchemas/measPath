@@ -1,0 +1,102 @@
+import measStick
+import motionPath
+import metaLogic
+
+typeSystem interMeasPathT =
+    imports measStick, motionPath, metaLogicT
+    types
+    order
+
+conSpec interMeasPath:interMeasPathT =
+    imports metaLogic
+    constructors
+        close :[formula, formula] -> metaBool,
+        closeRel :[binRel, binRel] -> metaBool,
+        closeOp :[terOp, terOp] -> metaBool,
+        similar :[seg, obj] -> metaBool,
+        equal :[binRel, binRel] -> metaBool,
+        sameQuant :[quant, quant] -> metaBool, 
+        alike :[obj, obj] -> metaBool
+
+tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
+    source t:seg <- prefixTerOp[t0: terOp, t1:seg, t2:seg,t3:seg]
+    target t':obj <- prefixTerOp[t0': terOp, t1':obj, t2':obj, t3':obj] 
+    antecedent :metaTrue <-alike[t1:seg,t1':obj],
+               :metaTrue <-alike[t2:seg,t2':obj],
+               :metaTrue <-alike[t3:seg,t3':obj],
+               :metaTrue <-closeOp[t0:terOp,t0':terOp]
+    consequent :metaTrue <-alike[t:seg,t':obj]
+    strength 1
+
+
+tSchema doubleNeg:(measStickG,motionPathG,interMeasPath) = #which way should this go?
+    source t:formula
+    target t':formula <- logicApplyUnary[n1:not, f1:formula <-logicApplyUnary[n2:not, t:formula]]
+    antecedent : metaTrue <-close[t:formula,t':formula],
+    consequent : metaTrue <-close[t:formula,f1':formula]
+    strength 1
+
+tSchema negNotClose
+    source t:formula
+    target t':formula <- logicApplyUnary[n:not, f:formula]
+    antecedent :metaTrue <-close[t:formula,f:formula]
+    consequent :metaFalse <-close[t:formula,t':formula]
+    strength 10
+
+tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- prefixBinRel[t0: binRel, t1: seg, t2: seg] 
+    target t':formula <- prefixBinRel[t0': binRel, t1': obj, t2': obj]
+    antecedent :metaTrue <-alike[t1:seg,t1':obj],
+               :metaTrue <-alike[t2:seg,t2':obj],
+               :metaTrue <-closeRel[t0:binRel,t0':binRel]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 1
+
+tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula, a':and, f2':formula]
+    antecedent :metaTrue <-close[f1:formula,f1':formula],
+               :metaTrue <-close[f2:formula,f2':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 2
+
+tSchema comClose:(measStickG,motionPathG,interMeasPath) = 
+    source f:formula 
+    target f':formula 
+    antecedent :metaTrue <-close[f:formula,f':formula]
+    consequent :metaTrue <-close[f':formula, f:formula]
+    strength 1
+
+#tSchema punishMisallign:(measStickG,motionPathG,interMeasPath) =
+#    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+#    target t':formula <- logicInfixOp[f1':formula,a':and, f2':formula] #fix into concept here
+#    antecedent :metaTrue <-close[f1':formula,f1:formula],
+#               :metaFalse <-close[f2':formula,f2:formula]
+#    consequent :metaTrue <-close[t:formula,t':formula]
+#    strength -1
+
+tSchema equivClose:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula, e:equiv ,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula, e:equiv , f2':formula]
+    antecedent :metaTrue <-close[f1':formula,f1':formula],
+               :metaTrue <-close[t:formula,t':formula]
+    consequent :metaTrue <-close[f2:formula,f2':formula]
+    strength 1
+
+tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) = 
+    source t:?P:binRel 
+    target t':?P:binRel 
+    antecedent :metaTrue <-equal[t:binRel,t':binRel]
+    consequent :metaTrue <-closeRel[t:binRel,t':binRel]
+    strength 1
+
+tSchema predicateDelete:(measStickG,motionPathG,interMeasPath) = 
+    source t:formula <- logicApplyQuant[q:quant, s:seg, f:formula]
+    target t':formula <- logicApplyQuant[q':quant, s':obj, f':formula]
+    antecedent :metaTrue <-alike[s:seg,s':obj],
+               :metaTrue <-sameQuant[q:quant,q':quant]
+    consequent :metaTrue <-close[f:formula,f':formula]
+    strength 2
+
+# concepts/formulas!
+#tSchemas concerning forAlls
