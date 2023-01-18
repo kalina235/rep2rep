@@ -1,0 +1,18 @@
+import firstOrderLogic
+
+typeSystem motionPath =
+    imports firstOrderLogic
+    types _:point, origin, _:formula, longer, shorter, extend, chop,
+          _:binRel, terOp
+    order origin < point,
+          point < concept,
+          farther < binRel,
+          closer < binRel,
+          extend < terOp,
+          chop < terOp
+
+conSpec motionPathG:motionPath =
+  imports firstOrderLogicG
+  constructors
+    prefixBinRel : [binRel, obj, obj] -> formula,
+    prefixTerOp : [terOp, obj,obj,obj] -> obj

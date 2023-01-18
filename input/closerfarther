@@ -1,0 +1,40 @@
+import firstOrderLogic
+import motionPath
+import metaLogic
+
+construction x:motionPathG = 
+	t:closerp1p2impfartherp2p1:formula 
+		<-logicApplyQuant[q1:forall,
+							p1:point1:point,
+							f1:forallp2form:formula]
+
+construction y:motionPathG = 
+	t:closerp1p2impfartherp2p1:formula 
+		<-logicInfixOp[f1:left:formula,
+							and:binary,
+							f2:right:formula]
+
+construction closerfarther:motionPathG = 
+	t:closerp1p2impfartherp2p1:formula
+		<- logicApplyQuant[q1: forall,
+				   p1: point1: point,
+				   f1: forallp2form: formula
+			<- logicApplyQuant[q2: forall,
+				   p12: point2: point,
+				   f11: form: formula
+						<- logicInfixOp[leftformula: formula
+									<-prefixBinRel[sh111: closer, p111: point1: point, p112:point2: point],
+										equiv: binary,
+										rightformula:formula
+									<-prefixBinRel[lg111: farther, p111: point2: point, p112:point1 : point]
+									]
+						]
+		]							
+
+transfer
+    sourceConstruction closerfarther
+    targetConSpec motionPathG
+    interConSpec motionPathG
+    goal :metaBool 
+    output test
+    limit 1

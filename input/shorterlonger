@@ -1,0 +1,102 @@
+import firstOrderLogic
+import measStick
+import metaLogic
+import transferSchemas
+
+construction x:measStickG = 
+	t:shorters1s2implongers2s1:formula 
+		<-logicApplyQuant[q1:forall,
+							s1:segment1:seg,
+							f1:foralls2form:formula]
+
+construction y:measStickG = 
+	t:shorters1s2implongers2s1:formula 
+		<-logicInfixOp[f1:left:formula,
+							and:binary,
+							f2:right:formula]
+
+construction shorterlonger:measStickG = 
+	t:shorters1s2implongers2s1:formula
+		<- logicApplyQuant[q1: forall,
+				   s1: segment1: seg,
+				   f1: foralls2form: formula
+			<- logicApplyQuant[q2: forall,
+				   s12: segment2: seg,
+				   f11: form: formula
+						<- logicInfixOp[leftformula: formula
+									<-prefixBinRel[sh111: shorter, s111: segment1: seg, s112:segment2: seg],
+										equiv: binary,
+										rightformula:formula
+									<-prefixBinRel[lg111: longer, s111: segment2: seg, s112:segment1 : seg]
+									]
+						]
+		]							
+
+construction it1:measStickG = 
+tqnt1:formula <- logicApplyQuant[q1:forall, s1:seg, f1: formula]
+
+construction it2:measStickG = 
+tqnt1:formula <- logicApplyQuant[q2:forall, s2:seg, f2: formula]
+
+construction it3:measStickG = 
+tqnt1:formula <- logicApplyQuant[q3:forall, s3:seg, f3: formula]
+
+construction rule1:measStickG = 
+	t0:formula <- logicApplyQuant[q0:forall,  
+								s1:seg, t1:formula 
+									<- logicApplyQuant[q1:forall,  s2:seg, teqv2:formula 
+											<- logicInfixOp[tlog3:formula 
+													<- prefixBinRel[lg3:longer,  s112:s2:seg, s122:s1:seg], 
+														eqv1:equiv, tshr3:formula 
+														<- prefixBinRel[sh3:shorter,  s212:s1:seg, s222:s2:seg]]]]
+construction rule2:measStickG = 
+		t0:formula 
+		<- logicApplyQuant[q0:forall, s01:s1:seg, 
+		t1:formula <- logicApplyQuant[q1:forall, s02:s2:seg, 
+		t2:formula <- logicApplyQuant[q2:forall, s03:s3:seg, 
+		teqv3:formula <- logicInfixOp[
+			text4:formula <- prefixTerOp[ext1:extend, s11:s1:seg, s12:s2:seg, s13:s3:seg], eq1:equiv,
+			text4':formula <- prefixTerOp[chp1:chop, s23:s3:seg, s22:s2:seg, s21:s1:seg]]]]]		
+
+construction rule3:measStickG = 
+t0:formula <-logicApplyQuant[q0:forall, s01:s1:seg,
+tqnt1:formula <- logicApplyQuant[q1:forall, s02:s2:seg, 
+timp1:formula <- logicInfixOp[
+	tnot2:formula <- logicUnPred[not0:not,  
+	tshr3:formula <- prefixBinRel[s13:sh3:shorter, s12:s2:seg, s11:s1:seg]], imp1:implies, 
+		timp2:formula <- logicInfixOp[
+			tnot3:formula <- logicUnPred[not1:not, 
+			tnot4:formula <- logicUnPred[not2:not, 
+			tshr5:formula <- prefixBinRel[sh5:shorter, s22:s2:seg, s21:s1:seg]]], imp2:implies, 
+				teq3:formula <- logicInfixOp[nt4':formula <- logicUnPred[not3:not, nt5':formula <- logicUnPred[not4:not, 
+				tshr6:formula <- prefixBinRel[sh6:shorter, s32:s2:seg, s31:s1:seg]]], eqs1:equals, nt5:formula <- logicUnPred[not5:not, 
+				tnot5:formula <- logicUnPred[not6:not, tshr6':formula <- prefixBinRel[sh7:shorter, s42:s2:seg, s41:s1:seg]]]]]]]]							
+
+construction rule4:measStickG = 
+t0:formula <- logicApplyQuant[q0:forall, s01:s1:seg, 
+tnot1:formula <- logicUnPred[nt1:not, 
+tlog2:formula <- prefixBinRel[lg2:longer, u1:unitSeg, s11:s1:seg]]]
+
+construction rule5:measStickG = 
+t0:formula <- logicApplyQuant[q1:forall, s1:seg, 
+	timp1:formula <- logicInfixOp[
+			tshr2:formula <- prefixBinRel[sh2:shorter, s11:s1:seg, s12:s2:seg], imp1:implies, 
+				tnot2:formula <- logicUnPred[not1:not, 
+					tshr3:formula <- prefixBinRel[sh3:shorter, s22:s2:seg, s21:s1:seg]]]]
+
+construction rule6:measStickG = 
+t0:formula <- logicApplyQuant[q0:forall, s01:s1:seg, t1:formula 
+<- logicApplyQuant[q1:forall, s02:s2:seg, t2:formula 
+<- logicApplyQuant[q2:forall, s03:s3:seg, timp3:formula <- logicInfixOp[
+	text4:formula <- logicInfixOp[exd4:extend, s11:s1:seg, s12:s2:seg, s13:s3:seg], imp1:implies, 
+	tand4:formula <- logicInfixOp[tlog5':formula <- prefixBinRel[lg5:longer, s23:s3:seg, s22:s2:seg], and1:and, 
+	tlog5:formula <- prefixBinRel[lg6:longer, s33:s3:seg, s31:s1:seg]]]]]]
+
+
+transfer
+    sourceConstruction shorterlonger
+    targetConSpec measStickG
+    interConSpec measStickG
+    goal :metaBool 
+    output test
+    limit 1
