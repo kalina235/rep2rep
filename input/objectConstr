@@ -3,15 +3,15 @@ import firstOrderLogic
 typeSystem objectConstr =
     imports firstOrderLogic
     types _:obj, _:formula, half, matches, combine, split, wholeOb,
-            binRel, binOp, terOp
+            binRel, binOp, terRel
     order larger < binRel,
           smaller < binRel,
-          combine < terOp,
-          split < terOp,
+          combine < terRel,
+          split < terRel,
           half < binOp
 
 conSpec objectConstrG:objectConstr =
   imports firstOrderLogicG
   constructors
     prefixBinRel : [binRel, obj, obj] -> formula,
-    prefixTerOp : [terOp, obj, obj, obj] -> obj
+    prefixTerRel : [terRel, obj, obj, obj] -> obj
