@@ -4,10 +4,12 @@ import "constrParser.parserMeas";
 
 Document.read "allrules";
 
-parserMeas.stringIntoConstruction
+pdflatex rule2.tex; pdflatex rule3.tex;
+
+parserMeas.stringIntoConstruction stri;
 
 --------------------------------------
-"r1 V s1 V s2 L s1 s2 * S s2 s1 A  r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1 A r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2 A r4 V s1 ~ L u1 s1 A r5 V s1 V s2  S s1 s2 > ~ S s2 s1 A r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
+val stri = "r1 V s1 V s2 L s1 s2 * S s2 s1 A  r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1 A r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2 A r4 V s1 ~ L u1 s1 A r5 V s1 V s2  S s1 s2 > ~ S s2 s1 A r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
 
 val rule1 = parserMeas.parseWrap "r1 V s1 V s2 L s1 s2 * S s2 s1";
 
@@ -19,7 +21,9 @@ val rule4 = parserMeas.parseWrap "r4 V s1 ~ L u1 s1";
 
 val rule5 = parserMeas.parseWrap "r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
 
-val rule6 = parserMeas.parseWrap "r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
+val rule6 = parserMeas.parseWrap "r6 V s1 V s2 V s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
+
+val all = parserMeas.stringIntoConstruction stri;
 
 val stri = "r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
 
@@ -43,3 +47,15 @@ Construction.TCPair ({token = token, constructor = constructor}, cs)
                                     * construction list
                         | Construction.Source of string * string (ownname, generic)
                         | Reference of string * string (ownname, generic)
+
+---------------
+tSchemas
+
+tSchema punishMisallign:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula,a':and, f2':formula] #fix into concept here
+    antecedent :metaTrue <-close[f1':formula,f1:formula],
+               :metaFalse <-close[f2':formula,f2:formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength -1
+
