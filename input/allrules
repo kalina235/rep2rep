@@ -60,7 +60,7 @@ transfer
     goal :metaTrue <- close[tqntr511:r5:formula, t':formula]
     output rule5
     limit 100
-    searchLimit 100
+   # searchLimit 100
 
 transfer
     sourceConstruction rule6
