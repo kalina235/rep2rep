@@ -25,7 +25,7 @@ tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
                :metaTrue <-alike[s3:seg,p3':obj],
                :metaTrue <-closeTerRel[t0:terRel,t0':terRel]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 20
+    strength 80
 
 
 tSchema negNotClose:(measStickG,motionPathG,interMeasPath) =
@@ -33,14 +33,14 @@ tSchema negNotClose:(measStickG,motionPathG,interMeasPath) =
     target t':formula <- logicApplyUnary[n:not, f:formula]
     antecedent :metaTrue <-close[t:formula,f:formula]
     consequent :metaFalse <-close[t:formula,t':formula]
-    strength 0
+    strength 10
 
 tSchema negClose:(measStickG,motionPathG,interMeasPath) =
     source t:formula <- logicApplyUnary[n:not, f:formula]
     target t':formula <- logicApplyUnary[n':not, f':formula]
     antecedent :metaTrue <-close[f:formula,f':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 30
+    strength 50
 
 #tSchema doubleNeg:(measStickG,motionPathG,interMeasPath) = #which way should this go?
 #    source t:formula
@@ -56,7 +56,7 @@ tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
                :metaTrue <-alike[s2:seg,p2':obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 20
+    strength 80
 
 tSchema similarBinaryInfix:(measStickG,motionPathG,interMeasPath) =
     source t:formula <- binInfixRel[s1: seg, b: binRel, s2: seg] 
@@ -65,7 +65,7 @@ tSchema similarBinaryInfix:(measStickG,motionPathG,interMeasPath) =
                :metaTrue <-alike[s2:seg,p2':obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 20
+    strength 80
 
 tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
     source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
@@ -73,7 +73,7 @@ tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
     antecedent :metaTrue <-close[f1:formula,f1':formula],
                :metaTrue <-close[f2:formula,f2':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 30
+    strength 200
 
 #tSchema comClose:(measStickG,motionPathG,interMeasPath) = 
 #    source f:formula 
@@ -88,7 +88,7 @@ tSchema equivClose:(measStickG,motionPathG,interMeasPath) =
     antecedent :metaTrue <-close[f1:formula,f1':formula],
                :metaTrue <-close[f2:formula,f2':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 5
+    strength 100
 
 tSchema infixClose:(measStickG,motionPathG,interMeasPath) =
     source t:formula <- logicInfixOp[f1:formula, e:binary ,f2:formula]
@@ -104,7 +104,7 @@ tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) =  #apparently wrong s
     target t':?P:binRel 
     antecedent :metaTrue <-equal[t:binRel,t':binRel]
     consequent :metaTrue <-closeBinRel[t:binRel,t':binRel]
-    strength 1
+    strength 10
 
 tSchema quantDrop:(measStickG,motionPathG,interMeasPath) = 
     source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
