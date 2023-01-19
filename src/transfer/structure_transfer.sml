@@ -393,9 +393,9 @@ struct
       (*Search.breadthFirstIgnore transferElseInfer ign state*)
       (*Search.breadthFirstIgnoreForget transferElseInfer ign forget state*)
       (*Search.depthFirstIgnore transferElseInfer ign state*)
-      (*Search.depthFirstIgnoreForget transferElseInfer ign forget state*)
+      Search.depthFirstIgnoreForget transferElseInfer ign forget state
       (*Search.bestFirstIgnore transferElseInfer h ign state*)
-      Search.bestFirstIgnoreForget transferElseInfer h ign forget state
+      (*Search.bestFirstIgnoreForget transferElseInfer h ign forget state*)
 
 
   exception Nope
@@ -413,7 +413,7 @@ struct
 
 
 fun structureTransfer searchLimit unistructured targetPattOption st =
-  let val maxNumGoals = case searchLimit of SOME x => Int.max(x div 4, 20) | NONE => 20
+  let val maxNumGoals = case searchLimit of SOME x => Int.max(x div 4, 20) | NONE => 80 (*change here*)
       val maxNumResults = case searchLimit of SOME x => x | NONE => 500
       val maxCompSize = 80
       val ignT = Heuristic.ignore maxNumGoals maxNumResults maxCompSize unistructured
