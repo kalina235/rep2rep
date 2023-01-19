@@ -99,7 +99,7 @@ tSchema infixClose:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 100
 
-tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) = 
+tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) =  #apparently wrong syntax here?
     source t:?P:binRel 
     target t':?P:binRel 
     antecedent :metaTrue <-equal[t:binRel,t':binRel]
