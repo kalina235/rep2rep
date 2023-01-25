@@ -14,8 +14,11 @@ conSpec interMeasPath:interMeasPathT =
         closeBinRel :[binRel, binRel] -> metaBool,
         closeTerRel :[terRel, terRel] -> metaBool,
         similar :[seg, obj] -> metaBool,
-        equal :[binRel, binRel] -> metaBool,
-        alike :[obj, obj] -> metaBool
+        equalRel :[binRel, binRel] -> metaBool,
+        semClose :[binRel, binRel] -> metaBool,
+        alike :[obj, obj] -> metaBool,
+        formulaIsValid :[obj, obj] -> metaBool
+        
 
 tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
     source t:formula <- prefixTerRel[t0: terRel, s1:seg, s2:seg, s3:seg]
@@ -26,7 +29,6 @@ tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
                :metaTrue <-closeTerRel[t0:terRel,t0':terRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
-
 
 tSchema negNotClose:(measStickG,motionPathG,interMeasPath) =
     source t:formula
@@ -88,9 +90,9 @@ tSchema equivClose:(measStickG,motionPathG,interMeasPath) =
     antecedent :metaTrue <-close[f1:formula,f1':formula],
                :metaTrue <-close[f2:formula,f2':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 100
+    strength 120
 
-tSchema infixClose:(measStickG,motionPathG,interMeasPath) =
+tSchema infixClose:(measStickG,motionPathG,interMeasPath) = #ToDo decide on subtyping here
     source t:formula <- logicInfixOp[f1:formula, e:binary ,f2:formula]
     target t':formula <- logicInfixOp[f1':formula, e:binary , f2':formula]
     antecedent :metaTrue <-close[f1:formula,f1':formula],
@@ -99,12 +101,19 @@ tSchema infixClose:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 100
 
-tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) =  #apparently wrong syntax here?
+tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) = 
     source t:?P:binRel 
     target t':?P:binRel 
-    antecedent :metaTrue <-equal[t:binRel,t':binRel]
+    antecedent :metaTrue <-equalRel[t:binRel,t':binRel]
     consequent :metaTrue <-closeBinRel[t:binRel,t':binRel]
     strength 10
+
+#tSchema sameType:(measStickG,motionPathG,interMeasPath) = 
+#    source t:formula <- prefixBinRel[b: binRel, s1:?P: seg, s2:?P': seg] 
+#    target t':formula <- prefixBinRel[b': binRel, p1:?P: obj, p2:?R': obj]
+#    antecedent :metaTrue <-semClose[t:binRel,t':binRel]
+#    consequent :metaTrue <-mergeType[]
+#    strength 10
 
 tSchema quantDrop:(measStickG,motionPathG,interMeasPath) = 
     source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
@@ -114,6 +123,7 @@ tSchema quantDrop:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 100
 
+
 #tSchema quantunify:(measStickG,motionPathG,interMeasPath) = 
 #    source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
 #    target t':formula <- logicApplyQuant[q':forall, s':obj, f':formula]
@@ -122,7 +132,11 @@ tSchema quantDrop:(measStickG,motionPathG,interMeasPath) =
 #    consequent :metaTrue <-close[t:formula,t':formula]
 #    strength 7
 
-# concepts/formulas!
-#tSchemas concerning forAlls
 
-# type vars only work if nthey're also in consequent
+#tSchema targetIsValid:(motionPathG,interMeasPath) = 
+#   source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
+    target t':formula <- logicApplyQuant[q':forall, s':obj, f':formula]
+    antecedent 
+    consequent :metaTrue <-formulaIsValid[t:formula,t':formula]
+
+# type vars only work if they're also in consequent
