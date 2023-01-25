@@ -23,6 +23,10 @@ val rule5 = parserMeas.parseWrap "r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
 
 val rule6 = parserMeas.parseWrap "r6 V s1 V s2 V s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
 
+parserMotion.stringIntoConstruction "r6 V p1 V p2 V p3 a p1 o1 p3 & ~ p2 = o1 > F p3 p2 & F p3 p1 A r7 V p1 V p3 a p1 o1 p3 > p1 = p3"
+
+parserMotion.stringIntoConstruction "V p1 V p3 a p1 o1 p3 > p1 = p3";
+
 val all = parserMeas.stringIntoConstruction stri;
 
 val stri = "r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
@@ -58,4 +62,3 @@ tSchema punishMisallign:(measStickG,motionPathG,interMeasPath) =
                :metaFalse <-close[f2':formula,f2:formula]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength -1
-

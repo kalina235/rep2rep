@@ -70,12 +70,12 @@ transfer
     output rule6
     limit 110
 
-transfer
-    sourceConstruction rule1to6
-    targetConSpec motionPathG
-    interConSpec interMeasPath
-    goal :metaTrue <- close[rule1andrest:r123456:formula, t':formula]
-    output rule1to6
-    limit 35
- #   searchLimit
+#transfer
+#    sourceConstruction rule1to6
+#    targetConSpec motionPathG
+#    interConSpec interMeasPath
+#    goal :metaTrue <- close[rule1andrest:r123456:formula, t':formula]
+#    output rule1to6
+#    limit 35
+#   searchLimit
 
