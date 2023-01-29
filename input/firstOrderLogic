@@ -1,6 +1,12 @@
 typeSystem firstOrderLogic =
-  types  and, implies, not, equiv, unary, forall, exists, quant, _:formula, _:obj, _:binary
-  order forall < quant,
+  types  _:universal, and, implies, not, equiv, unary, forall, exists, quant, _:formula, _:obj, _:binary, _:binRel, _:terRel
+  order quant < universal,
+        binRel < universal,
+        terRel < universal,
+        obj < universal,
+        unary < universal,
+        formula < universal, #this bit is kind of dangerous? maybe?
+        forall < quant,
         exists < quant,
         not < unary,
         and < binary,
@@ -12,4 +18,7 @@ conSpec firstOrderLogicG:firstOrderLogic =
   constructors
     logicInfixOp : [formula,binary,formula] -> formula,
     logicApplyUnary : [unary,formula] -> formula,
-    logicApplyQuant : [quant, obj, formula] -> formula
+    logicApplyQuant : [quant, obj, formula] -> formula,
+    prefixBinRel : [binRel, obj, obj] -> formula,
+    prefixTerRel : [terRel, obj,obj,obj] -> formula,
+    infixBinRel : [obj, binRel, obj] -> formula
