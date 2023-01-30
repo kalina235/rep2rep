@@ -1,3 +1,34 @@
-shorter closer
-longer farther
-equals point
+tSchema semanticSimilarityequals:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':equals: universal 
+antecedent 
+consequent :metaTrue <-analogy[t:further, t':extend]
+ strength 33
+
+tSchema semanticSimilaritychop:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':closer: universal #for some reason towards is not a word in wordNet? Ned to download a better corpus.
+antecedent 
+consequent :metaTrue <-analogy[t:further, t':extend]
+ strength 15
+
+tSchema semanticSimilarityextend:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':away: universal 
+antecedent 
+consequent :metaTrue <-analogy[t:further, t':extend]
+ strength 19
+
+tSchema semanticSimilarityshorter:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':closer: universal 
+antecedent 
+consequent :metaTrue <-analogy[t:further, t':extend]
+ strength 19
+
+tSchema semanticSimilaritylonger:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':further: universal 
+antecedent 
+consequent :metaTrue <-analogy[t:further, t':extend]
+ strength 19
