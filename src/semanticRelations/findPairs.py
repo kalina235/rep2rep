@@ -20,14 +20,17 @@ def matchKnowBase(list1, list2):
   scores = numpy.zeros((len(list1),len(list2)))
   for i,l1 in enumerate(list1):
     for j,l2 in enumerate(list2): 
-        scores[i][j] = mineWordNet(l1, l2)
+        if l1 == l2:
+          scores[i][j] = 10
+        else:
+          scores[i][j] = mineWordNet(l1, l2)
   print(scores)
   res = numpy.empty((len(list1)), dtype = object)
   for k in range(len(l1)):
     (i,j) = numpy.unravel_index(scores.argmax(), scores.shape)
     scores[i][j] = -1
     score = scores[i,:]
-    res[i] = (int(max(score)*10+1),list1[i], list2[j])
+    res[i] = (int(max(score)*1000+1),list1[i], list2[j])
     scores[:,j] = 0
     scores[i,:] = 0
   return res
@@ -51,8 +54,8 @@ def pairsToTschemas(file = "pairedTypes", file1 = "measStickBase", file2 = "moti
   pairs = matchKnowBase(list1, list2)
   pairs = [x for x in pairs if x!= None]
   print("pairs", pairs)
-  for (s,w1,w2) in pairs:
-    print(f"tSchema semanticSimilarity{w1}:(measStickG,motionPathG,interMeasPath) = \nsource t:{w1}:universal\ntarget t':{w2}:universal\nantecedent \nconsequent :metaTrue <-analogy[t:further, t':extend]\n strength {s}")
   with open(file, 'w') as fp:
-    fp.write('\n\n'.join([f"tSchema semanticSimilarity{w1}:(measStickG,motionPathG,interMeasPath) = \nsource t:{str(w1)}: universal\ntarget t':{str(w2)}: universal \nantecedent \nconsequent :metaTrue <-analogy[t:further, t':extend]\n strength {str(s)}" for (s,w1,w2) in pairs]))
+    fp.write('\n\n'.join([f"tSchema semanticSimilarity{w1}:(measStickG,motionPathG,interMeasPath) = \nsource t:{str(w1)}: universal\ntarget t':{str(w2)}: universal \nantecedent \nconsequent :metaTrue <-analogy[t:{w1}, t':{w2}]\nstrength {str(s)}" for (s,w1,w2) in pairs]))
   fp.close()
+
+pairsToTschemas()
