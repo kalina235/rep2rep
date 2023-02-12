@@ -1,0 +1,629 @@
+import measStick
+import motionPath
+import transferSchemas/measPath
+
+tSchema semSimequalsorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:equals, t':origin] 
+consequent :metaTrue <-closeBinRel[t:equals, t':origin]
+strength 1
+
+tSchema semSimequalspoint:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:equals, t':point] 
+consequent :metaTrue <-closeBinRel[t:equals, t':point]
+strength 3
+
+tSchema semSimequalsequals:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:equals, t':equals] 
+consequent :metaTrue <-closeBinRel[t:equals, t':equals]
+strength 200
+
+tSchema semSimequalscloser:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:equals, t':closer] 
+consequent :metaTrue <-closeBinRel[t:equals, t':closer]
+strength 8
+
+tSchema semSimequalsfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:equals, t':further] 
+consequent :metaTrue <-closeBinRel[t:equals, t':further]
+strength 7
+
+tSchema semSimequalsaway:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:equals, t':away] 
+consequent :metaTrue <-closeBinRel[t:equals, t':away]
+strength 8
+
+tSchema semSimshorterorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':origin] 
+consequent :metaTrue <-closeBinRel[t:shorter, t':origin]
+strength 2
+
+tSchema semSimshorterpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':point] 
+consequent :metaTrue <-closeBinRel[t:shorter, t':point]
+strength 5
+
+tSchema semSimshorterequals:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':equals] 
+consequent :metaTrue <-closeBinRel[t:shorter, t':equals]
+strength 10
+
+tSchema semSimshortercloser:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':closer] 
+consequent :metaTrue <-closeBinRel[t:shorter, t':closer]
+strength 12
+
+tSchema semSimshorterfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':further] 
+consequent :metaTrue <-closeBinRel[t:shorter, t':further]
+strength 15
+
+tSchema semSimshorteraway:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':away] 
+consequent :metaTrue <-closeBinRel[t:shorter, t':away]
+strength 17
+
+tSchema semSimlongerorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:longer, t':origin] 
+consequent :metaTrue <-closeBinRel[t:longer, t':origin]
+strength 2
+
+tSchema semSimlongerpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:longer, t':point] 
+consequent :metaTrue <-closeBinRel[t:longer, t':point]
+strength 7
+
+tSchema semSimlongerequals:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:longer, t':equals] 
+consequent :metaTrue <-closeBinRel[t:longer, t':equals]
+strength 13
+
+tSchema semSimlongercloser:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:longer, t':closer] 
+consequent :metaTrue <-closeBinRel[t:longer, t':closer]
+strength 16
+
+tSchema semSimlongerfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:longer, t':further] 
+consequent :metaTrue <-closeBinRel[t:longer, t':further]
+strength 20
+
+tSchema semSimlongeraway:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:longer, t':away] 
+consequent :metaTrue <-closeBinRel[t:longer, t':away]
+strength 23
+
+tSchema semSimchoporigin:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:chop, t':origin] 
+consequent :metaTrue <-closeBinRel[t:chop, t':origin]
+strength 3
+
+tSchema semSimchoppoint:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:chop, t':point] 
+consequent :metaTrue <-closeBinRel[t:chop, t':point]
+strength 5
+
+tSchema semSimchopequals:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:chop, t':equals] 
+consequent :metaTrue <-closeBinRel[t:chop, t':equals]
+strength 12
+
+tSchema semSimchopcloser:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:chop, t':closer] 
+consequent :metaTrue <-closeBinRel[t:chop, t':closer]
+strength 15
+
+tSchema semSimchopfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:chop, t':further] 
+consequent :metaTrue <-closeBinRel[t:chop, t':further]
+strength 18
+
+tSchema semSimchopaway:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:chop, t':away] 
+consequent :metaTrue <-closeBinRel[t:chop, t':away]
+strength 21
+
+tSchema semSimextendorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:extend, t':origin] 
+consequent :metaTrue <-closeBinRel[t:extend, t':origin]
+strength 3
+
+tSchema semSimextendpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:extend, t':point] 
+consequent :metaTrue <-closeBinRel[t:extend, t':point]
+strength 7
+
+tSchema semSimextendequals:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:extend, t':equals] 
+consequent :metaTrue <-closeBinRel[t:extend, t':equals]
+strength 15
+
+tSchema semSimextendcloser:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:extend, t':closer] 
+consequent :metaTrue <-closeBinRel[t:extend, t':closer]
+strength 15
+
+tSchema semSimextendfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:extend, t':further] 
+consequent :metaTrue <-closeBinRel[t:extend, t':further]
+strength 18
+
+tSchema semSimextendaway:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:extend, t':away] 
+consequent :metaTrue <-closeBinRel[t:extend, t':away]
+strength 21tSchema semSimequalsorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:equals, t':origin] 
+consequent :metaTrue <-closeTerRel[t:equals, t':origin]
+strength 1
+
+tSchema semSimequalspoint:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:equals, t':point] 
+consequent :metaTrue <-closeTerRel[t:equals, t':point]
+strength 3
+
+tSchema semSimequalsequals:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:equals, t':equals] 
+consequent :metaTrue <-closeTerRel[t:equals, t':equals]
+strength 200
+
+tSchema semSimequalscloser:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:equals, t':closer] 
+consequent :metaTrue <-closeTerRel[t:equals, t':closer]
+strength 8
+
+tSchema semSimequalsfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:equals, t':further] 
+consequent :metaTrue <-closeTerRel[t:equals, t':further]
+strength 7
+
+tSchema semSimequalsaway:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:equals, t':away] 
+consequent :metaTrue <-closeTerRel[t:equals, t':away]
+strength 8
+
+tSchema semSimshorterorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':origin] 
+consequent :metaTrue <-closeTerRel[t:shorter, t':origin]
+strength 2
+
+tSchema semSimshorterpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':point] 
+consequent :metaTrue <-closeTerRel[t:shorter, t':point]
+strength 5
+
+tSchema semSimshorterequals:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':equals] 
+consequent :metaTrue <-closeTerRel[t:shorter, t':equals]
+strength 10
+
+tSchema semSimshortercloser:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':closer] 
+consequent :metaTrue <-closeTerRel[t:shorter, t':closer]
+strength 12
+
+tSchema semSimshorterfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':further] 
+consequent :metaTrue <-closeTerRel[t:shorter, t':further]
+strength 15
+
+tSchema semSimshorteraway:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':away] 
+consequent :metaTrue <-closeTerRel[t:shorter, t':away]
+strength 17
+
+tSchema semSimlongerorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:longer, t':origin] 
+consequent :metaTrue <-closeTerRel[t:longer, t':origin]
+strength 2
+
+tSchema semSimlongerpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:longer, t':point] 
+consequent :metaTrue <-closeTerRel[t:longer, t':point]
+strength 7
+
+tSchema semSimlongerequals:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:longer, t':equals] 
+consequent :metaTrue <-closeTerRel[t:longer, t':equals]
+strength 13
+
+tSchema semSimlongercloser:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:longer, t':closer] 
+consequent :metaTrue <-closeTerRel[t:longer, t':closer]
+strength 16
+
+tSchema semSimlongerfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:longer, t':further] 
+consequent :metaTrue <-closeTerRel[t:longer, t':further]
+strength 20
+
+tSchema semSimlongeraway:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:longer, t':away] 
+consequent :metaTrue <-closeTerRel[t:longer, t':away]
+strength 23
+
+tSchema semSimchoporigin:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:chop, t':origin] 
+consequent :metaTrue <-closeTerRel[t:chop, t':origin]
+strength 3
+
+tSchema semSimchoppoint:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:chop, t':point] 
+consequent :metaTrue <-closeTerRel[t:chop, t':point]
+strength 5
+
+tSchema semSimchopequals:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:chop, t':equals] 
+consequent :metaTrue <-closeTerRel[t:chop, t':equals]
+strength 12
+
+tSchema semSimchopcloser:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:chop, t':closer] 
+consequent :metaTrue <-closeTerRel[t:chop, t':closer]
+strength 15
+
+tSchema semSimchopfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:chop, t':further] 
+consequent :metaTrue <-closeTerRel[t:chop, t':further]
+strength 18
+
+tSchema semSimchopapproach:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':approach: universal 
+antecedent :metaTrue <-analogy[t:chop, t':approach] 
+consequent :metaTrue <-closeTerRel[t:chop, t':approach]
+strength 23
+
+tSchema semSimextendorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:extend, t':origin] 
+consequent :metaTrue <-closeTerRel[t:extend, t':origin]
+strength 3
+
+tSchema semSimextendpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:extend, t':point] 
+consequent :metaTrue <-closeTerRel[t:extend, t':point]
+strength 7
+
+tSchema semSimextendequals:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:extend, t':equals] 
+consequent :metaTrue <-closeTerRel[t:extend, t':equals]
+strength 15
+
+tSchema semSimextendcloser:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:extend, t':closer] 
+consequent :metaTrue <-closeTerRel[t:extend, t':closer]
+strength 15
+
+tSchema semSimextendfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:extend, t':further] 
+consequent :metaTrue <-closeTerRel[t:extend, t':further]
+strength 18
+
+tSchema semSimextendaway:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:extend, t':away] 
+consequent :metaTrue <-closeTerRel[t:extend, t':away]
+strength 21tSchema semSimequalsorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:equals, t':origin] 
+consequent :metaTrue <-alike[t:equals, t':origin]
+strength 1
+
+tSchema semSimequalspoint:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:equals, t':point] 
+consequent :metaTrue <-alike[t:equals, t':point]
+strength 3
+
+tSchema semSimequalsequals:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:equals, t':equals] 
+consequent :metaTrue <-alike[t:equals, t':equals]
+strength 200
+
+tSchema semSimequalscloser:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:equals, t':closer] 
+consequent :metaTrue <-alike[t:equals, t':closer]
+strength 8
+
+tSchema semSimequalsfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:equals, t':further] 
+consequent :metaTrue <-alike[t:equals, t':further]
+strength 7
+
+tSchema semSimequalsaway:(measStickG,motionPathG,interMeasPath) = 
+source t:equals: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:equals, t':away] 
+consequent :metaTrue <-alike[t:equals, t':away]
+strength 8
+
+tSchema semSimshorterorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':origin] 
+consequent :metaTrue <-alike[t:shorter, t':origin]
+strength 2
+
+tSchema semSimshorterpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':point] 
+consequent :metaTrue <-alike[t:shorter, t':point]
+strength 5
+
+tSchema semSimshorterequals:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':equals] 
+consequent :metaTrue <-alike[t:shorter, t':equals]
+strength 10
+
+tSchema semSimshortercloser:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':closer] 
+consequent :metaTrue <-alike[t:shorter, t':closer]
+strength 12
+
+tSchema semSimshorterfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':further] 
+consequent :metaTrue <-alike[t:shorter, t':further]
+strength 15
+
+tSchema semSimshorteraway:(measStickG,motionPathG,interMeasPath) = 
+source t:shorter: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:shorter, t':away] 
+consequent :metaTrue <-alike[t:shorter, t':away]
+strength 17
+
+tSchema semSimlongerorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:longer, t':origin] 
+consequent :metaTrue <-alike[t:longer, t':origin]
+strength 2
+
+tSchema semSimlongerpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:longer, t':point] 
+consequent :metaTrue <-alike[t:longer, t':point]
+strength 7
+
+tSchema semSimlongerequals:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:longer, t':equals] 
+consequent :metaTrue <-alike[t:longer, t':equals]
+strength 13
+
+tSchema semSimlongercloser:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:longer, t':closer] 
+consequent :metaTrue <-alike[t:longer, t':closer]
+strength 16
+
+tSchema semSimlongerfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:longer, t':further] 
+consequent :metaTrue <-alike[t:longer, t':further]
+strength 20
+
+tSchema semSimlongeraway:(measStickG,motionPathG,interMeasPath) = 
+source t:longer: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:longer, t':away] 
+consequent :metaTrue <-alike[t:longer, t':away]
+strength 23
+
+tSchema semSimchoporigin:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:chop, t':origin] 
+consequent :metaTrue <-alike[t:chop, t':origin]
+strength 3
+
+tSchema semSimchoppoint:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:chop, t':point] 
+consequent :metaTrue <-alike[t:chop, t':point]
+strength 5
+
+tSchema semSimchopequals:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:chop, t':equals] 
+consequent :metaTrue <-alike[t:chop, t':equals]
+strength 12
+
+tSchema semSimchopcloser:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:chop, t':closer] 
+consequent :metaTrue <-alike[t:chop, t':closer]
+strength 15
+
+tSchema semSimchopfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:chop, t':further] 
+consequent :metaTrue <-alike[t:chop, t':further]
+strength 18
+
+tSchema semSimchopaway:(measStickG,motionPathG,interMeasPath) = 
+source t:chop: universal
+target t':approach: universal 
+antecedent :metaTrue <-analogy[t:chop, t':away] 
+consequent :metaTrue <-alike[t:chop, t':away]
+strength 25
+
+tSchema semSimextendorigin:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':origin: universal 
+antecedent :metaTrue <-analogy[t:extend, t':origin] 
+consequent :metaTrue <-alike[t:extend, t':origin]
+strength 3
+
+tSchema semSimextendpoint:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':point: universal 
+antecedent :metaTrue <-analogy[t:extend, t':point] 
+consequent :metaTrue <-alike[t:extend, t':point]
+strength 7
+
+tSchema semSimextendequals:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':equals: universal 
+antecedent :metaTrue <-analogy[t:extend, t':equals] 
+consequent :metaTrue <-alike[t:extend, t':equals]
+strength 15
+
+tSchema semSimextendcloser:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':closer: universal 
+antecedent :metaTrue <-analogy[t:extend, t':closer] 
+consequent :metaTrue <-alike[t:extend, t':closer]
+strength 15
+
+tSchema semSimextendfurther:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':further: universal 
+antecedent :metaTrue <-analogy[t:extend, t':further] 
+consequent :metaTrue <-alike[t:extend, t':further]
+strength 18
+
+tSchema semSimextendaway:(measStickG,motionPathG,interMeasPath) = 
+source t:extend: universal
+target t':away: universal 
+antecedent :metaTrue <-analogy[t:extend, t':away] 
+consequent :metaTrue <-alike[t:extend, t':away]
+strength 21
