@@ -9,6 +9,7 @@ sig
   val breadthFirstIgnoreForget : ('a -> 'a Seq.seq) -> ('a * 'a list -> bool) -> ('a * 'a list -> bool) -> 'a -> 'a Seq.seq;
   val bestFirstIgnore : ('a -> 'a Seq.seq) -> ('a * 'a -> order) -> ('a * 'a list -> bool) -> 'a -> 'a Seq.seq;
   val bestFirstIgnoreForget : ('a -> 'a Seq.seq) -> ('a * 'a -> order) -> ('a * 'a list -> bool) -> ('a * 'a list -> bool) -> 'a -> 'a Seq.seq;
+  val bestFirstAll : ('a -> 'a Seq.seq) -> ('a * 'a -> order) -> ('a * 'a list -> bool) -> ('a * 'a list -> bool) -> ('a -> bool) -> 'a -> 'a Seq.seq;
 end;
 
 structure Search : SEARCH =
@@ -159,6 +160,27 @@ struct
                   | SOME (st',s'') => let val newFrontier = Seq.insertManyNoEQUAL s'' (Seq.insertNoEQUAL st' s' h) h
                                           val recdfsi = dfsi newFrontier (st::acc)
                                       in if forg (st,acc) then recdfsi else Seq.insertNoEQUAL st recdfsi h end))
+    in dfsi (Seq.single state) []
+    end
+
+  fun bestFirstAll unfold h ign forg stop state =
+    let fun dfsi frontier acc =
+          (case Seq.pull frontier of
+            NONE => Seq.empty
+          | SOME (st,s') =>
+              if stop st then frontier
+              else if ign (st,acc) then dfsi s' acc
+              else let val unfolded = unfold st
+                   in case Seq.pull unfolded of
+                          NONE => let val recdfsi = dfsi s' (st::acc)
+                                  in if forg (st,acc) then recdfsi else Seq.insertNoEQUAL st recdfsi h
+                                  end
+                        | SOME (st',s'') => let val newFrontier = Seq.insertManyNoEQUAL unfolded s' h
+                                                val recdfsi = dfsi newFrontier (st::acc)
+                                            in if forg (st,acc) then recdfsi else Seq.insertNoEQUAL st recdfsi h
+                                            end
+                   end
+          )
     in dfsi (Seq.single state) []
     end
 
