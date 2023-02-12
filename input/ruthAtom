@@ -1,0 +1,16 @@
+import firstOrderLogic
+
+typeSystem measStick =
+    imports firstOrderLogic
+    types coulomb, mass, force, gravity, centrifugal, nucleus, electron, time
+    order planet < obj,
+          revolves < obj,
+          mass < unary,
+          shorter < binRel,
+          gravity < terRel,
+          coulomb < terRel
+
+conSpec measStickG:measStick =
+  imports firstOrderLogicG
+  constructors
+  dummy: [universal] -> universal

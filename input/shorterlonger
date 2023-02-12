@@ -55,8 +55,8 @@ construction rule2:measStickG =
 		t1:formula <- logicApplyQuant[q1:forall, s02:s2:seg, 
 		t2:formula <- logicApplyQuant[q2:forall, s03:s3:seg, 
 		teqv3:formula <- logicInfixOp[
-			text4:formula <- prefixTerOp[ext1:extend, s11:s1:seg, s12:s2:seg, s13:s3:seg], eq1:equiv,
-			text4':formula <- prefixTerOp[chp1:chop, s23:s3:seg, s22:s2:seg, s21:s1:seg]]]]]		
+			text4:formula <- prefixTerRel[ext1:extend, s11:s1:seg, s12:s2:seg, s13:s3:seg], eq1:equiv,
+			text4':formula <- prefixTerRel[chp1:chop, s23:s3:seg, s22:s2:seg, s21:s1:seg]]]]]		
 
 construction rule3:measStickG = 
 t0:formula <-logicApplyQuant[q0:forall, s01:s1:seg,
