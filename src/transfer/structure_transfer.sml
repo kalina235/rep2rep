@@ -362,11 +362,11 @@ struct
     (Pattern.matches targetTypeSystem (constructionOfComp st) targetPattern)
       handle Nope => false
 
-fun structureTransfer searchLimit unistructured targetPattOption st =
-  let val maxNumGoals = case searchLimit of SOME x => Int.max(x div 4, 20) | NONE => 80 (*change here*)
-      val maxNumResults = case searchLimit of SOME x => x | NONE => 500
-      val maxCompSize = 160
 
+fun structureTransfer (goalLimit,compositionLimit,searchLimit) eager unistructured targetPattOption st =
+  let val maxNumGoals = case goalLimit of SOME x => x | NONE => 80
+      val maxCompSize = case compositionLimit of SOME x => x | NONE => 300
+      val maxNumResults = case searchLimit of SOME x => x | NONE => 1000
       val ignT = Heuristic.ignore maxNumGoals maxNumResults maxCompSize unistructured
       val targetTypeSystem = #typeSystem (State.targetTypeSystemOf st)
       fun ignPT (x,L) = case targetPattOption of
