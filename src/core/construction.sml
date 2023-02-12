@@ -58,7 +58,7 @@ struct
   datatype construction =
       TCPair of tc * construction list
     | Source of CSpace.token
-    | Reference of CSpace.token ;
+    | Reference of CSpace.token;
   datatype vertex = Token of CSpace.token | Constructor of CSpace.constructor
   type walk = vertex list;
 

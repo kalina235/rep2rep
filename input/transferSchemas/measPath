@@ -1,0 +1,208 @@
+import measStick
+import motionPath
+import metaLogic
+
+typeSystem interMeasPathT =
+    imports measStick, motionPath, metaLogicT
+    types
+    order
+
+conSpec interMeasPath:interMeasPathT =
+    imports metaLogic
+    constructors
+        close :[formula, formula] -> metaBool,
+        closeBinRel :[binRel, binRel] -> metaBool,
+        closeTerRel :[terRel, terRel] -> metaBool,
+        equalRel :[binRel, binRel] -> metaBool,
+        closeOp :[binary, binary] -> metaBool,
+        alike :[obj, obj] -> metaBool,
+        analogy :[universal, universal] -> metaBool
+
+#REFLEXIVE TSCHEMAS:
+
+tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- prefixTerRel[t0: terRel, s1:seg, s2:seg, s3:seg]
+    target t':formula <- prefixTerRel[t0': terRel, p1':obj, p2':obj, p3':obj] 
+    antecedent :metaTrue <-alike[s1:seg,p1':obj],
+               :metaTrue <-alike[s2:seg,p2':obj],
+               :metaTrue <-alike[s3:seg,p3':obj],
+               :metaTrue <-closeTerRel[t0:terRel,t0':terRel]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 20
+
+tSchema negClose:(measStickG,motionPathG,interMeasPath) = 
+    source t:formula <- logicApplyUnary[n:not, f:formula]
+    target t':formula <- logicApplyUnary[n':not, f':formula]
+    antecedent :metaTrue <-close[f:formula,f':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 10
+
+tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- prefixBinRel[b: binRel, s1: seg, s2: seg] 
+    target t':formula <- prefixBinRel[b': binRel, p1: obj, p2: obj]
+    antecedent :metaTrue <-alike[s1:seg,p1:obj],
+               :metaTrue <-alike[s2:seg,p2':obj],
+               :metaTrue <-closeBinRel[b:binRel,b':binRel]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 80
+
+tSchema similarBinaryInfix:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- infixBinRel[s1: seg, b: binRel, s2: seg] 
+    target t':formula <- infixBinRel[p1: obj, b': binRel, p2: obj]
+    antecedent :metaTrue <-alike[s1:seg,p1:obj],
+               :metaTrue <-alike[s2:seg,p2':obj],
+               :metaTrue <-closeBinRel[b:binRel,b':binRel]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 80
+
+tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula, a':and, f2':formula]
+    antecedent :metaTrue <-close[f1:formula,f1':formula],
+               :metaTrue <-close[f2:formula,f2':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 200
+
+tSchema comClose:(measStickG,motionPathG,interMeasPath) = 
+    source f:formula 
+    target f':formula 
+    antecedent :metaTrue <-close[f:formula,f':formula]
+    consequent :metaTrue <-close[f':formula, f:formula]
+    strength 10
+
+tSchema equivClose:(measStickG,motionPathG,interMeasPath) = #might not be needed, actually
+    source t:formula <- logicInfixOp[f1:formula, e:equiv ,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula, e:equiv , f2':formula]
+    antecedent :metaTrue <-close[f1:formula,f1':formula],
+               :metaTrue <-close[f2:formula,f2':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 20
+
+tSchema infixClose:(measStickG,motionPathG,interMeasPath) = #ToDo decide on subtyping here
+    source t:formula <- logicInfixOp[f1:formula, e:binary ,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula, e:binary , f2':formula]
+    antecedent :metaTrue <-close[f1:formula,f1':formula],
+               :metaTrue <-closeOp[e:binary,e':binary],
+               :metaTrue <-close[f2:formula,f2':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 20
+    
+#tSchema eqlIsClose:(measStickG,motionPathG,interMeasPath) =
+#    source t:binRel
+#    target t':binRel
+#    antecedent :metaTrue <-equalRel[t:binRel,t':binRel]
+#    consequent :metaTrue <-closeBinRel[t:binRel,t':binRel]
+#    strength 20
+
+tSchema forallDrop:(measStickG,motionPathG,interMeasPath) = 
+    source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
+    target t':formula <- logicApplyQuant[q':forall, s':obj, f':formula]
+    antecedent :metaTrue <-alike[s:seg,s':obj],
+               :metaTrue <-close[f:formula,f':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 50
+
+#MAKING ANALOGY CORRECT:
+
+tSchema allowMisallign:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+    target t':formula <- logicInfixOp[f1':formula,a':and, f2':formula] 
+    antecedent :metaTrue <-close[f1:formula,f1':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 20
+
+
+#SEMANTIC TSCHEMAS
+
+#tSchema similarThing:(measStickG,motionPathG,interMeasPath) =
+#    source t: formula <- [extend, smth, smth]
+#    target t':formula <- [binrel, smth, smth]
+#    antecedent 
+#    consequent :metaTrue <-semanticallyClose[t:binRel,t':binRel]
+#    strength 1
+
+#tSchema similarThing:(measStickG,motionPathG,interMeasPath) =
+#    source t: universal
+#    target t': univeral
+#    antecedent : ### meta for everything close or alike here
+#    consequent :metaTrue <-analogy[t:further, t':extend]
+#    strength 1000
+
+tSchema similarTer:(measStickG,motionPathG,interMeasPath) =
+    source t:extend
+    target t':away
+    antecedent :metaTrue <-analogy[t:away, t':extend] 
+    consequent :metaTrue <-closeTerRel[t:extend, t':away]
+    strength 1000
+
+tSchema similarBin2:(measStickG,motionPathG,interMeasPath) =
+    source t:longer
+    target t':further
+    antecedent :metaTrue <-analogy[t:longer, t':further]
+    consequent :metaTrue <-closeBinRel[t:longer, t':further]
+    strength 1000
+
+tSchema similarBin:(measStickG,motionPathG,interMeasPath) =
+    source t:shorter
+    target t':closer 
+    antecedent :metaTrue <-analogy[t:shorter, t':closer]
+    consequent :metaTrue <-closeBinRel[t:shorter, t':closer]
+    strength 1000
+
+tSchema similarTer2:(measStickG,motionPathG,interMeasPath) =
+    source t:chop
+    target t':towards
+    antecedent :metaTrue <-analogy[t:chop, t':towards]
+    consequent :metaTrue <-closeTerRel[t:chop, t':towards]
+    strength 1000
+
+#tSchema sameTypeIsEqual:(measStickG,motionPathG,interMeasPath) =
+#    source t:?P:extend
+#    target t':?P:further
+#    antecedent
+#    consequent :metaTrue <-analogy[t:?P:binRel,t':?P:binRel]
+#    strength 1
+
+tSchema unifyLogic:(measStickG,motionPathG,interMeasPath) = #I'm not sure that this is logically sound... It should be for the most part though...
+    source t:?P:binary
+    target t':?P:binary
+    antecedent :metaTrue <-closeOp[t:?P:binary,t':?P:binary]
+    consequent :metaTrue <-analogy[t:?P:binary,t':?P:binary]
+    strength 100
+
+#tSchema sameType:(measStickG,motionPathG,interMeasPath) = 
+#    source t:formula <- prefixBinRel[b: binRel, s1:?P: seg, s2:?P: seg] 
+#    target t':formula <- prefixBinRel[b': binRel, p1:?R: obj, p2:?R: obj]
+#    antecedent :metaTrue <-semanticallyClose[t:binRel,t':binRel]
+#    consequent :metaTrue <- correspondingType[s1:?P, p2:?R]
+#    strength 1
+
+
+#tschemas for first-order logic
+
+#if for all x then exists x
+tSchema forallExist:(measStickG,motionPathG,interMeasPath) = 
+    source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
+    target t':formula <- logicApplyQuant[q':exists, s':obj, f':formula]
+    antecedent :metaTrue <-alike[s:seg,s':obj],
+               :metaTrue <-close[f:formula,f':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 1
+
+#negation of formula is far
+#tSchema negNotClose:(measStickG,motionPathG,interMeasPath) = 
+#    source t:formula
+#    target t':formula <- logicApplyUnary[n:not, f:formula]
+#    antecedent :metaTrue <-close[t:formula,f:formula]
+#    consequent :metaFalse <-close[t:formula,t':formula]
+#    strength 10
+
+#double negation is void
+#tSchema doubleNeg:(measStickG,motionPathG,interMeasPath) = #double neg is void #this is blisfullly wrong
+#    source t:formula
+#    target t':formula <- logicApplyUnary[n1:not, f1:formula <-logicApplyUnary[n2:not, f2:formula]]
+#    antecedent : metaTrue <-close[t:formula,f2:formula],
+#    consequent : metaTrue <-close[t:formula,t':formula]
+#    strength -1
+
+#type vars only work if they're also in consequent

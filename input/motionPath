@@ -1,0 +1,18 @@
+import firstOrderLogic
+
+typeSystem motionPath =
+    imports firstOrderLogic
+    types _:point, origin, _:formula, further, closer, equals, away, towards
+    order origin < point,
+          point < obj,
+          further < binRel,
+          closer < binRel,
+          away < terRel,
+          towards < terRel,
+          equals < binRel
+
+conSpec motionPathG:motionPath =
+  imports firstOrderLogicG
+  constructors
+  dummy: [universal] -> universal
+
