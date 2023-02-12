@@ -653,11 +653,7 @@ struct
       val _ = print ("  well-formedness check runtime: "^ LargeInt.toString runtime ^ " ms \n...done\n  ");
 
       val ctRecord = {name = name, conSpecN = cspecN, construction = ct}
-  in {typeSystemsData = #typeSystemsData dc,
-      conSpecsData = #conSpecsData dc,
-      knowledge = #knowledge dc,
-      constructionsData = ctRecord :: (#constructionsData dc),
-      transferRequests = #transferRequests dc}
+ in insertConstruction ctRecord dc
   end
 
   fun addTransferRequests ws dc =
