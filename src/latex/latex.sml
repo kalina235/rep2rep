@@ -50,15 +50,13 @@ struct
     | lines _ = raise Empty
 
 
-  fun nodeNameCharFilter x = x <> #"\\" andalso x <> #"|" andalso x <> #"("andalso x <> #")" andalso x <> #"[" andalso x <> #"]" andalso x <> #":" andalso x <> #"," andalso x <> #"." 
-  fun nodeNameOfToken t = String.addParentheses (String.implode (List.filter nodeNameCharFilter (String.explode (CSpace.nameOfToken t ^ "" ^ Type.nameOfType (CSpace.typeOfToken t)))))
-  fun nodeNameOfConfigurator u t =
-    let val nu = CSpace.nameOfConfigurator u
-        val c = CSpace.constructorOfConfigurator u
-        val nc = CSpace.nameOfConstructor c
-        val tn = (CSpace.nameOfToken t ^ "" ^ Type.nameOfType (CSpace.typeOfToken t))
-        val tn' = String.implode (List.filter nodeNameCharFilter (String.explode tn))
-    in String.addParentheses (nu ^ "_" ^ nc ^ "_" ^ tn')
+  fun nodeNameCharFilter x = x <> #"&" andalso x <> #"\\" andalso x <> #"|" andalso x <> #"("andalso x <> #")" andalso x <> #"[" andalso x <> #"]" andalso x <> #":" andalso x <> #"," andalso x <> #"."
+
+  fun nodeNameOfToken t =
+    let val nt = CSpace.nameOfToken t
+        val tt = CSpace.typeOfToken t
+        val charL = case List.filter nodeNameCharFilter (String.explode (nt ^ "" ^ Type.nameOfType tt)) of #" " :: L => #"Q" :: #" " :: L | L => L
+    in String.addParentheses (String.implode charL)
     end
 
   fun nodeNameOfConstructor c t =
@@ -107,8 +105,9 @@ struct
                    parentName,
                    ";"]
 
-  val normalScale = 0.11
-  val scriptScale = normalScale * 0.75
+
+  val normalScale = 0.16
+  val scriptScale = normalScale * 0.7
   val nodeConstant = 1.0 * normalScale
   fun sizeOfToken t = normalScale * real (String.size (CSpace.nameOfToken t)) + nodeConstant
   fun sizeOfType t = scriptScale * real (String.size (Type.nameOfType (CSpace.typeOfToken t)))

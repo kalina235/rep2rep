@@ -213,7 +213,7 @@ struct
             (The smaller types will come from ct, except when they live in tks,
             in which case they may come from either ct or ct'.)
      otherwise it yields NONEs *)
-  fun findEmbeddingMinimisingTypeUpTo TSD tks ct ct'  =
+  fun findEmbeddingMinimisingTypeUpTo TSD givenTokens ct ct'  =
   let val T = #typeSystem TSD
       fun tMaps t t' =
         let val ty = CSpace.typeOfToken t
@@ -224,7 +224,7 @@ struct
              (fn x => if CSpace.sameTokens x t then SOME nt else NONE,
               fn x => if CSpace.sameTokens x t' then SOME nt else NONE,
               fn x => if Type.isTypeVar ty andalso Type.equal x ty then SOME ty' else NONE)
-           else if FiniteSet.elementOf t tks then
+           else if FiniteSet.elementOf t givenTokens andalso isSome (Type.greatestCommonSubType TSD ty ty') then
               (fn x => if CSpace.sameTokens x t then SOME t' else NONE,
                fn x => if CSpace.sameTokens x t' then SOME t' else NONE,
                fn x => if Type.isTypeVar ty andalso Type.equal x ty then SOME ty' else NONE)
@@ -244,7 +244,15 @@ struct
             else raise IllDefined
         | fm _ _ = raise IllDefined
       val (f,f',vf) = fm ct ct'
-      val _ = map (vf o CSpace.typeOfToken) (tokensOfConstruction ct)
+      fun checkValidTypeVarInst [] = ()
+        | checkValidTypeVarInst (tk::tks) =
+          let val typ = CSpace.typeOfToken tk
+          in (case (vf typ) of NONE => checkValidTypeVarInst tks
+                             | SOME xtyp => if Type.equal (Type.parentOfDanglyType typ) (Type.parentOfDanglyType xtyp)
+                                            then (checkValidTypeVarInst tks)
+                                            else raise IllDefined)
+          end handle Type.badType => raise IllDefined
+      val _ = checkValidTypeVarInst (tokensOfConstruction ct)
       val g = applyMorphism f ct
   in (f, f', vf, SOME g)
   end handle IllDefined => (fn _ => NONE,fn _ => NONE,fn _ => NONE,NONE)

@@ -1,6 +1,11 @@
 typeSystem firstOrderLogic =
-  types  and, implies, not, equiv, unary, forall, exists, quant, _:formula, _:obj, _:concept, _:binary
-  order formula < concept,
+  types  _:universal, unary, not, binary, and, or, implies, equiv, quant, forall, exists, _:formula, _:obj, _:binRel, _:terRel
+  order quant < universal,
+        binRel < universal,
+        terRel < universal,
+        obj < universal,
+        unary < universal,
+        formula < universal, #this bit is kind of dangerous? maybe?
         forall < quant,
         exists < quant,
         not < unary,

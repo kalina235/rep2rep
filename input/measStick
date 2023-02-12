@@ -2,8 +2,7 @@ import firstOrderLogic
 
 typeSystem measStick =
     imports firstOrderLogic
-    types _:unitSeg, _:seg, longer, shorter, extend, chop, equals,
-          _:binRel, terOp
+    types extend, chop, longer, shorter, equals, _:seg, unitSeg
     order unitSeg < seg,
           seg < concept,
           formula < concept,

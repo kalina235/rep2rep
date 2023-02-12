@@ -2,14 +2,14 @@ import firstOrderLogic
 
 typeSystem motionPath =
     imports firstOrderLogic
-    types _:point, origin, _:formula, longer, shorter, extend, chop,
-          _:binRel, terOp
+    types _:formula, away, approach, further, closer, equals, _:point, origin
     order origin < point,
           point < concept,
           farther < binRel,
           closer < binRel,
-          extend < terOp,
-          chop < terOp
+          away < terRel,
+          approach < terRel,
+          equals < binRel
 
 conSpec motionPathG:motionPath =
   imports firstOrderLogicG

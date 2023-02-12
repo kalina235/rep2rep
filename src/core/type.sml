@@ -168,8 +168,10 @@ struct
 
 
   fun isTypeVar s = String.isPrefix "?" s
-  fun parentTypeOfSubtypeable s =
-    (case String.breakOn ":" s of (x,":",y) => y | _ => raise badType)
+  fun parentOfDanglyType s =
+    (case String.breakOn ":" s of (_,":",y) => y | _ => raise badType)
+  fun isDanglyType Ty s =
+    (case String.breakOn ":" s of (_,":",y) => Set.elementOf y Ty | _ => false)
 
   (* assumes subType is an order for the principal types and extends it to
     the ones hanging from subtypeable *)

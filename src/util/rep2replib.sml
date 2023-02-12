@@ -91,6 +91,7 @@ sig
     val inout : 'a list -> ('a * 'a list) list;
 
     val mergesort : ('a * 'a -> order) -> 'a list -> 'a list;
+    val mergeNoEQUAL : ('a * 'a -> order) -> 'a list -> 'a list -> 'a list;
 
     val intersperse : 'a -> 'a list -> 'a list;
 
@@ -185,6 +186,14 @@ fun mergesort cmp [] = []
         val result = merge sortedLeft sortedRight;
     in result
     end;
+
+fun mergeNoEQUAL cmp (x::xs) (y::ys) =
+      (case cmp(x,y) of
+          LESS => x::y::mergeNoEQUAL cmp xs ys
+        | EQUAL => y::mergeNoEQUAL cmp xs ys
+        | GREATER => y::mergeNoEQUAL cmp (x::xs) ys)
+  | mergeNoEQUAL _ [] ys = ys
+  | mergeNoEQUAL _ xs [] = xs
 
 fun intersperse s [] = []
   | intersperse s (y::ys) =

@@ -453,6 +453,14 @@ fun insert x xq f =
       NONE => SOME (x,empty)
     | SOME (x',q) => if f(x,x') = GREATER then SOME (x',insert x q f) else SOME (x,xq));
 
+fun insertNoEQUAL x xq f =
+  make (fn () =>
+    case pull xq of
+      NONE => SOME (x,empty)
+    | SOME (x',q) => (case f(x,x') of GREATER => SOME (x',insertNoEQUAL x q f)
+                                    | LESS => SOME (x,xq)
+                                    | EQUAL => SOME (x',q)));
+
 fun sort xq f =
   case pull xq of
     NONE => empty
