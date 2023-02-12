@@ -16,6 +16,9 @@ typeSystem firstOrderLogic =
 
 conSpec firstOrderLogicG:firstOrderLogic =
   constructors
-    logicInfixOp : [concept,binary,concept] -> formula,
+    logicInfixOp : [formula,binary,formula] -> formula,
     logicApplyUnary : [unary,formula] -> formula,
-    logicApplyQuant : [quant, obj, formula] -> formula
+    logicApplyQuant : [quant, obj, formula] -> formula,
+    prefixBinRel : [binRel, obj, obj] -> formula,
+    prefixTerRel : [terRel, obj,obj,obj] -> formula,
+    infixBinRel : [obj, binRel, obj] -> formula

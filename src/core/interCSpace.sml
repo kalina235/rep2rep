@@ -1,5 +1,4 @@
 import "core.pattern";
-import "core.relation";
 
 signature INTERCSPACE =
 sig
@@ -26,6 +25,9 @@ sig
                                target : Pattern.construction,
                                antecedent : Pattern.construction list,
                                consequent : Pattern.construction} -> tSchema;
+
+  val inverse : tSchema -> tSchema;
+  val inverseData : tSchemaData -> tSchemaData;
 end;
 
 structure InterCSpace : INTERCSPACE =
@@ -50,9 +52,9 @@ struct
                            List.list_rpc Pattern.construction_rpc,
                            Pattern.construction_rpc))
                      (fn (s, t, rs, r) => {source = s,
-                                              target = t,
-                                              antecedent = rs,
-                                              consequent = r})
+                                            target = t,
+                                            antecedent = rs,
+                                            consequent = r})
                      (fn {source = s,
                           target = t,
                           antecedent = rs,

@@ -1,4 +1,5 @@
 import "oruga.parser";
+import "oruga.lift";
 import "latex.latex";
 
 signature DOCUMENT =
@@ -82,6 +83,7 @@ struct
   val eagerKW = "eager"
   val iterativeKW = "iterative"
   val unistructuredKW = "unistructured"
+  val inverseKW = "inverse"
   val matchTargetKW = "matchTarget"
   val sourceConSpecKW = "sourceConSpec"
   val targetConSpecKW = "targetConSpec"
@@ -89,7 +91,7 @@ struct
   val saveKW = "save"
   val transferKeywords = [sourceConstructionKW,goalKW,outputKW,limitKW,searchLimitKW,goalLimitKW,compositionLimitKW,eagerKW,
                           iterativeKW,unistructuredKW,matchTargetKW,targetConSpecKW,
-                          sourceConSpecKW,interConSpecKW]
+                          sourceConSpecKW,interConSpecKW,saveKW,inverseKW]
 
 
   fun breakListOn s [] = ([],"",[])
@@ -665,9 +667,8 @@ struct
       constructionsData = #constructionsData dc,
       transferRequests = #transferRequests dc @ [ws]}
 
-
   exception BadGoal
-  fun parseTransferRequests DC ws =
+  fun processTransferRequests ws DC =
   let fun stringifyC ((x,c)::L) = "("^(valOf x)^","^ (String.stringOfList (fn x => x) c)^") : "^(stringifyC L)
         | stringifyC [] = ""
       val C = gatherMaterialByKeywords transferKeywords ws
@@ -677,6 +678,7 @@ struct
             if x = SOME sourceConstructionKW
             then getConstructionWithName DC (String.concat (removeOuterBrackets c))
             else getConstruction L
+
       val constructionRecord = getConstruction C
       val construction = #construction constructionRecord
       val sourceConSpecN = #conSpecN constructionRecord
@@ -702,6 +704,7 @@ struct
       val targetTypeSystem = getTargetTySys C*)
       val targetConSpecData = getTargetConSpec C
       val targetTypeSystem = #typeSystem (#typeSystemData targetConSpecData)
+
       val interConSpecData = getInterConSpec C
       val interTypeSystem = #typeSystem (#typeSystemData interConSpecData)
 
@@ -710,15 +713,15 @@ struct
             if x = SOME goalKW
             then parseConstruction interConSpecData (deTokenise (removeOuterBrackets c))
             else getGoal L
-      fun getOutput [] = raise ParseError "no output file name for transfer"
+      fun getOutput [] = NONE
         | getOutput ((x,c)::L) =
             if x = SOME outputKW
-            then "output/latex/"^(String.concat (removeOuterBrackets c))^".tex"
+            then SOME ("output/latex/"^(String.concat (removeOuterBrackets c))^".tex")
             else getOutput L
-      fun getLimit [] = raise ParseError "no limit for transfer output file"
+      fun getLimit [] = NONE
         | getLimit ((x,c)::L) =
             if x = SOME limitKW
-            then valOf (Int.fromString (String.concat c)) handle Option => raise ParseError "limit needs an integer!"
+            then SOME (valOf (Int.fromString (String.concat c)) handle Option => raise ParseError "limit needs an integer!")
             else getLimit L
       fun getSearchLimit [] = NONE
         | getSearchLimit ((x,c)::L) =
@@ -757,11 +760,21 @@ struct
                       NONE => true
                     | _ => raise ParseError "iterative and matchTarget are incompatible")
             else getIterative L
+      fun getInverse [] = false
+        | getInverse ((x,_)::L) =
+            if x = SOME inverseKW
+            then true
+            else getInverse L
       fun getUnistructured [] = false
         | getUnistructured ((x,_)::L) =
             if x = SOME unistructuredKW
             then true
             else getUnistructured L
+      fun getSave [] = NONE
+        | getSave ((x,c)::L) =
+            if x = SOME saveKW
+            then SOME (String.concat c)
+            else getSave L
       val goal = getGoal C
       val outputFilePath = getOutput C
       val limit = getLimit C
@@ -771,8 +784,10 @@ struct
       val eager = getEager C
       val iterative = getIterative C
       val KB = knowledgeOf DC
+      val inverse = getInverse C
       val unistructured = getUnistructured C
       val targetPattern = getMatchTarget C
+      val save = getSave C
       fun mkLatexGoals res =
         let val goal = State.originalGoalOf res
             val goals = State.goalsOf res
@@ -786,12 +801,12 @@ struct
                                                                       ^ "\\\\ \\textbf{Open\\ goals}\\\\\n"
                                                                       ^ goalsS ^ "\\\\"
                                                                       ^ "\\\\ \\textbf{transfer\\ score}\\\\\n"
-                                                                      ^ Real.toString IS)
+                                                                      ^ Latex.realToString IS)
         in alignedGoals
         end
       fun mkLatexProof tproof =
         let val ct = TransferProof.toConstruction tproof;
-        in Latex.construction (0.0,0.0) ct
+        in (*Latex.construction (0.0,0.0) ct*) Latex.environment "alltt" "" (Construction.toString ct)
         end
       fun mkLatexConstructions comps =
         List.maps (fn x => map (Latex.construction (0.0,0.0)) (Composition.resultingConstructions x)) comps
@@ -807,9 +822,9 @@ struct
             val latexLeft = Latex.environment "minipage" "[t]{0.68\\linewidth}" (Latex.printWithHSpace 0.2 latexConstructions)
             val latexGoals = mkLatexGoals res
             val latexRight = Latex.environment "minipage" "[t]{0.3\\linewidth}" latexGoals
-            val latexProof = ""(*mkLatexProof tproof*)
+            val latexProof = mkLatexProof tproof
             (*val CSize = List.sumMapInt Composition.size comps*)
-        in Latex.environment "center" "" (Latex.printWithHSpace 0.0 ([latexLeft,latexRight,(*Int.toString CSize,*)latexProof]))
+        in Latex.environment "center" "" (Latex.printWithHSpace 0.0 ([latexLeft,latexRight(*Int.toString CSize,*)]))
         end
       val _ = print ("\nApplying structure transfer to "^ #name constructionRecord ^ "...");
       val startTime = Time.now();
@@ -820,7 +835,7 @@ struct
       val state = Transfer.initState sourceConSpecData targetConSpecData interConSpecData inverse KB construction goal
       val results = Transfer.masterTransfer (goalLimit,compositionLimit,searchLimit) eager iterative unistructured targetPattern state;
       val nres = length (Seq.list_of results);
-      val (listOfResults,_) = Seq.chop limit results;
+      val listOfResults = case limit of SOME n => #1(Seq.chop n results) | NONE => Seq.list_of results;
       val endTime = Time.now();
       val runtime = Time.toMilliseconds endTime - Time.toMilliseconds startTime;
       val _ = print ("\n" ^ "  runtime: "^ LargeInt.toString runtime ^ " ms \n");
@@ -839,7 +854,8 @@ struct
       val updDC = case save of SOME s => foldl (uncurry insertConstruction) DC (resultingConstructionData s constructionsToSave) | NONE => DC
       (*val tproofConstruction = map (TransferProof.toConstruction o State.transferProofOf) listOfResults
       val _ = print (Construction.toString  (hd tproofConstruction))*)
-      val _ = print ("  transfer score: " ^ Real.toString score)
+      val _ = print ("  number of open goals (top result): " ^ Int.toString ngoals ^ "\n")
+      val _ = print ("  transfer score (top result): " ^ Real.toString score)
         val _ = print ("\n...done\n")
       val _ = print "\nComposing patterns and creating tikz figures...";
       val latexCompsAndGoals = Latex.printSubSections 1 (map mkLatexConstructionsAndGoals listOfResults);
@@ -847,7 +863,6 @@ struct
       val _ = print "done\n";
       val _ = print "\nGenerating LaTeX document...";
       val latexOriginalConsAndGoals = Latex.environment "center" "" latexCT;
-      val outputFile = TextIO.openOut outputFilePath
       val opening = (Latex.sectionTitle false "Original construction") ^ "\n"
       val resultText = (Latex.sectionTitle false "Structure transfer results") ^ "\n"
       val _ = case outputFilePath of
@@ -919,9 +934,11 @@ struct
           end handle Bind => raise ParseError "expected name = content, found multiple words before ="
 
       val nonImported = List.filter (fn (x,_) => x <> SOME importKW) blocks
-      val allContent = distribute (rev nonImported)
-      val _ = map (parseTransferRequests allContent) (#transferRequests allContent)
-  in allContent
+      val contentBeforeTransfers = distribute (rev nonImported)
+      val contentAfterTransfers = foldl (uncurry processTransferRequests)
+                                        contentBeforeTransfers
+                                        (#transferRequests contentBeforeTransfers)
+  in contentAfterTransfers
   end
 
 end

@@ -15,9 +15,9 @@ sig
   val zeroGoalsOtherwiseCompositionSize : State.T * State.T -> order
   val random : State.T * State.T -> order
   val zeroGoalsOtherwiseRandom : State.T * State.T -> order
-  val multiplicativeScore : (string -> real option) -> State.T -> real
-  val sumScore : (string -> real option) -> State.T -> real
-  val scoreMain : (string -> real option) -> State.T -> real
+  val multiplicativeScore : State.T -> real
+  val sumScore : State.T -> real
+  val scoreMain : State.T -> real
   val transferProofMain : State.T * State.T -> order
 end
 
@@ -29,20 +29,26 @@ fun similarGoalsAndComps (st,st') =
       val gs' = State.goalsOf st'
       val C = State.patternCompsOf st
       val C' = State.patternCompsOf st'
-  in List.isPermutationOf (uncurry Pattern.similar) gs gs' andalso
+  in List.isPermutationOf (#3 o (uncurry Pattern.similar)) gs gs' andalso
     List.isPermutationOf (uncurry Composition.pseudoSimilar) C C'
   end
 
 fun similarTransferProofs (st,st') = TransferProof.similar (State.transferProofOf st) (State.transferProofOf st')
 
+fun similarStates (st,st') =
+  let val gs = State.goalsOf st
+      val gs' = State.goalsOf st'
+      val C = List.maps Composition.resultingConstructions (State.patternCompsOf st)
+      val C' = List.maps Composition.resultingConstructions (State.patternCompsOf st')
+  in Pattern.similarGraphs (gs @ C) (gs' @ C')
+  end
+
 fun ignore ngoals nresults csize unistructured (st,L) =
-  List.length (State.goalsOf st) > ngoals orelse
+  length (State.goalsOf st) > ngoals orelse
   length L > nresults orelse
   List.sumMapInt Composition.size (State.patternCompsOf st) > csize orelse
-  List.exists (fn x => similarTransferProofs (x,st)) L orelse
   (unistructured andalso
-    (length (State.patternCompsOf st) > 1 orelse
-      not (Composition.unistructurable (#typeSystem (State.targetTypeSystemOf st)) (hd (State.patternCompsOf st)))))
+    length (List.maps Composition.resultingConstructions (State.patternCompsOf st)) > 1)
 
 fun ignoreRelaxed ngoals nresults (st,L) =
   List.length (State.goalsOf st) > ngoals orelse
@@ -51,10 +57,10 @@ fun ignoreRelaxed ngoals nresults (st,L) =
 
 fun forgetStrict (st,L) =
   List.length (State.goalsOf st) > 0 orelse
-  List.exists (fn x => similarGoalsAndComps (x,st)) L
+  List.exists (fn x => similarStates (x,st)) L
 
 fun forgetRelaxed (st,L) =
-  List.exists (fn x => similarGoalsAndComps (x,st)) L
+  List.exists (fn x => similarStates (x,st)) L
 
 
 fun largerComposition (st,st') =
@@ -112,40 +118,39 @@ fun hasLeavesInConstruction g ct =
                       (Construction.leavesOfConstruction g)
   end
 
-fun multiplicativeScore' strength ct (TransferProof.Closed (_,npp,L)) =
-      (case strength (#name npp) of
-          SOME s => s
-        | NONE => 1.0) * multProp (map (multiplicativeScore' strength ct) L)
-  | multiplicativeScore' _ ct (TransferProof.Open g) =
+fun multiplicativeScore' ct (TransferProof.Closed (_,npp,L)) =
+      (#strength npp) * multProp (map (multiplicativeScore' ct) L)
+  | multiplicativeScore' ct (TransferProof.Open g) =
       if hasLeavesInConstruction g ct
       then 0.1
       else 0.99
 
-fun multiplicativeScore strength st =
-    multiplicativeScore' strength (State.constructionOf st) (State.transferProofOf st)
+fun multiplicativeScore st =
+    multiplicativeScore' (State.constructionOf st) (State.transferProofOf st)
 
 
-fun sumScore' strength ct (TransferProof.Closed (_,npp,L)) =
-    (1.0 + Real.fromInt (length L)) * (case strength (#name npp) of SOME s => s | NONE => 0.0)
-      + (List.sumMap (sumScore' strength ct) L)
-  | sumScore' _ ct (TransferProof.Open g) =
+fun sumScore' ct (TransferProof.Closed (_,npp,L)) =
+    (1.0 + Real.fromInt (length L)) * (#strength npp)
+      + (List.sumMap (sumScore' ct) L)
+  | sumScore' ct (TransferProof.Open g) =
       if hasLeavesInConstruction g ct
       then ~8.0
       else ~1.0
 
 
-fun sumScore strength st =
-    sumScore' strength (State.constructionOf st) (State.transferProofOf st)
+fun sumScore st =
+    sumScore' (State.constructionOf st) (State.transferProofOf st)
 
 val scoreMain = sumScore
 
 fun transferProofMain (st,st') =
   let val gsn = length (State.goalsOf st)
     val gsn' = length (State.goalsOf st')
-    val strength = Knowledge.strengthOf (State.knowledgeOf st)
   in if (gsn = 0 andalso gsn' = 0) orelse (gsn > 0 andalso gsn' > 0)
-   then Real.compare (scoreMain strength st',scoreMain strength st)
-   else Int.compare (gsn,gsn')
+     then (case Real.compare (scoreMain st',scoreMain st) of
+              EQUAL => if similarStates (st,st') then EQUAL else LESS
+            | X => X)
+     else Int.compare (gsn,gsn')
   end
 
 end
