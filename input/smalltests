@@ -1,5 +1,6 @@
 import transferSchemas/measPath
-#import transferSchemas/logicChange
+import transferSchemas/logicChange
+import measStick
 
 construction rule1:measStickG = 
 	t:rr:formula <- logicApplyQuant[qr111:forall, sr111:s1:seg, tqntr1112:formula <- logicApplyQuant[qr1112:forall, sr1112:s2:seg, teqvr11113:formula <- logicInfixOp[tlogr111114:formula <- prefixBinRel[lgr111114:longer, sr1111114:s1:seg, sr1111124:s2:seg], eqvr11113:equiv, tshrr111124:formula <- prefixBinRel[shr111124:shorter, sr1111214:s2:seg, sr1111224:s1:seg]]]]
@@ -22,20 +23,21 @@ construction rule6:measStickG =
 construction rule1to6:measStickG =
     rule1All:r123456:formula <- logicInfixOp[tqntr111:formula <- logicApplyQuant[qr111:forall, sr111:s1:seg, tqntr1112:formula <- logicApplyQuant[qr1112:forall, sr1112:s2:seg, teqvr11113:formula <- logicInfixOp[tlogr111114:formula <- prefixBinRel[lgr111114:longer, sr1111114:s1:seg, sr1111124:s2:seg], eqvr11113:equiv, tshrr111124:formula <- prefixBinRel[shr111124:shorter, sr1111214:s2:seg, sr1111224:s1:seg]]]], A1:and, rule2andrest:formula <- logicInfixOp[tqntr211:formula <- logicApplyQuant[qr211:forall, sr211:s1:seg, tqntr2112:formula <- logicApplyQuant[qr2112:forall, sr2112:s2:seg, tqntr21113:formula <- logicApplyQuant[qr21113:forall, sr21113:s3:seg, teqvr211114:formula <- logicInfixOp[textr2111115:formula <- prefixTerRel[exdr2111115:extend, sr21111115:s1:seg, sr21111125:s2:seg, sr21111135:s3:seg], eqvr211114:equiv, tchpr2111125:formula <- prefixTerRel[chpr2111125:chop, sr21111215:s3:seg, sr21111225:s2:seg, sr21111235:s1:seg]]]]], A2:and, rule3andrest:formula <- logicInfixOp[tqntr311:formula <- logicApplyQuant[qr311:forall, sr311:s1:seg, tqntr3112:formula <- logicApplyQuant[qr3112:forall, sr3112:s2:seg, timpr31113:formula <- logicInfixOp[tnotr311114:formula <- logicApplyUnary[ntr311114:not, tshrr3111115:formula <- prefixBinRel[shr3111115:shorter, sr31111115:s1:seg, sr31111125:s2:seg]], impr31113:implies, timpr311124:formula <- logicInfixOp[tnotr3111215:formula <- logicApplyUnary[ntr3111215:not, tlogr31112116:formula <- prefixBinRel[lgr31112116:longer, sr311121116:s2:seg, sr311121126:s1:seg]], impr311124:implies, teqr3111225:formula <- infixBinRel[CPsr31112216:s1:seg, eqsr3111225:equals, CPsr31112226:s2:seg]]]]], A3:and, rule4andrest:formula <- logicInfixOp[tqntr411:formula <- logicApplyQuant[qr411:forall, sr411:s1:seg, tnotr4112:formula <- logicApplyUnary[ntr4112:not, tlogr41113:formula <- prefixBinRel[lgr41113:longer, usr411113:unitSeg, sr411123:s1:seg]]], A4:and, rule5andrest:formula <- logicInfixOp[tqntr511:formula <- logicApplyQuant[qr511:forall, sr511:s1:seg, tqntr5112:formula <- logicApplyQuant[qr5112:forall, sr5112:s2:seg, timpr51113:formula <- logicInfixOp[tshrr511114:formula <- prefixBinRel[shr511114:shorter, sr5111114:s1:seg, sr5111124:s2:seg], impr51113:implies, tnotr511124:formula <- logicApplyUnary[ntr511124:not, tshrr5111215:formula <- prefixBinRel[shr5111215:shorter, sr51112115:s2:seg, sr51112125:s1:seg]]]]], A5:and, tqntr611:formula <- logicApplyQuant[qr611:forall, sr611:s1:seg, tqntr6112:formula <- logicApplyQuant[qr6112:forall, sr6112:s2:seg, tqntr61113:formula <- logicApplyQuant[qr61113:forall, sr61113:s3:seg, timpr611114:formula <- logicInfixOp[textr6111115:formula <- prefixTerRel[exdr6111115:extend, sr61111115:s1:seg, sr61111125:s2:seg, sr61111135:s3:seg], impr611114:implies, tandr6111125:formula <- logicInfixOp[tlogr61111216:formula <- prefixBinRel[lgr61111216:longer, sr611112116:s3:seg, sr611112126:s2:seg], andr6111125:and, tlogr61111226:formula <- prefixBinRel[lgr61111226:longer, sr611112216:s3:seg, sr611112226:s1:seg]]]]]]]]]]]
 
-#transfer
-#    sourceConstruction rule1to6
-#    targetConSpec motionPathG
-#    interConSpec interMeasPath
-#    goal :metaTrue <- close[rule1All:r123456:formula, t':formula]
-#    output rule1to6
-#    limit 35
 
 transfer
     sourceConstruction rule1
     targetConSpec measStickG
-    interConSpec interMeasPath
+    interConSpec interLogic
     goal :metaTrue <- close[t:rr:formula, t':formula]
-    output rule1
+    output tst1
+    limit 100
+
+transfer
+    sourceConstruction rule1
+    targetConSpec motionPathG
+    interConSpec interMeasPath
+    goal :metaTrue <- close[tqntr111:r1:formula, t':formula]
+    output tst1
     limit 100
 
 transfer
@@ -43,7 +45,7 @@ transfer
     targetConSpec motionPathG
     interConSpec interMeasPath
     goal :metaTrue <- close[tqntr211:r2:formula, t':formula]
-    output rule2
+    output tst2
     limit 100
 
 transfer
@@ -51,27 +53,10 @@ transfer
     targetConSpec motionPathG
     interConSpec interMeasPath
     goal :metaTrue <- close[tqntr311:r3:formula, t':formula]
-    output rule3
+    output tst3
     limit 100
     match target t:formula <- logicApplyQuant[qr311:forall, pr311:s1:point, tqntr3112:formula <- logicApplyQuant[qr3112:forall, pr3112:s2:point, timpr31113:formula <- logicInfixOp[tnotr311114:formula <- logicApplyUnary[ntr311114:not, tclrr3111115:formula <- prefixBinRel[clr3111115:closer, pr31111115:s1:point, pr31111125:s2:point]], impr31113:implies, timpr311124:formula <- logicInfixOp[tnotr3111215:formula <- logicApplyUnary[ntr3111215:not, tfrtr31112116:formula <- prefixBinRel[frr31112116:further, pr311121116:s2:point, pr311121126:s1:point]], impr311124:implies, teqr3111225:formula <-  infixBinRel[CPsr31112216:s1:point, eqsr3111225:equals, CPsr31112226:s2:point]]]]]
 
-
-transfer
-    sourceConstruction rule4
-    targetConSpec motionPathG
-    interConSpec interMeasPath
-    goal :metaTrue <- close[tqntr411:r4:formula, t':formula]
-    output rule4
-    limit 100
-
-transfer
-    sourceConstruction rule5
-    targetConSpec motionPathG
-    interConSpec interMeasPath
-    goal :metaTrue <- close[tqntr511:r5:formula, t':formula]
-    output rule5
-    limit 100
-   # searchLimit 100
 
 transfer
     sourceConstruction rule6

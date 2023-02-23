@@ -151,9 +151,9 @@ tSchema similarBin:(measStickG,motionPathG,interMeasPath) =
 
 tSchema similarTer2:(measStickG,motionPathG,interMeasPath) =
     source t:chop
-    target t':towards
-    antecedent :metaTrue <-analogy[t:chop, t':towards]
-    consequent :metaTrue <-closeTerRel[t:chop, t':towards]
+    target t':toward
+    antecedent :metaTrue <-analogy[t:chop, t':toward]
+    consequent :metaTrue <-closeTerRel[t:chop, t':toward]
     strength 1000
 
 #tSchema sameTypeIsEqual:(measStickG,motionPathG,interMeasPath) =
@@ -180,29 +180,3 @@ tSchema unifyLogic:(measStickG,motionPathG,interMeasPath) = #I'm not sure that t
 
 #tschemas for first-order logic
 
-#if for all x then exists x
-tSchema forallExist:(measStickG,motionPathG,interMeasPath) = 
-    source t:formula <- logicApplyQuant[q:forall, s:seg, f:formula]
-    target t':formula <- logicApplyQuant[q':exists, s':obj, f':formula]
-    antecedent :metaTrue <-alike[s:seg,s':obj],
-               :metaTrue <-close[f:formula,f':formula]
-    consequent :metaTrue <-close[t:formula,t':formula]
-    strength 1
-
-#negation of formula is far
-#tSchema negNotClose:(measStickG,motionPathG,interMeasPath) = 
-#    source t:formula
-#    target t':formula <- logicApplyUnary[n:not, f:formula]
-#    antecedent :metaTrue <-close[t:formula,f:formula]
-#    consequent :metaFalse <-close[t:formula,t':formula]
-#    strength 10
-
-#double negation is void
-#tSchema doubleNeg:(measStickG,motionPathG,interMeasPath) = #double neg is void #this is blisfullly wrong
-#    source t:formula
-#    target t':formula <- logicApplyUnary[n1:not, f1:formula <-logicApplyUnary[n2:not, f2:formula]]
-#    antecedent : metaTrue <-close[t:formula,f2:formula],
-#    consequent : metaTrue <-close[t:formula,t':formula]
-#    strength -1
-
-#type vars only work if they're also in consequent

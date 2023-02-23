@@ -128,6 +128,8 @@ struct
     if List.exists (fn y => str y = s1 orelse str y = s2) standAloneChars
     then s1 ^ deTokenise (s2::L)
     else s1 ^ " " ^ deTokenise (s2::L)
+  
+  (*  val deTokenise = String.concat*)
 
   fun normaliseString s = if List.all (fn x => x = #" ") (String.explode s) then " " else (deTokenise o tokenise) s
 
@@ -784,6 +786,23 @@ struct
       val unistructured = getUnistructured C
       val targetPattern = getMatchTarget C
       val save = getSave C
+
+     (*) fun mkExpressionGoals res =
+        let val goal = State.originalGoalOf res
+            val goals = State.goalsOf res
+            val goalsS = if List.null goals
+                         then "NO\\ OPEN\\ GOALS!"
+                         else String.concatWith "\n " (map (logicManage.constructionToFormula (0.0,0.0)) goals)
+            val originalGoalS = logicManage.constructionToFormula (0.0,0.0) goal ^ "\\\\ \n"
+            val IS = Heuristic.scoreMain res
+            val alignedGoals = "\n " ^ ("\\textbf{Original\\ goal}\\\\\n"
+                                                                      ^ originalGoalS
+                                                                      ^ "\\\\ \\textbf{Open\\ goals}\\\\\n"
+                                                                      ^ goalsS ^ "\\\\"
+                                                                      ^ "\\\\ \\textbf{transfer\\ score}\\\\\n"
+                                                                      ^ Latex.realToString IS)
+        in alignedGoals
+*)
       fun mkLatexGoals res =
         let val goal = State.originalGoalOf res
             val goals = State.goalsOf res
