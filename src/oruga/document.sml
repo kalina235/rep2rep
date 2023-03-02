@@ -103,12 +103,12 @@ struct
   fun ignoreUntil _ [] = []
     | ignoreUntil f (h::L) = if f h then L else ignoreUntil f L
 
-  val standAloneChars = [#"(",#")",#"[",#"]",#"{",#"}",#"\"",#",",#";",#"="]
+  val standAloneChars = [#"(",#")",#"[",#"]",#"{",#"}",#"\"",#",",#";",#"="] 
 
   fun tokenise s =
     let fun commentChar x = (x = #"#")
         fun lineBreak x = (x = #"\n")
-        fun separator x = (x = #"\n" orelse x = #" ")
+        fun separator x = (x = #"\n" orelse x = #" " orelse x =  #"\t")
         fun standAlone x = List.exists (fn y => y = x) standAloneChars
         fun t [] = (true,[])
           | t (x::xs) =

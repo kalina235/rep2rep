@@ -2,6 +2,10 @@ copy/pastes:
 
 import "constrParser.parserMeas";
 
+import "constrParser.logicManage";
+
+logicManage.constructionToFormula rule6;
+
 Document.read "allrules";
 
 pdflatex rule2.tex; pdflatex rule3.tex;
@@ -9,6 +13,27 @@ pdflatex rule2.tex; pdflatex rule3.tex;
 parserMeas.stringIntoConstruction stri;
 
 --------------------------------------
+
+tSchema similarBinary:(measStickG,measStickG,interLogic) =
+    source t:formula <- prefixBinRel[b:binRel, s1:?P:seg, s2:?P':seg] 
+    target t':formula <- prefixBinRel[b':binRel, p1:?P:seg, p2:?P':seg]
+    antecedent #:metaTrue <- sameAs[b:binRel,b':binRel],
+               #:metaTrue <- sameAs[s1:?P:seg,p1':?P:seg],
+               #:metaTrue <- sameAs[s2:?P':seg,p2':?P':seg]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 1000
+
+tSchema similarTernary:(measStickG,measStickG,interLogic) =
+    source t:formula <- prefixTerRel[tr:terRel, s1:?P:seg, s2:?P':seg, s3:?P'':seg] 
+    target t':formula <- prefixTerRel[tr':terRel, p1:?P:seg, p2:?P':seg, p3:?P'':seg]
+    antecedent #:metaTrue <- sameAs[tr:terRel,tr':terRel],
+               #:metaTrue <- sameAs[s1:?P:seg,p1':?P:seg],
+               #:metaTrue <- sameAs[s2:?P':seg,p2':?P':seg],
+               #:metaTrue <- sameAs[s3:?P'':seg,p3':?P'':seg]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 1000
+
+-----------------------
 MEASSTICK:
 val stri = "r1 V s1 V s2 L s1 s2 * S s2 s1 A  r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1 A r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2 A r4 V s1 ~ L u1 s1 A r5 V s1 V s2  S s1 s2 > ~ S s2 s1 A r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
 

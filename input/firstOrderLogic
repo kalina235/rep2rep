@@ -1,5 +1,5 @@
 typeSystem firstOrderLogic =
-  types  _:universal, unary, not, binary, and, or, implies, equiv, quant, forall, exists, _:formula, _:obj, _:binRel, _:terRel
+  types  _:universal, unary, not, _:binary, and, or, implies, equiv, quant, forall, exists, _:formula, _:obj, _:binRel, _:terRel
   order quant < universal,
         binRel < universal,
         terRel < universal,
@@ -12,6 +12,7 @@ typeSystem firstOrderLogic =
         and < binary,
         implies < binary,
         equiv < binary,
+        or < binary,
         variable < obj
 
 conSpec firstOrderLogicG:firstOrderLogic =
