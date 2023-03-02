@@ -1,3 +1,8 @@
 base.sml
 dist
 test/prob_renderers
+*.log
+*.repl
+output/*
+output/latex/*
+!output/latex/commands.tex
