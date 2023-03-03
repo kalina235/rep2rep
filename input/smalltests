@@ -66,5 +66,5 @@ transfer
     interConSpec interLogic
     goal :metaTrue <- close[rule1to6:r123456:formula, t':formula]
     output tst1to6
-    searchLimit 50
-    limit 30
+    searchLimit 60
+    limit 10
