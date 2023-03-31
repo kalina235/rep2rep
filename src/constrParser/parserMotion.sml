@@ -88,7 +88,7 @@ structure parserMotion : PARSERMOTION =
   *)
   fun fixOrigin conn =
     case conn of
-      Construction.Source(token, typeName) => if String.substring(typeName, 0, 1) = "o" then  Construction.Source("u"^token, "origin") else  Construction.Source(token, typeName)
+      Construction.Source(token, typeName) => if String.substring(typeName, 0, 1) = "o" then  Construction.Source("o"^token, "origin") else  Construction.Source(token, typeName)
     | Construction.TCPair(tc, cL) =>  Construction.TCPair(tc, List.map fixOrigin cL)
     | Construction.Reference(tc) => raise StringParseError("You've got a loop in your construction")
 
@@ -111,6 +111,11 @@ structure parserMotion : PARSERMOTION =
                               val right = SafterSepS #"*" stri  in
                           print(left^"  AND "^right^"\n"); Construction.TCPair({constructor = ("logicInfixOp", (["formula", "equiv", "formula"], "formula")), token =("teqv"^p^d, "formula")}, 
                           [parseRule p 1 (depth+1) left, Construction.Source ("eqv"^p^d, "equiv"), parseRule p 2 (depth+1) right]) end
+      else if exists str #"v" then 
+                          let val left = SbeforeSepS #"v" stri
+                              val right = SafterSepS #"v" stri in
+                          print(left^"  OR "^right^"\n"); Construction.TCPair({constructor = ("logicInfixOp", (["formula", "or", "formula"], "formula")), token =("tor"^p^d, "formula")},
+                          [parseRule p 1 (depth+1) left, Construction.Source ("or"^p^d, "or"), parseRule p 2 (depth+1) right]) end
       else if exists str #"&" then 
                           let val left = SbeforeSepS #"&" stri
                               val right = SafterSepS #"&" stri in

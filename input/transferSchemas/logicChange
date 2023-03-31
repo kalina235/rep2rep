@@ -13,7 +13,6 @@ imports metaLogic
 constructors
     close :[formula, formula] -> metaBool,
     sameAs: [universal, universal] -> metaBool
-
 #==========================================================
 #WEAKEN THE FORMULAS
 
@@ -22,21 +21,21 @@ tSchema forallExist:(measStickG,measStickG,interLogic) =
     target t':formula <- logicApplyQuant[q':exists, s':seg, f':formula]
     antecedent :metaTrue <-close[f:formula,f':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 1
+    strength 20
 
-tSchema dropLeftRule: (measStickG,measStickG,interLogic) = 
-    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
-    target t':formula
-    antecedent :metaTrue <-close[f1:formula,t:formula]
-    consequent :metaTrue <-close[t:formula,t':formula]
-    strength 10
+#tSchema dropLeftRule: (measStickG,measStickG,interLogic) = 
+#    source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
+#    target t':formula
+#    antecedent :metaTrue <-close[f1:formula,t:formula]
+#    consequent :metaTrue <-close[t:formula,t':formula]
+#    strength 100
 
 tSchema dropRightRule: (measStickG,measStickG,interLogic) = 
     source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
     target t':formula
     antecedent :metaTrue <-close[f2:formula,t':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 10
+    strength 500
 
 #==========================================================
 #MANIPULATE KNOWLEDGE BASE
@@ -47,23 +46,23 @@ tSchema orToImplies:(measStickG,measStickG,interLogic) =
     antecedent :metaTrue <-close[f1:formula,f1':formula],
                :metaTrue <-close[f2:formula,f2':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
-    strength 100
+    strength 10
 
-tSchema orSwap:(measStickG,measStickG,interLogic) = 
-    source t:formula <- logicInfixOp[f1:formula, o:or, f2:formula]
-    target t':formula <- logicInfixOp[f2':formula, o':or, f1':formula]
-    antecedent :metaTrue <-close[f2:formula,f2':formula],
-               :metaTrue <-close[f1:formula,f1':formula]
-    consequent :metaTrue <-close[t:formula,t':formula]
-    strength -300
+#tSchema orSwap:(measStickG,measStickG,interLogic) = 
+#    source t:formula <- logicInfixOp[f1:formula, o:or, f2:formula]
+#    target t':formula <- logicInfixOp[f2':formula, o':or, f1':formula]
+#    antecedent :metaTrue <-close[f2:formula,f2':formula],
+#               :metaTrue <-close[f1:formula,f1':formula]
+#    consequent :metaTrue <-close[t:formula,t':formula]
+#    strength -300
 
-tSchema andSwap:(measStickG,measStickG,interLogic) = 
-    source t:formula <- logicInfixOp[f1:formula, a:and, f2:formula]
-    target t':formula <- logicInfixOp[f2':formula, a':and, f1':formula]
-    antecedent :metaTrue <-close[f2:formula,f2':formula],
-               :metaTrue <-close[f1:formula,f1':formula]
-    consequent :metaTrue <-close[t:formula,t':formula]
-    strength -300
+#tSchema andSwap:(measStickG,measStickG,interLogic) = 
+#    source t:formula <- logicInfixOp[f1:formula, a:and, f2:formula]
+#    target t':formula <- logicInfixOp[f2':formula, a':and, f1':formula]
+#    antecedent :metaTrue <-close[f2:formula,f2':formula],
+#               :metaTrue <-close[f1:formula,f1':formula]
+#    consequent :metaTrue <-close[t:formula,t':formula]
+#    strength -300
 
 tSchema equivSwap:(measStickG,measStickG,interLogic) = 
     source t:formula <- logicInfixOp[f1:formula, e:equiv, f2:formula]
@@ -120,7 +119,7 @@ tSchema infixClose:(measStickG,measStickG,interLogic) =
     source t:formula <- logicInfixOp[f1:formula, e:binary, f2:formula]
     target t':formula <- logicInfixOp[f1':formula, e':binary, f2':formula]
     antecedent :metaTrue <-close[f1:formula,f1':formula],
-               :metaTrue <-close[f2:formula,f':formula],
+                :metaTrue <-close[f2:formula,f2':formula],
                :metaTrue <-sameAs[e:binary,e':binary]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 300
@@ -140,17 +139,17 @@ tSchema similarBinInfix:(measStickG,measStickG,interLogic) =
     antecedent :metaTrue <- sameAs[b:binRel,b':binRel],
                :metaTrue <- sameAs[s1:seg,s1':seg],
                :metaTrue <- sameAs[s2:seg,s2':seg]
-    consequent :metaTrue <- close[t:formula,t':formula]
+    consequent :metaTrue <-close[t:formula,t':formula]
     strength 1000
 
 tSchema similarTernary:(measStickG,measStickG,interLogic) =
-    source t:formula <- prefixTerRel[r:terRel, s1:seg, s2:seg, s3:seg] 
-    target t':formula <- prefixTerRel[r':terRel, s1':seg, s2':seg, s3':seg]
-    antecedent :metaTrue <- sameAs[r:terRel,r':terRel],
-               :metaTrue <- sameAs[s1:seg,s1':seg],
-               :metaTrue <- sameAs[s2:seg,s2':seg],
-               :metaTrue <- sameAs[s3:seg,s3':seg]
-    consequent :metaTrue <- close[t:formula,t':formula]
+    source t:formula <- prefixTerRel[tr:terRel, s1:seg, s2:seg, s3:seg] 
+    target t':formula <- prefixTerRel[tr':terRel, p1:seg, p2:seg, p3:seg]
+    antecedent :metaTrue <- sameAs[tr:terRel,tr':terRel],
+               :metaTrue <- sameAs[s1:seg,p1:seg],
+               :metaTrue <- sameAs[s2:seg,p2:seg],
+               :metaTrue <- sameAs[s3:seg,p3:seg]
+    consequent :metaTrue <-close[t:formula,t':formula]
     strength 1000
 
 tSchema forallDrop:(measStickG,measStickG,interLogic) = 

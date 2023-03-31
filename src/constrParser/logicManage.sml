@@ -29,6 +29,11 @@ structure logicManage : LOGICMANAGE =
             | Construction.TCPair({token, constructor =(a,  (xs, ct))}, clist) => ((String.concat (List.map constructionToFormula clist)))
             | _ => raise StringParseError("You probably have a loop")
 
+    fun splitKnowledge con =
+      case con of
+             Construction.TCPair({token, constructor =(a,  b)}, [x, Construction.Source(name, "and"), rest]) => x :: (splitKnowledge rest)
+            | e => [e]
+
     fun fix con = 
     let fun fixup cl = 
       case cl of

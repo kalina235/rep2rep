@@ -37,11 +37,13 @@ tSchema similarTernary:(measStickG,measStickG,interLogic) =
 MEASSTICK:
 val stri = "r1 V s1 V s2 L s1 s2 * S s2 s1 A  r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1 A r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2 A r4 V s1 ~ L u1 s1 A r5 V s1 V s2  S s1 s2 > ~ S s2 s1 A r6 V s1 V s2 V  s3 E s1 s2 s3 > L s3 s2 & L s3 s1";
 
+val stri = "r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2 A r4 V s1 ~ L u1 s1 A r5 V s1 V s2  S s1 s2 > ~ S s2 s1";
+
 val rule1 = parserMeas.parseWrap "r1 V s1 V s2 L s1 s2 * S s2 s1";
 
 val rule2 = parserMeas.parseWrap "r2 V s1 V s2 V s3 E s1 s2 s3* C s3 s2 s1";
 
-val rule3 = parserMeas.parseWrap "r3 V s1 V s2 ~ S s1 s2 > ~ L s2 s1 > s1 = s2";
+val rule3 = parserMeas.parseWrap "r3 V s1 V s2 S s1 s2 v L s1 s2 v s1 = s2";
 
 val rule4 = parserMeas.parseWrap "r4 V s1 ~ L u1 s1";
 
@@ -57,7 +59,7 @@ val rule1 = parserMotion.parseWrap "r1 V s1 V s2 F s1 s2 * C s2 s1";
 
 val rule2 = parserMotion.parseWrap "r2 V s1 V s2 V s3 a s1 s2 s3* T s3 s2 s1";
 
-val rule3 = parserMotion.parseWrap "r3 V s1 V s2 ~C s1 s2 > ~ F s2 s1 > s1 = s2";
+val rule3 = parserMotion.parseWrap "r3 V s1 V s2 C s1 s2 v F s1 s2 v s1 = s2";
 
 val rule4 = parserMotion.parseWrap "r4 V s1 ~ F u1 s1";
 
@@ -69,7 +71,7 @@ parserMotion.stringIntoConstruction "r1 V p1 V p2 F p1 p2 * F p2 p1 A r2 V p1 V 
 
 parserMotion.stringIntoConstruction "r7 V p1 V p3 a p1 o1 p3 > p1 = p3";
 
-val all = parserMotion.stringIntoConstruction stri;
+val all = parserMeas.stringIntoConstruction stri;
 
 val stri = "r1 V s1 V s2 F s1 s2 * C s2 s1 A  r2 V s1 V s2 V s3 a s1 s2 s3* T s3 s2 s1 A r3 V s1 V s2 ~C s1 s2 > ~ F s2 s1 > s1 = s2 A r4 V s1 ~ F u1 s1 A r5 V s1 V s2 C s1 s2 > ~C s2 s1 A r6 V s1 V s2 V s3 a s1 s2 s3 & ~ p1 = o1 > F s3 s2 & F s3 s1 A r7 V p1 V p3 a p1 o1 p3 > p1 = p3";
 
