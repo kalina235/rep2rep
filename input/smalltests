@@ -30,7 +30,7 @@ rule1andrest:r345:formula <- logicInfixOp[tqntr311:formula <- logicApplyQuant[qr
 transfer
     sourceConstruction rule345
     targetConSpec measStickG
-    interConSpec interLogic
+    interConSpec interMeasPath
     goal :metaTrue <- close[rule1andrest:r345:formula, t':formula]
     output tst
     limit 10
@@ -39,7 +39,7 @@ transfer
 transfer
     sourceConstruction rule1
     targetConSpec measStickG
-    interConSpec interLogic
+    interConSpec interMeasPath
     goal :metaTrue <- close[t:rr:formula, t':formula]
     output tst1
     limit 10
@@ -47,7 +47,7 @@ transfer
 transfer
     sourceConstruction rule2
     targetConSpec measStickG
-    interConSpec interLogic
+    interConSpec interMeasPath
     goal :metaTrue <- close[tqntr211:r2:formula, t':formula]
     output tst2
     limit 10
@@ -56,7 +56,7 @@ transfer
 transfer
     sourceConstruction rule3
     targetConSpec measStickG
-    interConSpec interLogic
+    interConSpec interMeasPath
     goal :metaTrue <- close[tqntr311:r3:formula, t':formula]
     output tst3
     limit 10
@@ -64,7 +64,7 @@ transfer
 transfer
     sourceConstruction rule6
     targetConSpec measStickG
-    interConSpec interLogic
+    interConSpec interMeasPath
     goal :metaTrue <- close[tqntr611:r6:formula, t':formula]
     output tst6
     limit 11
@@ -72,7 +72,7 @@ transfer
 transfer
     sourceConstruction rule1to6
     targetConSpec measStickG
-    interConSpec interLogic
+    interConSpec interMeasPath
     goal :metaTrue <- close[rule1to6:r123456:formula, t':formula]
     output tst1to6
     searchLimit 60

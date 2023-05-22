@@ -1,16 +1,18 @@
 import firstOrderLogic
 
-typeSystem measStick =
+typeSystem ruthAtom =
     imports firstOrderLogic
-    types coulomb, mass, force, gravity, centrifugal, nucleus, electron, time
+    types coulomb, mass, force, gravity, centrifugal, nucleus, electron, _:time, more, less, zero
     order planet < obj,
           revolves < obj,
-          mass < unary,
-          shorter < binRel,
+          zero < obj,
+          time < obj, 
+          mass < unRel,
           gravity < terRel,
-          coulomb < terRel
+          coulomb < terRel,
+          more < infixBinRel
 
-conSpec measStickG:measStick =
+conSpec ruthAtomG:ruthAtom =
   imports firstOrderLogicG
   constructors
   dummy: [universal] -> universal

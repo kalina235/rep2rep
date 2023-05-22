@@ -96,22 +96,22 @@ strength 2
 tSchema semSimlongerpoint:(measStickG,motionPathG,interMeasPath) = 
 source t:longer: universal
 target t':point: universal 
-antecedent :metaTrue <-analogy[t:longer, t':point] 
-consequent :metaTrue <-closeBinRel[t:longer, t':point]
+antecedent :metaTrue <-closeBinRel[t:longer, t':point]
+consequent :metaTrue <-analogy[t:longer, t':point] 
 strength 7
 
 tSchema semSimlongerequals:(measStickG,motionPathG,interMeasPath) = 
 source t:longer: universal
 target t':equals: universal 
-antecedent :metaTrue <-analogy[t:longer, t':equals] 
-consequent :metaTrue <-closeBinRel[t:longer, t':equals]
+antecedent :metaTrue <-closeBinRel[t:longer, t':equals]
+consequent :metaTrue <-analogy[t:longer, t':equals] 
 strength 13
 
 tSchema semSimlongercloser:(measStickG,motionPathG,interMeasPath) = 
 source t:longer: universal
 target t':closer: universal 
-antecedent :metaTrue <-analogy[t:longer, t':closer] 
-consequent :metaTrue <-closeBinRel[t:longer, t':closer]
+antecedent :metaTrue <-closeBinRel[t:longer, t':closer]
+consequent :metaTrue <-analogy[t:longer, t':closer] 
 strength 16
 
 tSchema semSimlongerfurther:(measStickG,motionPathG,interMeasPath) = 

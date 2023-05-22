@@ -1,18 +1,18 @@
-import measStick
-import measStick
+#import measStick
+#import measStick
 #add all other 
-import metaLogic
+#import metaLogic
 
-typeSystem interLogicT =
-    imports measStick, metaLogicT #add here too
-    types
-    order
+#typeSystem interLogicT =
+#    imports measStick, metaLogicT #add here too
+#    types
+#    order
 
-conSpec interLogic:interLogicT =
-imports metaLogic
-constructors
-    close :[formula, formula] -> metaBool,
-    sameAs: [universal, universal] -> metaBool
+#conSpec interLogic:interLogicT =
+#imports metaLogic
+#constructors
+#    close :[formula, formula] -> metaBool,
+#    sameAs: [universal, universal] -> metaBool
 #==========================================================
 #WEAKEN THE FORMULAS
 

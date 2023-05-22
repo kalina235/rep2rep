@@ -2,7 +2,7 @@ import firstOrderLogic
 
 typeSystem motionPath =
     imports firstOrderLogic
-    types _:formula, away, approach, further, closer, equals, _:point, origin
+    types away, approach, further, closer, equals, _:point, origin
     order origin < obj,
           point < obj,
           further < binRel,

@@ -8,13 +8,13 @@ Logging.enable ();
 (*  
 the semantics:
 first 2 letters for each rule should be a rule identifier (so that tokens are unique between rules, then the rules translated according to:
-∀ x1-> V x1 | > -> implies | * -> <=> | A -> and between rules | & -> and within the rules | ~ -> not | shorter -> S | longer -> L | extend -> E | chop -> C
+∀ x1-> V x1 | > -> implies | * -> <=> | A -> and between rules | & -> and within the rules | ~ -> not | smaller -> S | larger -> L | combine -> E | split -> C | half -> H, matches -> M
 the order of splitttwoing within rules is: quants > equivalence/implies > = > and > not >  predicates
-each segment should have a 2 letter name (s#) unitSeg must be 2 letters and start with a u.
+each whObjment should have a 2 letter name (s#) smallObj must be 2 letters and start with a u.
 examples in constrParser/copypastes
 *)
 
-signature PARSERMEAS =
+signature PARSEROBJ =
 sig 
     val StringParseError : string -> exn;
     val splitRules: char -> char list -> string list; 
@@ -23,7 +23,7 @@ sig
     val parse: string -> Construction.construction
     val stringIntoConstruction: string -> Construction.construction
     (*
-    val fixUnit: Construction.construction -> Construction.construction <- this fixes unitSeg
+    val fixObj: Construction.construction -> Construction.construction <- this fixes smallObj
     val exists: char list -> char ->  bool
     val stripSpaces: string -> string
     val inputIntoConstructionData: string -> Cspace.cons
@@ -31,7 +31,7 @@ sig
 end;
 
 
-structure parserMeas : PARSERMEAS =
+structure parserObj : PARSEROBJ =
   struct
     exception StringParseError of string;
     exception CodeError;
@@ -86,10 +86,10 @@ structure parserMeas : PARSERMEAS =
         findRepeatList (listOfTokens con)
       end
   *)
-  fun fixUnit conn = (*this is important. unitSeg is not subtypable!*)
+  fun fixObj conn = (*this is important. smallObj is not subtypable!*)
     case conn of
-      Construction.Source(token, typeName) => if String.substring(typeName, 0, 1) = "u" then  Construction.Source("u"^token, "unitSeg") else  Construction.Source(token, typeName)
-    | Construction.TCPair(tc, cL) =>  Construction.TCPair(tc, List.map fixUnit cL)
+      Construction.Source(token, typeName) => if String.substring(typeName, 0, 1) = "u" then  Construction.Source("u"^token, "smallObj") else  Construction.Source(token, typeName)
+    | Construction.TCPair(tc, cL) =>  Construction.TCPair(tc, List.map fixObj cL)
     | Construction.Reference(tc) => raise StringParseError("You've got a loop in your construction")
 
   fun parseRule p branch depth stri =
@@ -100,7 +100,7 @@ structure parserMeas : PARSERMEAS =
         val p = p^b
       in    
       if exists str #"V" then Construction.TCPair({constructor = ("logicApplyQuant", (["forall", "obj", "formula"], "formula")), token =("tqnt"^p^d, "formula")},
-                          [Construction.Source ("q"^p^d, "forall"), Construction.Source ("s"^p^d, String.substring (stri, 1,2)^":seg"), parseRule p 1 (depth+1) (String.extract (stri, 3, NONE))])
+                          [Construction.Source ("q"^p^d, "forall"), Construction.Source ("o"^p^d, String.substring (stri, 1,2)^":whObj"), parseRule p 1 (depth+1) (String.extract (stri, 3, NONE))])
       else if exists str #">" then
                           let val left = SbeforeSepS #">" stri 
                               val right = SafterSepS #">" stri in
@@ -132,19 +132,25 @@ structure parserMeas : PARSERMEAS =
                           [parseRule p 1 (depth+1) left, Construction.Source ("eqs"^p^d, "equals"), parseRule p 2 (depth+1)  right])  end
       else if exists str #"E" then 
                           let val right = SafterSepS #"E" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("exd"^p^d, "extend"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":seg")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("exd"^p^d, "combine"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj"), Construction.Source("o"^p^"3"^d, String.substring (right, 4,2)^":whObj")]) end
       else if exists str #"C" then 
                           let val right = SafterSepS #"C" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("tchp"^p^d, "formula")}, [Construction.Source ("chp"^p^d, "chop"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":seg")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("tchp"^p^d, "formula")}, [Construction.Source ("chp"^p^d, "split"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj"), Construction.Source("o"^p^"3"^d, String.substring (right, 4,2)^":whObj")]) end
       else if exists str #"L" then 
                           let val right = SafterSepS #"L" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tlog"^p^d, "formula")}, [Construction.Source ("lg"^p^d, "longer"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg")]) end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tlog"^p^d, "formula")}, [Construction.Source ("lg"^p^d, "larger"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")]) end 
       else if exists str #"S" then 
                           let val right = SafterSepS #"S" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("sh"^p^d, "shorter"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg")]) (*issue here*)  end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("sh"^p^d, "smaller"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
+      else if exists str #"H" then 
+                          let val right = SafterSepS #"H" stri in
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("hf"^p^d, "half"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
+      else if exists str #"M" then 
+                          let val right = SafterSepS #"M" stri in
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("mc"^p^d, "matches"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
       else if String.size stri < 3  then 
-                          Construction.Source ("CPs"^p^d, String.extract(stri, 0, NONE)^":seg")
-      else  if String.size stri = 0 then raise StringParseError("TRIED TO PARSE EMPTY STRING") else Construction.Source("s"^p^d, "seg") end;
+                          Construction.Source ("CPs"^p^d, String.extract(stri, 0, NONE)^":whObj")
+      else  if String.size stri = 0 then raise StringParseError("TRIED TO PARSE EMPTY STRING") else Construction.Source("o"^p^d, "whObj") end;
 
 
   fun stripSpaces stri =
@@ -154,7 +160,7 @@ structure parserMeas : PARSERMEAS =
         String.implode (noSpaceChL (String.explode stri)) 
     end
 
-  fun parse stri = fixUnit(parseRule (String.substring (stri, 0,2)) 1 1 (stripSpaces (String.extract (stri, 2, NONE))))
+  fun parse stri = fixObj(parseRule (String.substring (stri, 0,2)) 1 1 (stripSpaces (String.extract (stri, 2, NONE))))
 
   fun parseWrap stri = Construction.toString (parse stri)
 
@@ -171,13 +177,4 @@ structure parserMeas : PARSERMEAS =
         val construction = joinAnds 1 (List.map parse ( (splitRules #"A" (String.explode str)))) in
       construction
     end
-(*)
-  fun stringIntoConstructionData stri =
-    let val str = String.stripSpaces stri
-        val name = SbeforeSepS #"|" stri
-        val consSpecN = "measStickG" 
-        val construction = stringIntoConstruction (Space)
-        val constructionData = {name = name, conSpecN = conSpecN, construction = construction} in
-    constructionData;
-    end*)
 end

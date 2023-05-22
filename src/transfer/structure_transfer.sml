@@ -1,18 +1,34 @@
 import "transfer.search";
 import "transfer.heuristic";
 import "util.logging";
-
 signature TRANSFER =
 sig
   type goal = Pattern.pattern
   val applyTransferSchemaForGoal : State.T -> InterCSpace.tSchemaData -> goal -> State.T
   val applyTransferSchema : State.T -> InterCSpace.tSchemaData -> State.T Seq.seq
   val singleStepTransfer : State.T -> State.T Seq.seq
-
+  val splitKnowledge : Construction.construction -> Construction.construction list
   val structureTransfer : int option * int option * int option -> bool -> bool -> Pattern.pattern option -> State.T -> State.T Seq.seq
+  val agreeEmbeddings : State.T Seq.seq -> (string * string) list list -> State.T Seq.seq
   val quickTransfer : int option * int option * int option -> bool -> Pattern.pattern option -> State.T -> State.T Seq.seq
-(*)
-  val iterativeStructureTransfer : bool -> Pattern.pattern option
+  val sanitize : ''a option list list-> ''a list
+  val isolateT : ''a list -> ''a list
+  val propType : (string*string) -> (string*string)
+  val embeddingPartial : Type.typeSystem -> Pattern.pattern -> (Pattern.pattern* ((CSpace.token * CSpace.token) list)) -> (Pattern.pattern* ((CSpace.token * CSpace.token) list)) option
+  val crawlWrap : (Pattern.pattern* (((string *'a)*('b* Type.typ)) list)) -> (string*string) list
+  val zipCon : Pattern.pattern -> 'a list -> (Pattern.pattern * 'a) list
+  val inLookup : string -> ((string * 'b)* 'c) list -> bool
+  val findLk : string -> ((string * 'b)* ('c * 'd)) list -> 'd
+  val zipNested : Pattern.pattern list list -> ((CSpace.token * CSpace.token) list) list list-> (Pattern.pattern *((CSpace.token * CSpace.token) list)) list 
+ (* val zipRsLk : Pattern.pattern -> (CSpace.token * CSpace.token) list -> (Pattern.pattern * ((CSpace.token * CSpace.token) list))*)
+ val analogySearch : int option * int option * int option
+                          -> bool
+                          -> bool
+                          -> Pattern.pattern
+                          -> State.T
+                          -> State.T Seq.seq
+
+ (* val iterativeStructureTransfer : bool -> Pattern.pattern option
                                         -> State.T -> State.T Seq.seq*)
 (*)
   val targetedTransfer : Pattern.pattern
@@ -50,6 +66,8 @@ struct
   type goal = Pattern.pattern
   exception TransferSchemaNotApplicable
   exception Error
+  exception Err of string;
+
 
   fun firstUnusedName Ns =
         let fun mkFun n =
@@ -61,6 +79,7 @@ struct
         in mkFun 0
         end
   (*  *)
+
   fun applyMorphismRefreshingNONEs given avoid CTs =
       let fun mkRenameFunction Ns Tks =
             let val (y,ys) = FiniteSet.pull Tks
@@ -361,31 +380,200 @@ struct
     (case List.maps Composition.resultingConstructions (State.patternCompsOf st) of
         [c] => c
       | _ => raise Nope)
+      
   fun withinTarget targetTypeSystem targetPattern st =
     (Pattern.hasUnifiableGenerator targetTypeSystem targetPattern (constructionOfComp st))
       handle Nope => false
+
   fun matchesTarget targetTypeSystem targetPattern st =
     (Pattern.matches targetTypeSystem (constructionOfComp st) targetPattern)
-      handle Nope => false
+      handle Nope => false    
 
+(*splits TKW and checks if source patters matches any of its rules  [this is for the speedup instead of checking all states...] *)
 
+  fun splitKnowledge con =
+    case con of
+            Construction.TCPair({token, constructor =(a,  b)}, [x, Construction.Source(name, "and"), rest]) =>  (x :: (splitKnowledge rest))
+          | e => [e]
+
+fun matchesTargetKw targetTypeSystem targetPattern st =
+  List.exists (Pattern.hasUnifiableGenerator targetTypeSystem (constructionOfComp st)) (splitKnowledge targetPattern)
+    handle Nope => false   
+
+fun dropOpt (NONE::xs) = (dropOpt xs)
+  | dropOpt (SOME(x)::xs) = (x :: dropOpt xs)
+  | dropOpt [] = [];
+
+fun afterSep ch [] = []
+      | afterSep ch (x::xs) = if x = ch then xs else afterSep ch (xs);
+      
+fun dropType str = if not (Char.contains str #":") then str else String.implode (afterSep #":" (String.explode str))
+
+fun propType (stri,stri2) = (dropType stri, dropType stri2) 
+
+fun first  (f,s) = f;
+fun second (f,s) = s;
+
+fun unzip list = (List.map first list, List.map second list)
+
+fun zip xs ys =
+  case (xs,ys) of
+    ([],[]) => []
+  | ((x::xs),(y::ys)) => ((x,y) :: (zip (xs) (ys)))
+  | (_,_) => [](*raise Err("zip")*)
+
+fun zipCon l1 cons = 
+case cons of 
+  [] => []
+  |(x::xs) => ((l1, x)::(zipCon l1 xs))
+
+fun exists s [] = false
+  | exists s (x::xs) = (s=x) orelse exists s xs
+
+(*fun isolate [] = []
+  | isolate [NONE] = []
+  | isolate (NONE::xs) = isolate xs
+  | isolate (x::xs) = if exists x xs then xs else (x::xs)*)
+
+fun isolateT [] = []
+  | isolateT (x::xs) = if exists x xs then (isolateT xs) else (x :: isolateT xs);
+
+fun sanitize emb =  isolateT (dropOpt (List.concat emb))
+
+(*fun removeNone list = List.filter (fn y => y <> (NONE,NONE)) list;*)
+
+fun third (x,y,z) = z;
+
+fun printMap res [] = res
+  |  printMap res ((x,y)::xs) = 
+    let val out =print("ANALOGY FOUND "^x^"->"^y^"\n") in printMap res xs 
+    end;
+
+fun disagreement [] = []
+  | disagreement ((x,y)::xs) = if exists x (List.map first xs) then disagreement xs else (x,y)::disagreement xs
+
+fun agreeEmbeddings res list= 
+let val candidates =  isolateT (List.concat list) 
+    val analogies = disagreement (isolateT (List.map propType candidates)) in 
+printMap res analogies end;
+
+fun inLookup s lk =
+case lk of 
+[] => false
+| ((x,y)::xs) => if first x = s then true else inLookup s xs
+
+fun findLk s lk =
+case lk of 
+[] => raise Err("no lookup")
+| ((x,y)::xs) => if first x = s then second y else findLk s xs 
+
+ fun crawl (lookup, embPatt) = 
+  let fun change (stype, ttype) = ((findLk (first stype) lookup), ttype)
+  in 
+  case embPatt of 
+   Construction.TCPair(smth, cl) => 
+   let val consZip = (zipCon lookup cl) in
+    List.concat (List.map crawl consZip) end
+  | Construction.Source(tok, smth) =>  if inLookup tok lookup then [change ((tok, smth), smth)] else [(smth , smth)] (*this might be iffy*)
+  end
+
+fun crawlWrap (embPatt, lk) = 
+case (embPatt, lk) of 
+(embPattt, lkk) => crawl (lkk,embPattt)
+| (_,_) => [("","")]
+
+(**)
+fun firstTwo (x::y::xs) = (x,y) 
+    | firstTwo (x::[]) = (x,x)
+    | firstTwo [] = raise Err("fTwo")
+  
 fun structureTransfer (goalLimit,compositionLimit,searchLimit) eager unistructured targetPattOption st =
   let val maxNumGoals = case goalLimit of SOME x => x | NONE => 80
       val maxCompSize = case compositionLimit of SOME x => x | NONE => 300
       val maxNumResults = case searchLimit of SOME x => x | NONE => 1000
       val ignT = Heuristic.ignore maxNumGoals maxNumResults maxCompSize unistructured
+      (*val debug = case targetPattOption of SOME tpt => print("YESSSSS") |NONE => print("NOOOO")*)
       val targetTypeSystem = #typeSystem (State.targetTypeSystemOf st)
       fun ignPT (x,L) = case targetPattOption of
-                      SOME tpt => not (withinTarget targetTypeSystem tpt x) orelse ignT (x,L)
+                      SOME tpt => not (matchesTargetKw targetTypeSystem tpt x) orelse ignT (x,L) 
                     | NONE => ignT (x,L)
       fun fgtPT (x,L) = case targetPattOption of
-                      SOME tpt => not (matchesTarget targetTypeSystem tpt x) (*orelse
+                      SOME tpt => not (matchesTargetKw targetTypeSystem tpt x) (*(*CHANGED HERE from matchesTarget to matchesTargetKw*)
                                   Heuristic.forgetRelaxed (x,L)*)
                     | NONE => false (*Heuristic.forgetRelaxed (x,L)*)
       val stop = if eager then (fn x => null (State.goalsOf x)) else (fn _ => false)
       val tac = structureTransferTac Heuristic.transferProofMain ignPT fgtPT stop
   in tac st
   end
+
+
+fun analogyTransfer (goalLimit,compositionLimit,searchLimit) eager unistructured targetPattOption st =
+  let val maxNumGoals = case goalLimit of SOME x => x | NONE => 80
+      val maxCompSize = case compositionLimit of SOME x => x | NONE => 300
+      val maxNumResults = case searchLimit of SOME x => x | NONE => 1000
+      val ignT = Heuristic.ignore maxNumGoals maxNumResults maxCompSize unistructured
+      (*val debug = case targetPattOption of SOME tpt => print("YESSSSS") |NONE => print("NOOOO")*)
+      val targetTypeSystem = #typeSystem (State.targetTypeSystemOf st)
+      fun ignPT (x,L) = case targetPattOption of
+                      SOME tpt => not (matchesTargetKw targetTypeSystem tpt x) orelse ignT (x,L) 
+                    | NONE => ignT (x,L)
+      fun fgtPT (x,L) = case targetPattOption of
+                      SOME tpt => not (matchesTargetKw targetTypeSystem tpt x) (*(*CHANGED HERE from matchesTarget to matchesTargetKw*)
+                                  Heuristic.forgetRelaxed (x,L)*)
+                    | NONE => false (*Heuristic.forgetRelaxed (x,L)*)
+      val stop = if eager then (fn x => null (State.goalsOf x)) else (fn _ => false)
+      val tac = structureTransferTac Heuristic.transferProofMain ignPT fgtPT stop
+  in tac st
+  end
+
+fun take3 list = List.take (list, 3)
+
+fun embeddingPartial TS target (rule, lookup) = 
+let val no = List.find (fn x => third (Pattern.findEmbedding TS rule x) <> NONE) (splitKnowledge target) in
+if no <> NONE then
+( let val SOME(nom) = no
+      val (f1, f2, SOME(patt)) = Pattern.findEmbedding TS rule nom in SOME(patt, lookup) end) else NONE end
+
+(*List.mapPartal (fn x => x)
+  
+fun zipRsLk res lk =
+case (res, lk) of
+(x::xs, [y]::ys) => (((x,y)) :: zipRsLk x ys)
+| ([],[]) => []*)
+
+fun zipNested [res] [lk] = zip res lk
+
+
+(*val debug = print(Construction.toString List.hd (List.hd embeddignsPartial))*)
+(*val debug = print(Construction.toString target)*)
+(*val debug = print(Construction.toString List.hd (splitKnowledge target))*)
+(*val debug = print(Construction.toString (List.hd (List.hd results)))*)
+fun analogySearch limits eager unistructured targetPatt st  =
+let val source = State.constructionOf st
+    val target = targetPatt
+    val tTypS = #typeSystem (State.targetTypeSystemOf st)
+    (*transfer on split rules*)
+    val rulesToMatch = splitKnowledge source 
+    val res = (analogyTransfer limits eager unistructured NONE st)
+    val splitStates = List.map (State.updateConstruction st) rulesToMatch 
+    val transferSeq = List.map ((structureTransfer limits eager unistructured NONE)) splitStates (*list of sequences of states for each rule*)
+    val transferred = List.map Seq.list_of transferSeq
+    val results =  List.map (Composition.resultingConstructions o List.hd) (List.map (State.patternCompsOf o List.hd) transferred)
+    (*create lookups*) 
+    val goals = List.map (List.map State.goalsOf) transferred 
+    val pairs = List.map (List.map (List.map Construction.leavesOfConstruction)) goals
+    val lookup = List.map (List.map (List.map firstTwo)) pairs
+    (*embedd*)
+    val toEmbed = zipNested results lookup
+    (*val toEmbed = List.map (ListPair.zipEq) (zip results lookup)*)
+    val embeddings = (List.map (embeddingPartial tTypS target)) toEmbed
+    val embeddings = List.mapPartial (fn x => x) embeddings
+    (*val maps = List.mapPartial secondOpt (embeddings)*)
+    val crawlMap = List.map (crawlWrap)
+    val STembeddings = crawlMap (embeddings)
+  in 
+  agreeEmbeddings res (STembeddings) end;
+
 
   fun quickTransfer (goalLimit,compositionLimit,searchLimit) unistructured targetPattOption st =
     let val maxNumGoals = case goalLimit of SOME x => x | NONE => 15
@@ -417,8 +605,11 @@ fun structureTransfer (goalLimit,compositionLimit,searchLimit) eager unistructur
    TODO : recoding an iterative structure transfer would be nice
 *)
 
-  fun masterTransfer limits eager iterative unistructured targetPattOption st =
-    structureTransfer limits eager unistructured targetPattOption st
+fun masterTransfer limits eager iterative unistructured targetPattOption st =
+    (*structureTransfer limits eager unistructured targetPattOption st*)
+    case targetPattOption of 
+    NONE => structureTransfer limits eager unistructured targetPattOption st
+    | SOME(target) => analogySearch limits eager unistructured target st
 
   fun initState sCSD tCSD iCSD inverse KB ct goal =
     let val tTS = #typeSystem (#typeSystemData tCSD)
@@ -465,4 +656,13 @@ fun structureTransfer (goalLimit,compositionLimit,searchLimit) eager unistructur
              [] => Result.ok (getStructureGraph firstState)
            | _ => Result.error (List.map makeDiagnostic goals)
       end
+
+  
+
+  fun find pred [] = NONE
+    | find pred (x::rest) = if pred x then SOME x else find pred rest;
+
+  fun lookup(k,table) = 
+  find (fn (key, value) => key = k) table
+
 end;

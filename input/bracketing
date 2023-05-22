@@ -1,0 +1,22 @@
+typeSystem bracket =
+  types _:open, _:close, ro, rc, to, tc, so, sq, _:expr, null
+  order ro< open,
+        rc < close,
+        so < open,
+        sc < close,
+        to open,
+        tc close,
+        ro < round,
+        rc < round,
+        tc < triangle,
+        to < triangle,
+        so < square,
+        sc < square,
+        null < expr
+
+conSpec bracketG:bracketG =
+  constructors
+    unit: [open, close] -> null
+    hugging: [open, expr ,close] -> expr
+    join: [expr, expr] -> expr
+    

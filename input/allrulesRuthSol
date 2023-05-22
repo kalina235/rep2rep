@@ -1,0 +1,20 @@
+import transferSchemas/ruthSolar
+import solarSystem
+import ruthAtom
+
+construction rule1:ruthAtomG = r1:f1:formula <- infixBinRel[tchpr1112:formula <- prefixUnRel[mser1112:mass, CPsr11123:sun], eqsr111:more, tchpr1122:formula <- prefixUnRel[mser1122:mass, CPsr11223:planet]]
+ 
+construction rule2:ruthAtomG =  r2:f2:formula <- infixBinRel[tchpr2112:formula <- prefixUnRel[mser2112:mass, CPsr21123:planet], eqsr211:more, CPsr2122:zero]
+
+construction rule3:ruthAtomG =  r3:f3:formula <- logicApplyQuant[qr311:forall, sr311:t1:time, teqr3112:formula <- infixBinRel[textr31113:formula <- prefixTerRel[grvr31113:gravity, sr311113:p1:planet, sr311123:s1:sun, sr311133:t1:time], eqsr3112:more, CPsr31123:zero]]
+
+construction ruleAll:ruthAtomG =  ruleAll:rr:formula <- logicInfixOp[teqr111:formula <- infixBinRel[sr1112:time, eqsr111:more, sr1122:time], A1:and, rule2andrest:formula <- logicInfixOp[teqr211:formula <- infixBinRel[sr2112:time, eqsr211:more, CPsr2122:zero], A2:and, rule3andrest:formula <- logicInfixOp[tqntr311:formula <- logicApplyQuant[qr311:forall, sr311:t1:time, teqr3112:formula <- infixBinRel[sr31113:time, eqsr3112:more, CPsr31123:zero]], A3:and, tqntr411:formula <- logicApplyQuant[qr411:forall, sr411:t1:time, teqr4112:formula <- infixBinRel[textr41113:formula <- prefixTerRel[disr41113:distance, sr411113:electron, sr411123:nucleus, sr411133::time], eqsr4112:more, CPsr41123:zero]]]]]
+
+transfer
+    sourceConstruction ruleAll
+    targetConSpec solarSystemG
+    interConSpec interRuthSol
+    goal :metaTrue <- close[ruleAll:rr:formula, t':formula]
+    output ruthSolAnalogy
+    limit 100
+    matchTarget ttarget:formula <- logicInfixOp[teqr111:formula <- infixBinRel[CPsr1112:Nntime, eqsr111:more, CPsr1122:Netime], A1:and, rule2andrest:formula <- logicInfixOp[teqr211:formula <- infixBinRel[CPsr2112:Netime, eqsr211:more, CPsr2122:zero], A2:and, rule3andrest:formula <- logicInfixOp[tqntr311:formula <- logicApplyQuant[qr311:forall, sr311:t1:time, teqr3112:formula <- infixBinRel[textr31113:formula <- prefixTerRel[colr31113:coloumb, sr311113:planet, sr311123:sun, sr311133:t1:time], eqsr3112:more, CPsr31123:zero]], A3:and, tqntr411:formula <- logicApplyQuant[qr411:forall, sr411:t1:time, teqr4112:formula <- infixBinRel[textr41113:formula <- prefixTerRel[disr41113:distance, sr411113:planet, sr411123:sun, sr411133:t1:time], eqsr4112:more, CPsr41123:zero]]]]]

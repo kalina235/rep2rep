@@ -1,0 +1,19 @@
+import firstOrderLogic
+
+typeSystem waterBeaker =
+    imports firstOrderLogic
+    types _:temperature, water, beaker, time
+    order water < obj,
+          beaker < obj,
+          pressure <binRel,
+          flow < binRel,
+          greater < binRel,
+          shorter < binRel,
+          extend < terRel,
+          chop < terRel,
+          cause < binRel
+
+conSpec measStickG:measStick =
+  imports firstOrderLogicG
+  constructors
+  dummy: [universal] -> universal

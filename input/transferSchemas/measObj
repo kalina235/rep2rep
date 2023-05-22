@@ -1,17 +1,17 @@
 import measStick
-import motionPath
+import objectConstr
 import metaLogic
 
-typeSystem interMeasPathT =
-    imports measStick, motionPath, metaLogicT
+typeSystem interMeasObjT =
+    imports measStick, objectConstr, metaLogicT
     types
     order
 
-conSpec interMeasPath:interMeasPathT =
+conSpec interMeasObj:interMeasObjT =
     imports metaLogic
     constructors
-        close :[formula, formula] -> metaBool, 
-        closeBinRel :[binRel, binRel] -> metaBool, 
+        close :[formula, formula] -> metaBool,
+        closeBinRel :[binRel, binRel] -> metaBool,
         closeTerRel :[terRel, terRel] -> metaBool,
         equalRel :[binRel, binRel] -> metaBool,
         closeOp :[binary, binary] -> metaBool,
@@ -20,7 +20,10 @@ conSpec interMeasPath:interMeasPathT =
         asStrong :[formula, formula] -> metaBool,
         sameAs: [universal, universal] -> metaBool
 
-tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
+#=================================
+#REFLEXIVE TSCHEMAS:
+#=================================
+tSchema similarTernary:(measStickG,objectConstrG,interMeasObj) =
     source t:formula <- prefixTerRel[t0: terRel, s1:obj, s2:obj, s3:obj]
     target t':formula <- prefixTerRel[t0': terRel, p1':obj, p2':obj, p3':obj] 
     antecedent :metaTrue <-alike[s1:obj,p1':obj],
@@ -30,7 +33,7 @@ tSchema similarTernary:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 20
 
-tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
+tSchema similarBinary:(measStickG,objectConstrG,interMeasObj) =
     source t:formula <- prefixBinRel[b: binRel, s1: obj, s2: obj] 
     target t':formula <- prefixBinRel[b': binRel, p1: obj, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
@@ -39,7 +42,7 @@ tSchema similarBinary:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
 
-tSchema similarBinaryInfix:(measStickG,motionPathG,interMeasPath) =
+tSchema similarBinaryInfix:(measStickG,objectConstrG,interMeasObj) =
     source t:formula <- infixBinRel[s1: obj, b: binRel, s2: obj] 
     target t':formula <- infixBinRel[p1: obj, b': binRel, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
@@ -48,7 +51,7 @@ tSchema similarBinaryInfix:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
 
-tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
+tSchema rewardAllign:(measStickG,objectConstrG,interMeasObj) =
     source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
     target t':formula <- logicInfixOp[f1':formula, a':and, f2':formula]
     antecedent :metaTrue <-close[f1:formula,f1':formula],
@@ -56,14 +59,14 @@ tSchema rewardAllign:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 200
 
-tSchema comClose:(measStickG,motionPathG,interMeasPath) = 
+tSchema comClose:(measStickG,objectConstrG,interMeasObj) = 
     source f:formula 
     target f':formula 
     antecedent :metaTrue <-close[f:formula,f':formula]
     consequent :metaTrue <-close[f':formula, f:formula]
     strength 10
 
-tSchema equivClose:(measStickG,motionPathG,interMeasPath) = #might not be needed, actually
+tSchema equivClose:(measStickG,objectConstrG,interMeasObj) = #might not be needed, actually
     source t:formula <- logicInfixOp[f1:formula, e:equiv ,f2:formula]
     target t':formula <- logicInfixOp[f1':formula, e:equiv , f2':formula]
     antecedent :metaTrue <-close[f1:formula,f1':formula],
@@ -71,7 +74,7 @@ tSchema equivClose:(measStickG,motionPathG,interMeasPath) = #might not be needed
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 20
 
-tSchema infixClose:(measStickG,motionPathG,interMeasPath) = #ToDo decide on subtyping here
+tSchema infixClose:(measStickG,objectConstrG,interMeasObj) = #ToDo decide on subtyping here
     source t:formula <- logicInfixOp[f1:formula, e:binary ,f2:formula]
     target t':formula <- logicInfixOp[f1':formula, e':binary , f2':formula]
     antecedent :metaTrue <-close[f1:formula,f1':formula],
@@ -80,71 +83,86 @@ tSchema infixClose:(measStickG,motionPathG,interMeasPath) = #ToDo decide on subt
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 20
 
-tSchema forallDrop:(measStickG,motionPathG,interMeasPath) = 
+tSchema forallDrop:(measStickG,objectConstrG,interMeasObj) = 
     source t:formula <-logicApplyQuant[q:forall, s:obj, f:formula]
     target t':formula <-logicApplyQuant[q':forall, s':obj, f':formula]
     antecedent :metaTrue <-alike[s:obj,s':obj],
                :metaTrue <-close[f:formula,f':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 50
-
-tSchema similarTer:(measStickG,motionPathG,interMeasPath) =
+#============================================
+#SEMANTIC TSCHEMAS
+#============================================
+tSchema similarTer:(measStickG,objectConstrG,interMeasObj) =
     source t:extend
     target t':away
     antecedent :metaTrue <-analogy[t:away, t':extend] 
     consequent :metaTrue <-closeTerRel[t:extend, t':away]
     strength 1000
 
-tSchema similarBin2:(measStickG,motionPathG,interMeasPath) =
+tSchema similarBin2:(measStickG,objectConstrG,interMeasObj) =
     source t:longer
     target t':further
     antecedent :metaTrue <-analogy[t:longer, t':further]
     consequent :metaTrue <-closeBinRel[t:longer, t':further]
     strength 1000
 
-tSchema similarBin:(measStickG,motionPathG,interMeasPath) =
+tSchema similarBin:(measStickG,objectConstrG,interMeasObj) =
     source t:shorter
     target t':closer 
     antecedent :metaTrue <-analogy[t:shorter, t':closer]
     consequent :metaTrue <-closeBinRel[t:shorter, t':closer]
     strength 1000
 
-tSchema similarTer2:(measStickG,motionPathG,interMeasPath) =
+tSchema similarTer2:(measStickG,objectConstrG,interMeasObj) =
     source t:chop
     target t':toward
     antecedent :metaTrue <-analogy[t:chop, t':toward]
     consequent :metaTrue <-closeTerRel[t:chop, t':toward]
     strength 1000
 
-tSchema unifyLogic:(measStickG,measStickG,interMeasPath) = 
+#tSchema sameType:(measStickG,objectConstrG,interMeasObj) = 
+#    source t:formula <- prefixBinRel[b: binRel, s1:?P: obj, s2:?P: obj] 
+#    target t':formula <- prefixBinRel[b': binRel, p1:?R: obj, p2:?R: obj]
+#    antecedent :metaTrue <-semanticallyClose[b:binRel,b':binRel]
+#    consequent :metaTrue <- correspondingType[s1:?P, p2:?R]
+#    strength 1
+
+tSchema unifyLogic:(measStickG,measStickG,interMeasObj) = 
     source t:?P:binary
     target t':?P:binary
     antecedent 
     consequent :metaTrue <-sameAs[t:?P:binary,t':?P:binary]
     strength 100
 
-tSchema forallExist:(measStickG,motionPathG,interMeasPath) = 
+#==========================================================
+#WEAKEN THE FORMULAS
+
+tSchema forallExist:(measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicApplyQuant[q:forall, s:obj, f:formula]
     target t':formula <- logicApplyQuant[q':exists, s':obj, f':formula]
     antecedent :metaTrue <-asStrong[f:formula,f':formula]
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength 20
 
-tSchema dropLeft: (measStickG,motionPathG,interMeasPath) = 
+tSchema dropLeft: (measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
     target t':formula
     antecedent :metaTrue <-asStrong[f1:formula,t:formula]
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength 10
 
-tSchema dropRight: (measStickG,motionPathG,interMeasPath) = 
+tSchema dropRight: (measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicInfixOp[f1:formula,a:and,f2:formula]
     target t':formula
     antecedent :metaTrue <-asStrong[f2:formula,t':formula]
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength 10
 
-tSchema orToImplies:(measStickG,motionPathG,interMeasPath) = 
+#==========================================================
+#MANIPULATE KNOWLEDGE BASE
+
+tSchema orToImplies:(measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicInfixOp[fnt:formula <- logicApplyUnary[n:not, f1:formula], o:or, f2:formula]
     target t':formula <- logicInfixOp[f1':formula, i:implies, f2':formula]
     antecedent :metaTrue <-asStrong[f1:formula,f1':formula],
@@ -152,7 +170,7 @@ tSchema orToImplies:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength 10
 
-tSchema orSwap:(measStickG,motionPathG,interMeasPath) = 
+tSchema orSwap:(measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicInfixOp[f1:formula, o:or, f2:formula]
     target t':formula <- logicInfixOp[f2':formula, o':or, f1':formula]
     antecedent :metaTrue <-asStrong[f2:formula,f2':formula],
@@ -160,7 +178,7 @@ tSchema orSwap:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength 0
 
-tSchema andSwap:(measStickG,motionPathG,interMeasPath) = 
+tSchema andSwap:(measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicInfixOp[f1:formula, a:and, f2:formula]
     target t':formula <- logicInfixOp[f2':formula, a':and, f1':formula]
     antecedent :metaTrue <-asStrong[f2:formula,f2':formula],
@@ -168,7 +186,7 @@ tSchema andSwap:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength -300
 
-tSchema equivSwap:(measStickG,motionPathG,interMeasPath) = 
+tSchema equivSwap:(measStickG,objectConstrG,interMeasObj) = 
     source t:formula <- logicInfixOp[f1:formula, e:equiv, f2:formula]
     target t':formula <- logicInfixOp[f2':formula, e':equiv, f1':formula]
     antecedent :metaTrue <-asStrong[f2:formula,f2':formula],
@@ -177,6 +195,15 @@ tSchema equivSwap:(measStickG,motionPathG,interMeasPath) =
     strength -300
     
 
+#double negation is void
+#tSchema doubleNeg:(measStickG,objectConstrG,interMeasObj) = #double neg is void #this is blisfullly wrong
+#    source t:formula
+#    target t':formula <- logicApplyUnary[n1:not, f1:formula <-logicApplyUnary[n2:not, f2:formula]]
+#    antecedent :metaTrue <-asStrong[t:formula,f2:formula]
+#    consequent :metaTrue <-asStrong[t:formula,t':formula]
+#    strength -100
+
+#==================================
     
 
 

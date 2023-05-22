@@ -1,0 +1,25 @@
+import bracket
+
+typeSystem interBracket =
+    imports bracket
+    types
+    order
+
+conSpec interBracket:interBracket =
+    imports bracket
+    constructors
+        reduce : [expr,expr] -> metaBool
+
+tSchema outside:(bayesG,probTreeG,interBayesTree) =
+    source t:expr <- hugging[open:v, e: expr, close:v]
+    target t':expr <- e: expr
+    antecedent
+    consequent :metaTrue <- reduce[t:expr,t':expr]
+    strength -2
+
+tSchema outside:(bayesG,probTreeG,interBayesTree) =
+    source t:expr <- unit[open:v, close:v]
+    target t':expr <- e: exp
+    antecedent
+    consequent :metaTrue <- reduce[t:expr,t':expr]
+    strength -2

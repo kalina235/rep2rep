@@ -1,0 +1,13 @@
+#(run after importing parsers and oruga.document. Inputs for meas Stick, for other domains see the type-specific paerser and refactor the letters)
+#e.g. S->C, L->F,  s1->p1 for sticks...
+
+Input: s1
+Expected: Construction.Source("t1111", "s1:seg") 
+
+Input: s1 = s2
+Expected: [Construction.Source("t1121", "s1:seg"), Construction.Source("t1222", "s2:seg")]]
+Input: E s1 s2 s3
+Expected: Construction.TCPair({constructor = TerRel[terRel, obj, obj, obj], token = ext111}, )
+
+Input: E E s1 s2 s3
+Expected: StringParseError

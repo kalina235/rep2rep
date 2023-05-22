@@ -2,7 +2,7 @@ import firstOrderLogic
 
 typeSystem measStick =
     imports firstOrderLogic
-    types _extend, chop, longer, shorter, equals, _:seg, unitSeg
+    types extend, chop, longer, shorter, equals, _:seg, unitSeg
     order unitSeg < obj,
           seg < obj,
           longer < binRel,
@@ -15,4 +15,3 @@ conSpec measStickG:measStick =
   imports firstOrderLogicG
   constructors
   dummy: [universal] -> universal
-

@@ -1,17 +1,20 @@
 import firstOrderLogic
 
-typeSystem measStick =
+typeSystem solarSystem =
     imports firstOrderLogic
-    types revolves, mass, sun, force, gravity, centrifugal, planet, time
+    types revolves, mass, sun, force, gravity, centrifugal, dist, planet, _:time, zero
     order planet < obj,
           sun < obj,
           revolves < obj,
-          mass < unary,
+          time < obj,
+          mass < unRel,
           shorter < binRel,
           gravity < terRel,
-          centrifugal < terRel
+          centrifugal < terRel,
+          more < binRel,
+          zero < object
 
-conSpec measStickG:measStick =
+conSpec solarSystemG:solarSystem =
   imports firstOrderLogicG
   constructors
   dummy: [universal] -> universal
