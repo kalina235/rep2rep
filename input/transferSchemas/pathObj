@@ -24,12 +24,12 @@ conSpec interPathObj:interPathObj =
 #REFLEXIVE TSCHEMAS:
 #=================================
 tSchema similarTernary:(motionPathG,objectConstrG,interPathObj) =
-    source t:formula <- prefixTerRel[t0: terRel, s1:obj, s2:obj, s3:obj]
-    target t':formula <- prefixTerRel[t0': terRel, p1':obj, p2':obj, p3':obj] 
-    antecedent :metaTrue <-alike[s1:obj,p1':obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
-               :metaTrue <-alike[s3:obj,p3':obj],
-               :metaTrue <-closeTerRel[t0:terRel,t0':terRel]
+    source t:formula <- prefixTerRel[t: terRel, s1:obj, s2:obj, s3:obj]
+    target t':formula <- prefixTerRel[t': terRel, p1:obj, p2:obj, p3:obj] 
+    antecedent :metaTrue <-alike[s1:obj,p1:obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
+               :metaTrue <-alike[s3:obj,p3:obj],
+               :metaTrue <-closeTerRel[t:terRel,t':terRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 20
 
@@ -37,7 +37,7 @@ tSchema similarBinary:(motionPathG,objectConstrG,interPathObj) =
     source t:formula <- prefixBinRel[b: binRel, s1: obj, s2: obj] 
     target t':formula <- prefixBinRel[b': binRel, p1: obj, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
@@ -46,7 +46,7 @@ tSchema similarBinaryInfix:(motionPathG,objectConstrG,interPathObj) =
     source t:formula <- infixBinRel[s1: obj, b: binRel, s2: obj] 
     target t':formula <- infixBinRel[p1: obj, b': binRel, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
@@ -90,6 +90,15 @@ tSchema forallDrop:(motionPathG,objectConstrG,interPathObj) =
                :metaTrue <-close[f:formula,f':formula]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 50
+
+tSchema similarUnary:(motionPathG,objectConstrG,interPathObj) =
+    source t:formula <- logicApplyUnary[u: unary, f:formula] 
+    target t':formula <-  logicApplyUnary[u': unary, f':formula] 
+    antecedent :metaTrue <-close[f:formula,f':formula],
+               :metaTrue <-sameAs[u:unary,u':unary]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 80
+    
 #============================================
 #SEMANTIC TSCHEMAS (generate by runninh findPairs.py)
 #============================================

@@ -100,7 +100,9 @@ structure parserObj : PARSEROBJ =
         val p = p^b
       in    
       if exists str #"V" then Construction.TCPair({constructor = ("logicApplyQuant", (["forall", "obj", "formula"], "formula")), token =("tqnt"^p^d, "formula")},
-                          [Construction.Source ("q"^p^d, "forall"), Construction.Source ("o"^p^d, String.substring (stri, 1,2)^":whObj"), parseRule p 1 (depth+1) (String.extract (stri, 3, NONE))])
+                          [Construction.Source ("q"^p^d, "forall"), Construction.Source ("o"^p^d, String.substring (stri, 1,2)^":whObj"), parseRule p 1 (depth+1) (String.extract (stri, 3, NONE))]) else
+      if exists str #"X" then Construction.TCPair({constructor = ("logicApplyQuant", (["exists", "obj", "formula"], "formula")), token =("tqnt"^p^d, "formula")},
+                          [Construction.Source ("q"^p^d, "exists"), Construction.Source ("o"^p^d, String.substring (stri, 1,2)^":whObj"), parseRule p 1 (depth+1) (String.extract (stri, 3, NONE))])
       else if exists str #">" then
                           let val left = SbeforeSepS #">" stri 
                               val right = SafterSepS #">" stri in
@@ -132,22 +134,22 @@ structure parserObj : PARSEROBJ =
                           [parseRule p 1 (depth+1) left, Construction.Source ("eqs"^p^d, "equals"), parseRule p 2 (depth+1)  right])  end
       else if exists str #"E" then 
                           let val right = SafterSepS #"E" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("exd"^p^d, "combine"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj"), Construction.Source("o"^p^"3"^d, String.substring (right, 4,2)^":whObj")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "obj"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("exd"^p^d, "combine"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj"), Construction.Source("o"^p^"3"^d, String.substring (right, 4,2)^":whObj")]) end
       else if exists str #"C" then 
                           let val right = SafterSepS #"C" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("tchp"^p^d, "formula")}, [Construction.Source ("chp"^p^d, "split"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj"), Construction.Source("o"^p^"3"^d, String.substring (right, 4,2)^":whObj")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "obj"], "formula")), token =("tchp"^p^d, "formula")}, [Construction.Source ("chp"^p^d, "split"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj"), Construction.Source("o"^p^"3"^d, String.substring (right, 4,2)^":whObj")]) end
       else if exists str #"L" then 
                           let val right = SafterSepS #"L" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tlog"^p^d, "formula")}, [Construction.Source ("lg"^p^d, "larger"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")]) end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["binRel", "obj", "obj"], "formula")), token =("tlog"^p^d, "formula")}, [Construction.Source ("lg"^p^d, "larger"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")]) end 
       else if exists str #"S" then 
                           let val right = SafterSepS #"S" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("sh"^p^d, "smaller"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["binRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("sh"^p^d, "smaller"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
       else if exists str #"H" then 
                           let val right = SafterSepS #"H" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("hf"^p^d, "half"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["binRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("hf"^p^d, "half"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
       else if exists str #"M" then 
                           let val right = SafterSepS #"M" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("mc"^p^d, "matches"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["binRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("mc"^p^d, "matches"), Construction.Source("o"^p^"1"^d, String.substring (right, 0,2)^":whObj"), Construction.Source("o"^p^"2"^d, String.substring (right, 2,2)^":whObj")])  end 
       else if String.size stri < 3  then 
                           Construction.Source ("CPs"^p^d, String.extract(stri, 0, NONE)^":whObj")
       else  if String.size stri = 0 then raise StringParseError("TRIED TO PARSE EMPTY STRING") else Construction.Source("o"^p^d, "whObj") end;

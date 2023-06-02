@@ -104,7 +104,7 @@ struct
 
 
   val normalScale = 0.16
-  val scriptScale = normalScale * 0.7
+  val scriptScale = normalScale * 0.65
   val nodeConstant = 1.0 * normalScale
 
   fun displaySize (#"_"::S') = 0.8 * displaySize S'
@@ -146,7 +146,7 @@ struct
     | rowWidthEstimates (Construction.TCPair ({token,constructor},cs)) =
       let val widthMatrix = map rowWidthEstimates cs
           val halfTokenSize = sizeOfToken token / 2.0
-          val tNodeSize = halfTokenSize + Real.max (halfTokenSize, sizeOfType token) + 2.0*nodeConstant
+          val tNodeSize = halfTokenSize + Real.max (halfTokenSize, sizeOfType token) + 1.0*nodeConstant
       in tNodeSize :: sizeOfConstructor constructor :: getWidthPerRow widthMatrix
       end
 
@@ -156,18 +156,16 @@ struct
 
   fun mkIntervals M =
     let val redC = ~1.0*nodeConstant
-        fun intervalNeeded [x1] [x2] _ = (x1 + x2,0.0)
-          | intervalNeeded [x1] (x2::L2) [] = (x1 + 4.0*nodeConstant,0.0)
-          | intervalNeeded (x1::L1) (x2::L2) LL = (case intervalNeeded L1 L2 (#2 (pullFirstRow LL)) of (x,excess) => (Real.max(x1+x2,x),excess))
-          | intervalNeeded (x1::L1) [] (L3::LL) = (case intervalNeeded (x1::L1) L3 LL of (x,_) => (x / 2.0, x / 2.0))
-          | intervalNeeded (x1::L1) [] [] = (0.0,0.0)
-          | intervalNeeded [] (x2::L2) _ = (0.0,0.0)
-          | intervalNeeded [] [] _ = (0.0,0.0)
+        fun intervalNeeded (x1::L1) (x2::L2) LL = (case intervalNeeded L1 L2 (#2 (pullFirstRow LL)) of (x,excessL,excessR) => (Real.max(x1+x2,x) + nodeConstant,excessL,excessR))
+          | intervalNeeded (x1::L1) [] (L3::LL) = (case intervalNeeded (x1::L1) L3 LL of (x,_,_) => (x, 0.0, x / 2.0))
+          | intervalNeeded (x1::L1) [] [] = (x1,0.0,0.0)
+          | intervalNeeded [] (x2::L2) _ = (x2, x2 / 2.0, 0.0)
+          | intervalNeeded [] [] _ = (0.0,0.0,0.0)
         fun positionsPerRow _ [] = []
           | positionsPerRow _ [_] = []
           | positionsPerRow p (L1::(L2::LL)) =
             (case intervalNeeded L1 L2 LL of
-              (x,excess) => p + x + redC :: positionsPerRow (p + x + redC + excess) (L2::LL))
+              (x,excessL,excessR) => p + x + redC + excessL :: positionsPerRow (p + x + redC + excessR) (L2::LL))
     in 0.0 :: positionsPerRow redC M
     end
 
@@ -208,6 +206,32 @@ struct
                 end,
             (width,depth))
         end
+  
+(*
+  fun expression' coor (i,n) (ct as Construction.Source t) =
+    | expression' (x,y) (i,n) (ct as Construction.TCPair ({constructor,token},cs)) =
+        let val tn = tokenNode false (x,y) token
+            val cn = constructorNode (x,y-0.9) constructor token
+            val constructorNodeName = nodeNameOfConstructor constructor token
+            val cn2tn = arrow constructorNodeName (nodeNameOfToken token)
+            val widthEstimates = map rowWidthEstimates cs
+            val intervals = mkIntervals widthEstimates
+            val cwidth = List.last intervals
+            val nchildren = length cs
+            fun calcX j = ~cwidth/2.0 + List.nth(intervals,j)
+            fun crec _ [] = []
+              | crec j (ct::cts) = construction' (x + (calcX j), y-1.8) (SOME constructorNodeName) (j+1,nchildren) ct :: crec (j+1) cts
+            val (lcts, xysizes) = unzip (crec 0 cs)
+            val width = List.sumMap #1 xysizes
+            val depth = List.max Real.compare (map #2 xysizes)
+        in 
+        end
+
+  fun expression con =
+    case con of
+                Construction.Source(tok, ty) => if String.substring(tok, 0, 1) = "s" then "v"^(String.substring (ty, 0, 2)) else ty (*is subtype of object*)
+                | Construction.TCPair({token, constructor =(a,  (xs, ct))}, clist) => ((String.concat (List.map constructionToFormula clist)))
+                | _ => raise StringParseError("You probably have a loop") *)
 
   fun construction coor ct =
     let val (ctLatex,(width,depth)) = construction' coor NONE (0,1) ct

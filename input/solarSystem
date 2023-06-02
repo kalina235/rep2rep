@@ -2,17 +2,16 @@ import firstOrderLogic
 
 typeSystem solarSystem =
     imports firstOrderLogic
-    types revolves, mass, sun, force, gravity, centrifugal, dist, planet, _:time, zero
+    types revolves, mass, more, sun, force, gravity, centrifugal, dist, planet, _:time, zero
     order planet < obj,
           sun < obj,
-          revolves < obj,
+          revolves < binRel,
           time < obj,
           mass < unRel,
-          shorter < binRel,
           gravity < terRel,
           centrifugal < terRel,
           more < binRel,
-          zero < object
+          zero < obj
 
 conSpec solarSystemG:solarSystem =
   imports firstOrderLogicG

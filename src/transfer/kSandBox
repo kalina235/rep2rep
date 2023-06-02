@@ -1,0 +1,10 @@
+
+fun withinTarget targetTypeSystem targetPattern st =
+    List.exists (Pattern.hasUnifiableGenerator targetTypeSystem targetPattern) (logicManage.splitKnowledge constructionOfComp st)
+    handle Nope => false
+
+(*
+debug dump
+
+
+*)

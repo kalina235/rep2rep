@@ -26,10 +26,10 @@ conSpec interRuthSol:interRuthSol =
 #=================================
 tSchema similarTernary:(ruthAtomG,solarSystemG,interRuthSol) =
     source t:formula <- prefixTerRel[t0: terRel, s1:obj, s2:obj, s3:obj]
-    target t':formula <- prefixTerRel[t0': terRel, p1':obj, p2':obj, p3':obj] 
-    antecedent :metaTrue <-alike[s1:obj,p1':obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
-               :metaTrue <-alike[s3:obj,p3':obj],
+    target t':formula <- prefixTerRel[t0': terRel, p1:obj, p2:obj, p3:obj] 
+    antecedent :metaTrue <-alike[s1:obj,p1:obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
+               :metaTrue <-alike[s3:obj,p3:obj],
                :metaTrue <-closeTerRel[t0:terRel,t0':terRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 20
@@ -38,24 +38,24 @@ tSchema similarBinary:(ruthAtomG,solarSystemG,interRuthSol) =
     source t:formula <- prefixBinRel[b: binRel, s1: obj, s2: obj] 
     target t':formula <- prefixBinRel[b': binRel, p1: obj, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
 
-tSchema similarUnary:(ruthAtomG,solarSystemG,interRuthSol) =
-    source t:formula <- prefixUnRel[b: unRel, s1: obj] 
-    target t':formula <- prefixUnRel[b': unRel, p1: obj]
+tSchema similarUnRel:(ruthAtomG,solarSystemG,interRuthSol) =
+    source t:obj <- prefixUnRel[b: unRel, s1: obj] 
+    target t':obj <- prefixUnRel[b': unRel, p1: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
                :metaTrue <-closeUnRel[b:unRel,b':unRel]
-    consequent :metaTrue <-close[t:formula,t':formula] 
+    consequent :metaTrue <- alike[t:obj,t':obj] 
     strength 80
 
 tSchema similarBinaryInfix:(ruthAtomG,solarSystemG,interRuthSol) =
     source t:formula <- infixBinRel[s1: obj, b: binRel, s2: obj] 
     target t':formula <- infixBinRel[p1: obj, b': binRel, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
@@ -119,7 +119,7 @@ tSchema similarBin2:(ruthAtomG,solarSystemG,interRuthSol) =
 
 tSchema similarBin:(ruthAtomG,solarSystemG,interRuthSol) = #this is erronously ranked high. That's okay, no second/third result doesn't use it
     source t:point
-    target t':object 
+    target t':obj
     antecedent :metaTrue <-analogy[t:shorter, t':closer]
     consequent :metaTrue <-closeBinRel[t:shorter, t':closer]
     strength 10
@@ -213,4 +213,5 @@ tSchema equivSwap:(ruthAtomG,solarSystemG,interRuthSol) =
 #    consequent :metaTrue <-asStrong[t:formula,t':formula]
 #    strength -100
 
+    
 #==================================  

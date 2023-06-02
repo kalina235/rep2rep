@@ -29,6 +29,7 @@ sig
   val updatePatternComps : Composition.composition list -> T -> T
   val updateGoals : Pattern.construction list -> T -> T
   val updateTransferProof : TransferProof.tproof -> T -> T
+  val updateConstruction : T -> Construction.construction  -> T
   val replaceGoal : Pattern.construction -> Pattern.construction list -> T -> T
   val removeGoal : Pattern.construction -> T -> T
   val insertGoals : Pattern.pattern list -> T -> T
@@ -67,6 +68,11 @@ struct
 
   fun make st = st
 
+  fun updateOriginalGoalName orgGoal rule = 
+  case (orgGoal,rule) of
+  (Construction.TCPair(tok, [bigSource, anon]), Construction.TCPair({token, constructor =(a,  b)}, clist)) => Construction.TCPair(tok, [Construction.Source(token), anon])
+  | _ => raise Fail ("your original goal was whack")
+
   fun updatePatternComps L st =
          {sourceConSpecData = #sourceConSpecData st,
           targetConSpecData = #targetConSpecData st,
@@ -77,6 +83,18 @@ struct
           goals = #goals st,
           compositions = L,
           knowledge = #knowledge st}
+
+fun updateConstruction st cons=
+let val newConGoal = updateOriginalGoalName (#originalGoal st) cons in
+{sourceConSpecData = #sourceConSpecData st,
+            targetConSpecData = #targetConSpecData st,
+            interConSpecData = #interConSpecData st,
+            transferProof = #transferProof st,
+            construction = cons,
+            originalGoal = newConGoal,
+            goals = [ newConGoal ],
+            compositions = #compositions st,
+            knowledge = #knowledge st} end
 
   fun updateGoals gs st =
            {sourceConSpecData = #sourceConSpecData st,

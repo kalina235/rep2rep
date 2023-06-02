@@ -3,14 +3,13 @@ import firstOrderLogic
 typeSystem ruthAtom =
     imports firstOrderLogic
     types coulomb, mass, force, gravity, centrifugal, nucleus, electron, _:time, more, less, zero
-    order planet < obj,
-          revolves < obj,
+    order electron < obj,
+          revolves < binRel,
+          nucleus < obj,
           zero < obj,
           time < obj, 
           mass < unRel,
-          gravity < terRel,
-          coulomb < terRel,
-          more < infixBinRel
+          more < binRel
 
 conSpec ruthAtomG:ruthAtom =
   imports firstOrderLogicG

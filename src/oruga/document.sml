@@ -1,11 +1,14 @@
 import "oruga.parser";
 import "oruga.lift";
 import "latex.latex";
+import "constrParser.parserMeas";
+import "latex.latex";
+import "util.sequence";
+import "constrParser.logicManage";
 
 signature DOCUMENT =
 sig
   type documentContent
-
   val joinDocumentContents : documentContent list -> documentContent
   val read : string -> documentContent
   val knowledgeOf : documentContent -> Knowledge.base
@@ -94,8 +97,7 @@ struct
   val transferKeywords = [sourceConstructionKW,goalKW,outputKW,limitKW,searchLimitKW,goalLimitKW,compositionLimitKW,eagerKW,
                           iterativeKW,unistructuredKW,matchTargetKW,targetConSpecKW,
                           sourceConSpecKW,interConSpecKW,saveKW,inverseKW]
-
-
+            
   fun breakListOn s [] = ([],"",[])
     | breakListOn s (w::ws) =
         if w = s
@@ -838,6 +840,7 @@ struct
       val inverse = getInverse C
       val unistructured = getUnistructured C
       val targetPattern = getMatchTarget C
+      val debug = case targetPattern of SOME tpt => print("... this transfer might take 5mins") |NONE => print("Something's off, did you provide a matching pattern?..")
       val save = getSave C
 
      (*) fun mkExpressionGoals res =
@@ -901,9 +904,9 @@ struct
                              (Construction.leavesOfConstruction goal)
                           handle Empty => (Logging.write "ERROR : goal has no tokens in target construction space\n"; raise BadGoal)
       val state = Transfer.initState sourceConSpecData targetConSpecData interConSpecData inverse KB construction goal
-      val results = Transfer.masterTransfer (goalLimit,compositionLimit,searchLimit) eager iterative unistructured targetPattern state;
+      val results = Transfer.masterTransfer (goalLimit,compositionLimit, searchLimit) eager iterative unistructured targetPattern state;
       val nres = length (Seq.list_of results);
-      val listOfResults = case limit of SOME n => #1(Seq.chop n results) | NONE => Seq.list_of results;
+      val listOfResults = case limit of SOME n => #1(Seq.chop 3  results) | NONE => Seq.list_of results;
       val endTime = Time.now();
       val runtime = Time.toMilliseconds endTime - Time.toMilliseconds startTime;
       val _ = print ("\n" ^ "  runtime: "^ LargeInt.toString runtime ^ " ms \n");

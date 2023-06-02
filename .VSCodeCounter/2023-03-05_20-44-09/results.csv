@@ -1,0 +1,55 @@
+"filename", "language", "LaTeX", "Standard ML", "TeX", "Markdown", "Makefile", "Python", "comment", "blank", "total"
+"/home/kalina/rep2rep_fork/rep2rep/Makefile", "Makefile", 0, 0, 0, 0, 48, 0, 0, 10, 58
+"/home/kalina/rep2rep_fork/rep2rep/README.md", "Markdown", 0, 0, 0, 13, 0, 0, 0, 7, 20
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/CommandsForACM.sty", "TeX", 0, 0, 450, 0, 0, 0, 89, 174, 713
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/RST-intro-part1.tex", "LaTeX", 617, 0, 0, 0, 0, 0, 152, 64, 833
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/RST-intro-part2.tex", "LaTeX", 318, 0, 0, 0, 0, 0, 7, 35, 360
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/acmart.cls", "TeX", 0, 0, 2827, 0, 0, 0, 60, 6, 2893
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/dotAndFOAcommands.tex", "LaTeX", 295, 0, 0, 0, 0, 0, 14, 125, 434
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/exampleCommands.sty", "TeX", 0, 0, 1817, 0, 0, 0, 426, 208, 2451
+"/home/kalina/rep2rep_fork/rep2rep/doc/RST intro/mnotes.sty", "TeX", 0, 0, 66, 0, 0, 0, 21, 21, 108
+"/home/kalina/rep2rep_fork/rep2rep/input/transferSchemas/measPath", "Standard ML", 0, 153, 0, 0, 0, 0, 0, 30, 183
+"/home/kalina/rep2rep_fork/rep2rep/output/latex/commands.tex", "LaTeX", 412, 0, 0, 0, 0, 0, 50, 141, 603
+"/home/kalina/rep2rep_fork/rep2rep/src/constrParser/logicManage.sml", "Standard ML", 0, 35, 0, 0, 0, 0, 6, 9, 50
+"/home/kalina/rep2rep_fork/rep2rep/src/constrParser/parserMeas.sml", "Standard ML", 0, 122, 0, 0, 0, 0, 36, 20, 178
+"/home/kalina/rep2rep_fork/rep2rep/src/constrParser/parserMotion.sml", "Standard ML", 0, 122, 0, 0, 0, 0, 36, 20, 178
+"/home/kalina/rep2rep_fork/rep2rep/src/core/composition.sml", "Standard ML", 0, 171, 0, 0, 0, 0, 5, 38, 214
+"/home/kalina/rep2rep_fork/rep2rep/src/core/construction.sml", "Standard ML", 0, 394, 0, 0, 0, 0, 6, 59, 459
+"/home/kalina/rep2rep_fork/rep2rep/src/core/cspace.sml", "Standard ML", 0, 149, 0, 0, 0, 0, 3, 31, 183
+"/home/kalina/rep2rep_fork/rep2rep/src/core/interCSpace.sml", "Standard ML", 0, 85, 0, 0, 0, 0, 0, 16, 101
+"/home/kalina/rep2rep_fork/rep2rep/src/core/pattern.sml", "Standard ML", 0, 564, 0, 0, 0, 0, 38, 44, 646
+"/home/kalina/rep2rep_fork/rep2rep/src/core/type.sml", "Standard ML", 0, 281, 0, 0, 0, 0, 22, 59, 362
+"/home/kalina/rep2rep_fork/rep2rep/src/latex/latex.sml", "Standard ML", 0, 207, 0, 0, 0, 0, 0, 40, 247
+"/home/kalina/rep2rep_fork/rep2rep/src/main.sml", "Standard ML", 0, 49, 0, 0, 0, 0, 9, 6, 64
+"/home/kalina/rep2rep_fork/rep2rep/src/oruga/CParsers.sml", "Standard ML", 0, 78, 0, 0, 0, 0, 8, 23, 109
+"/home/kalina/rep2rep_fork/rep2rep/src/oruga/SMLCParsers.sml", "Standard ML", 0, 66, 0, 0, 0, 0, 0, 11, 77
+"/home/kalina/rep2rep_fork/rep2rep/src/oruga/document.sml", "Standard ML", 0, 880, 0, 0, 0, 0, 36, 97, 1013
+"/home/kalina/rep2rep_fork/rep2rep/src/oruga/lift.sml", "Standard ML", 0, 47, 0, 0, 0, 0, 2, 7, 56
+"/home/kalina/rep2rep_fork/rep2rep/src/oruga/parser.sml", "Standard ML", 0, 122, 0, 0, 0, 0, 0, 19, 141
+"/home/kalina/rep2rep_fork/rep2rep/src/probability/prob_parser.sml", "Standard ML", 0, 158, 0, 0, 0, 0, 1, 9, 168
+"/home/kalina/rep2rep_fork/rep2rep/src/semanticRelations/filterTschemas.sml", "Standard ML", 0, 4, 0, 0, 0, 0, 0, 0, 4
+"/home/kalina/rep2rep_fork/rep2rep/src/semanticRelations/findPairs.py", "Python", 0, 0, 0, 0, 0, 37, 20, 6, 63
+"/home/kalina/rep2rep_fork/rep2rep/src/semanticRelations/intoFiles.sml", "Standard ML", 0, 9, 0, 0, 0, 0, 0, 4, 13
+"/home/kalina/rep2rep_fork/rep2rep/src/server/prob_renderers.sml", "Standard ML", 0, 2308, 0, 0, 0, 0, 48, 37, 2393
+"/home/kalina/rep2rep_fork/rep2rep/src/server/renderers.sml", "Standard ML", 0, 28, 0, 0, 0, 0, 8, 8, 44
+"/home/kalina/rep2rep_fork/rep2rep/src/server/server.sml", "Standard ML", 0, 127, 0, 0, 0, 0, 1, 14, 142
+"/home/kalina/rep2rep_fork/rep2rep/src/test.sml", "Standard ML", 0, 44, 0, 0, 0, 0, 6, 10, 60
+"/home/kalina/rep2rep_fork/rep2rep/src/transfer/heuristic.sml", "Standard ML", 0, 123, 0, 0, 0, 0, 4, 30, 157
+"/home/kalina/rep2rep_fork/rep2rep/src/transfer/knowledge.sml", "Standard ML", 0, 90, 0, 0, 0, 0, 3, 22, 115
+"/home/kalina/rep2rep_fork/rep2rep/src/transfer/search.sml", "Standard ML", 0, 153, 0, 0, 0, 0, 0, 13, 166
+"/home/kalina/rep2rep_fork/rep2rep/src/transfer/state.sml", "Standard ML", 0, 115, 0, 0, 0, 0, 13, 18, 146
+"/home/kalina/rep2rep_fork/rep2rep/src/transfer/structure_transfer.sml", "Standard ML", 0, 381, 0, 0, 0, 0, 30, 57, 468
+"/home/kalina/rep2rep_fork/rep2rep/src/transfer/transfer_proof.sml", "Standard ML", 0, 94, 0, 0, 0, 0, 0, 21, 115
+"/home/kalina/rep2rep_fork/rep2rep/src/util/diagnostic.sml", "Standard ML", 0, 43, 0, 0, 0, 0, 0, 12, 55
+"/home/kalina/rep2rep_fork/rep2rep/src/util/dictionary.sml", "Standard ML", 0, 316, 0, 0, 0, 0, 73, 51, 440
+"/home/kalina/rep2rep_fork/rep2rep/src/util/finiteset.sml", "Standard ML", 0, 153, 0, 0, 0, 0, 17, 35, 205
+"/home/kalina/rep2rep_fork/rep2rep/src/util/http.sml", "Standard ML", 0, 345, 0, 0, 0, 0, 5, 56, 406
+"/home/kalina/rep2rep_fork/rep2rep/src/util/logging.sml", "Standard ML", 0, 43, 0, 0, 0, 0, 0, 19, 62
+"/home/kalina/rep2rep_fork/rep2rep/src/util/random.sml", "Standard ML", 0, 101, 0, 0, 0, 0, 27, 13, 141
+"/home/kalina/rep2rep_fork/rep2rep/src/util/rep2replib.sml", "Standard ML", 0, 399, 0, 0, 0, 0, 16, 115, 530
+"/home/kalina/rep2rep_fork/rep2rep/src/util/result.sml", "Standard ML", 0, 106, 0, 0, 0, 0, 0, 29, 135
+"/home/kalina/rep2rep_fork/rep2rep/src/util/rpc.sml", "Standard ML", 0, 478, 0, 0, 0, 0, 30, 71, 579
+"/home/kalina/rep2rep_fork/rep2rep/src/util/sequence.sml", "Standard ML", 0, 357, 0, 0, 0, 0, 71, 100, 528
+"/home/kalina/rep2rep_fork/rep2rep/src/util/set.sml", "Standard ML", 0, 31, 0, 0, 0, 0, 1, 7, 39
+"/home/kalina/rep2rep_fork/rep2rep/test/prob_renderers.sml", "Standard ML", 0, 94, 0, 0, 0, 0, 6, 17, 117
+"Total", "-", 1642, 9625, 5160, 13, 48, 37, 1406, 2094, 20025

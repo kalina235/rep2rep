@@ -156,6 +156,7 @@ sig
   val chop: int -> 'a seq -> 'a list * 'a seq
   val take: int -> 'a seq -> 'a seq
   val list_of: 'a seq -> 'a list
+  val last_of: 'a seq -> 'a
   val of_list: 'a list -> 'a seq
   val append: 'a seq -> 'a seq -> 'a seq
   val mapp: ('a -> 'b) -> 'a seq -> 'b seq -> 'b seq
@@ -273,11 +274,14 @@ fun take 0 xq = empty
               NONE => NONE
             | SOME (x, xq') => SOME (x, take (n-1) xq')));
 
+
 (*conversion from sequence to list*)
 fun list_of xq =
   (case pull xq of
     NONE => []
   | SOME (x, xq') => x :: list_of xq');
+
+fun last_of xq = List.hd (List.rev (list_of xq))
 
 (*conversion from list to sequence*)
 fun of_list xs = fold_rev cons xs empty;

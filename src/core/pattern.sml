@@ -23,6 +23,7 @@ sig
   val applyPartialMorphism : (CSpace.token -> CSpace.token option) -> pattern -> pattern;
   val applyTypeVarInstantiation : (Type.typ -> Type.typ option) -> pattern -> pattern;
   val applyConsVarInstantiation : (CSpace.constructor -> pattern option) -> pattern -> pattern;
+  val findExactEmbeddingSubtypable : Type.typeSystem -> pattern*pattern -> pattern;
   val findEmbedding : Type.typeSystem
                         -> pattern
                         -> pattern
@@ -385,7 +386,19 @@ struct
   end handle IllDefined => (fn _ => NONE,fn _ => NONE,NONE)
 
   (* *)
-  fun findEmbedding T ct ct' = findEmbeddingUpTo T FiniteSet.empty ct ct'
+
+  fun findExactEmbeddingSubtypable TS (sc, tc) =
+  let fun subtype y = Set.elementOf y (#Ty TS) in
+  (case (sc,tc) of
+      (Source(tok1, typ1), Source(tok2, typ2)) => if (subtype typ1) then Source(tok1, typ2) else Source("no", "wrong")   
+    | (TCPair(construct1, clist1), TCPair(construct2, clist2)) => if(#constructor construct1 = #constructor construct2) then TCPair(construct2, ListPair.map (findExactEmbeddingSubtypable TS) (clist1,clist2)) else Source("no", "wrong")  (*<- this is most restrictive*)
+    | (Source(tok1, typ1), _) => Source(tok1, typ1) (*<- this is the least restrictive embedding*)
+    | (_, _) => Source("no", "wrong")) end
+
+  fun findEmbedding T ct ct' = (**) 
+  let val patt = findExactEmbeddingSubtypable T (ct, ct')  in
+  if not (Construction.subConstruction  (Source("no", "wrong")) patt) then let val debug = PolyML.print (patt,ct') in
+  ((fn x => NONE) ,(fn x => NONE), SOME(patt)) end else (findEmbeddingUpTo T FiniteSet.empty ct' ct) end (*for this to trigger should rename tokens in requests too*)
 
   fun applyConsVarInstantiation f (TCPair({token,constructor},[])) =
     (case f constructor of

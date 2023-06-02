@@ -24,12 +24,12 @@ conSpec interMeasObj:interMeasObjT =
 #REFLEXIVE TSCHEMAS:
 #=================================
 tSchema similarTernary:(measStickG,objectConstrG,interMeasObj) =
-    source t:formula <- prefixTerRel[t0: terRel, s1:obj, s2:obj, s3:obj]
-    target t':formula <- prefixTerRel[t0': terRel, p1':obj, p2':obj, p3':obj] 
-    antecedent :metaTrue <-alike[s1:obj,p1':obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
-               :metaTrue <-alike[s3:obj,p3':obj],
-               :metaTrue <-closeTerRel[t0:terRel,t0':terRel]
+    source t:formula <- prefixTerRel[t: terRel, s1:obj, s2:obj, s3:obj]
+    target t':formula <- prefixTerRel[t': terRel, p1:obj, p2:obj, p3:obj] 
+    antecedent :metaTrue <-alike[s1:obj,p1:obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
+               :metaTrue <-alike[s3:obj,p3:obj],
+               :metaTrue <-closeTerRel[t:terRel,t':terRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 20
 
@@ -37,7 +37,7 @@ tSchema similarBinary:(measStickG,objectConstrG,interMeasObj) =
     source t:formula <- prefixBinRel[b: binRel, s1: obj, s2: obj] 
     target t':formula <- prefixBinRel[b': binRel, p1: obj, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
@@ -46,7 +46,7 @@ tSchema similarBinaryInfix:(measStickG,objectConstrG,interMeasObj) =
     source t:formula <- infixBinRel[s1: obj, b: binRel, s2: obj] 
     target t':formula <- infixBinRel[p1: obj, b': binRel, p2: obj]
     antecedent :metaTrue <-alike[s1:obj,p1:obj],
-               :metaTrue <-alike[s2:obj,p2':obj],
+               :metaTrue <-alike[s2:obj,p2:obj],
                :metaTrue <-closeBinRel[b:binRel,b':binRel]
     consequent :metaTrue <-close[t:formula,t':formula]
     strength 80
@@ -95,30 +95,30 @@ tSchema forallDrop:(measStickG,objectConstrG,interMeasObj) =
 #============================================
 tSchema similarTer:(measStickG,objectConstrG,interMeasObj) =
     source t:extend
-    target t':away
-    antecedent :metaTrue <-analogy[t:away, t':extend] 
-    consequent :metaTrue <-closeTerRel[t:extend, t':away]
+    target t':combine
+    antecedent :metaTrue <-closeTerRel[t:extend, t':combine]
+    consequent :metaTrue <-analogy[t:extend, t':combine]
     strength 1000
 
 tSchema similarBin2:(measStickG,objectConstrG,interMeasObj) =
     source t:longer
-    target t':further
-    antecedent :metaTrue <-analogy[t:longer, t':further]
-    consequent :metaTrue <-closeBinRel[t:longer, t':further]
+    target t':larger
+    antecedent :metaTrue <-closeBinRel[t:longer, t':larger]
+    consequent :metaTrue <-analogy[t:longer, t':larger]
     strength 1000
 
 tSchema similarBin:(measStickG,objectConstrG,interMeasObj) =
     source t:shorter
-    target t':closer 
-    antecedent :metaTrue <-analogy[t:shorter, t':closer]
-    consequent :metaTrue <-closeBinRel[t:shorter, t':closer]
+    target t':smaller 
+    antecedent :metaTrue <-closeBinRel[t:shorter, t':smaller]
+    consequent :metaTrue <-analogy[t:shorter, t':smaller]
     strength 1000
 
 tSchema similarTer2:(measStickG,objectConstrG,interMeasObj) =
     source t:chop
-    target t':toward
-    antecedent :metaTrue <-analogy[t:chop, t':toward]
-    consequent :metaTrue <-closeTerRel[t:chop, t':toward]
+    target t':split
+    antecedent :metaTrue <-closeTerRel[t:chop, t':split]
+    consequent :metaTrue <-analogy[t:chop, t':split]
     strength 1000
 
 #tSchema sameType:(measStickG,objectConstrG,interMeasObj) = 
@@ -202,6 +202,14 @@ tSchema equivSwap:(measStickG,objectConstrG,interMeasObj) =
 #    antecedent :metaTrue <-asStrong[t:formula,f2:formula]
 #    consequent :metaTrue <-asStrong[t:formula,t':formula]
 #    strength -100
+
+tSchema similarUnary:(measStickG,objectConstrG,interMeasObj) =
+    source t:formula <- logicApplyUnary[u: unary, f:formula] 
+    target t':formula <-  logicApplyUnary[u': unary, f':formula] 
+    antecedent :metaTrue <-close[f:formula,f':formula],
+               :metaTrue <-sameAs[u:unary,u':unary]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 80
 
 #==================================
     

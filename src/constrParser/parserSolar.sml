@@ -109,20 +109,20 @@ structure parserSolar : PARSERSOLAR =
       else if exists str #">" then 
                           let val left = SbeforeSepS #">" stri
                               val right = SafterSepS #">" stri in
-                          print(left^"  AND "^right^"\n"); Construction.TCPair({constructor = ("infixBinRel", (["obj", "more", "obj"], "formula")), token =("teq"^p^d, "formula")}, 
+                          print(left^"  AND "^right^"\n"); Construction.TCPair({constructor = ("infixBinRel", (["obj", "equals", "obj"], "formula")), token =("teq"^p^d, "formula")}, 
                           [parseRule p 1 (depth+1) left, Construction.Source ("eqs"^p^d, "more"), parseRule p 2 (depth+1)  right])  end
       else if exists str #"D" then 
                           let val right = SafterSepS #"D" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("dis"^p^d, "distance"), Construction.Source("s"^p^"1"^d, "planet"), Construction.Source("s"^p^"2"^d, "sun"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("dis"^p^d, "distance"), Construction.Source("s"^p^"1"^d, "planet"), Construction.Source("s"^p^"2"^d, "sun"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
       else if exists str #"G" then 
                           let val right = SafterSepS #"G" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("grv"^p^d, "gravity"), Construction.Source("s"^p^"1"^d, "planet"), Construction.Source("s"^p^"2"^d, "sun"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("grv"^p^d, "gravity"), Construction.Source("s"^p^"1"^d, "planet"), Construction.Source("s"^p^"2"^d, "sun"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
       else if exists str #"C" then 
                           let val right = SafterSepS #"C" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("col"^p^d, "coloumb"), Construction.Source("s"^p^"1"^d, "planet"), Construction.Source("s"^p^"2"^d, "sun"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("col"^p^d, "coloumb"), Construction.Source("s"^p^"1"^d, "planet"), Construction.Source("s"^p^"2"^d, "sun"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
       else if exists str #"M" then 
                           let val right = SafterSepS #"M" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixUnRel", (["prefixTerRel", "obj"], "object")), token =("tchp"^p^d, "object")}, [Construction.Source ("mse"^p^d, "mass"), parseRule p 2 (depth+1) (String.substring (right, 0,2))]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixUnRel", (["unRel", "obj"], "obj")), token =("tchp"^p^d, "obj")}, [Construction.Source ("mse"^p^d, "mass"), parseRule p 2 (depth+1) (String.substring (right, 0,2))]) end
       else if String.size stri < 3  then 
                           (if  Char.contains stri #"z" then Construction.Source ("CPs"^p^d, "zero") else
                           if Char.contains stri #"s" then Construction.Source ("CPs"^p^d, "sun") else

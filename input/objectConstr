@@ -1,15 +1,17 @@
 import firstOrderLogic
 
-typeSystem objectConstr =
+typeSystem objectConstr = #this is the version where whObj is an element
     imports firstOrderLogic
     types _:whObj, smallObj, half, matches, combine, split, larger, smaller
     order larger < binRel,
+          whObj < obj,
+          smallObj < obj,
           smaller < binRel,
           combine < terRel,
           matches < binRel,
           split < terRel,
-          half < binRel,
-          whObj < object
+          half < binRel
+
 
 conSpec objectConstrG:objectConstr =
   imports firstOrderLogicG

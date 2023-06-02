@@ -11,15 +11,17 @@ sig
   val structureTransfer : int option * int option * int option -> bool -> bool -> Pattern.pattern option -> State.T -> State.T Seq.seq
   val agreeEmbeddings : State.T Seq.seq -> (string * string) list list -> State.T Seq.seq
   val quickTransfer : int option * int option * int option -> bool -> Pattern.pattern option -> State.T -> State.T Seq.seq
-  val sanitize : ''a option list list-> ''a list
-  val isolateT : ''a list -> ''a list
+  (*val sanitize : ''a option list list-> ''a list*)
+  val isolateT : (string*string) list ->  (string*string) list
   val propType : (string*string) -> (string*string)
-  val embeddingPartial : Type.typeSystem -> Pattern.pattern -> (Pattern.pattern* ((CSpace.token * CSpace.token) list)) -> (Pattern.pattern* ((CSpace.token * CSpace.token) list)) option
-  val crawlWrap : (Pattern.pattern* (((string *'a)*('b* Type.typ)) list)) -> (string*string) list
-  val zipCon : Pattern.pattern -> 'a list -> (Pattern.pattern * 'a) list
-  val inLookup : string -> ((string * 'b)* 'c) list -> bool
-  val findLk : string -> ((string * 'b)* ('c * 'd)) list -> 'd
-  val zipNested : Pattern.pattern list list -> ((CSpace.token * CSpace.token) list) list list-> (Pattern.pattern *((CSpace.token * CSpace.token) list)) list 
+  val embeddingPartial : Type.typeSystem -> Pattern.pattern -> (Pattern.pattern list* ((CSpace.token * CSpace.token) list)) -> (Pattern.pattern* ((CSpace.token * CSpace.token) list)) option
+  val crawlWrap : (Pattern.pattern* (((string * Type.typ)*(string* Type.typ)) list)) -> (Type.typ * Type.typ) list
+  (*val zipCon : Pattern.pattern -> 'a list -> (Pattern.pattern * 'a) list
+  val inLookup : string -> ((string * Type.typ)*(string* Type.typ)) list -> bool
+  val findLk : string -> ((string * Type.typ)*(string* Type.typ)) list -> Type.typ
+  one of below can be removed*)
+  (*val zipNested : Pattern.pattern list list -> ((CSpace.token * CSpace.token) list) list list-> (Pattern.pattern *((CSpace.token * CSpace.token) list)) list list
+  *)val zip: 'a list -> 'b list -> ('a*'b) list
  (* val zipRsLk : Pattern.pattern -> (CSpace.token * CSpace.token) list -> (Pattern.pattern * ((CSpace.token * CSpace.token) list))*)
  val analogySearch : int option * int option * int option
                           -> bool
@@ -416,19 +418,24 @@ fun second (f,s) = s;
 
 fun unzip list = (List.map first list, List.map second list)
 
-fun zip xs ys =
+fun zip xs ys = ListPair.zipEq (xs,ys)
+(*let val debug = print("before ZIp Match\n") in
   case (xs,ys) of
     ([],[]) => []
   | ((x::xs),(y::ys)) => ((x,y) :: (zip (xs) (ys)))
-  | (_,_) => [](*raise Err("zip")*)
+  | (_,_) => raise Err("zip") end*)
 
 fun zipCon l1 cons = 
 case cons of 
   [] => []
   |(x::xs) => ((l1, x)::(zipCon l1 xs))
 
+fun exist s [] = false
+  | exist s (x::xs) = (s = x) orelse exist s xs
+
+
 fun exists s [] = false
-  | exists s (x::xs) = (s=x) orelse exists s xs
+  | exists s (x::xs) = (first s = first x andalso second x = second s) orelse exists s xs
 
 (*fun isolate [] = []
   | isolate [NONE] = []
@@ -436,36 +443,38 @@ fun exists s [] = false
   | isolate (x::xs) = if exists x xs then xs else (x::xs)*)
 
 fun isolateT [] = []
-  | isolateT (x::xs) = if exists x xs then (isolateT xs) else (x :: isolateT xs);
+  | isolateT (x::xs) = if exists x xs orelse (first x = "_") orelse (first x = "formula") orelse (first x = "forall") orelse (first x = "and") orelse (first x = "not") orelse (first x = "forall") orelse (first x = "implies") then (isolateT xs) else (x :: isolateT xs);
 
-fun sanitize emb =  isolateT (dropOpt (List.concat emb))
+(*fun sanitize emb =  isolateT (dropOpt (List.concat emb))*)
 
 (*fun removeNone list = List.filter (fn y => y <> (NONE,NONE)) list;*)
 
 fun third (x,y,z) = z;
 
-fun printMap res [] = res
+fun printMap res [] = let val debug = print("THIS WAS THE LAST FOUND ANALOGY MAPPING\n======================\n")  in res end
   |  printMap res ((x,y)::xs) = 
     let val out =print("ANALOGY FOUND "^x^"->"^y^"\n") in printMap res xs 
     end;
 
 fun disagreement [] = []
-  | disagreement ((x,y)::xs) = if exists x (List.map first xs) then disagreement xs else (x,y)::disagreement xs
+  | disagreement (x::xs) = if exist (first x) (List.map first xs) then disagreement xs else (x)::disagreement xs
 
 fun agreeEmbeddings res list= 
 let val candidates =  isolateT (List.concat list) 
+    val debug = print("I'm agreeing embeddings...\n")
+    (*val analogies = candidates in*)
     val analogies = disagreement (isolateT (List.map propType candidates)) in 
 printMap res analogies end;
 
 fun inLookup s lk =
 case lk of 
 [] => false
-| ((x,y)::xs) => if first x = s then true else inLookup s xs
+| ((x,y)::xs) => if first y = s then true else  inLookup s xs
 
 fun findLk s lk =
 case lk of 
 [] => raise Err("no lookup")
-| ((x,y)::xs) => if first x = s then second y else findLk s xs 
+| ((x,y)::xs) => if first y = s then (second x) else findLk s xs 
 
  fun crawl (lookup, embPatt) = 
   let fun change (stype, ttype) = ((findLk (first stype) lookup), ttype)
@@ -474,7 +483,7 @@ case lk of
    Construction.TCPair(smth, cl) => 
    let val consZip = (zipCon lookup cl) in
     List.concat (List.map crawl consZip) end
-  | Construction.Source(tok, smth) =>  if inLookup tok lookup then [change ((tok, smth), smth)] else [(smth , smth)] (*this might be iffy*)
+  | Construction.Source(tok, smth) =>  if inLookup tok lookup then [change ((tok, smth), smth)] else [("_" , smth)] (*this might be iffy*)
   end
 
 fun crawlWrap (embPatt, lk) = 
@@ -492,8 +501,7 @@ fun structureTransfer (goalLimit,compositionLimit,searchLimit) eager unistructur
       val maxCompSize = case compositionLimit of SOME x => x | NONE => 300
       val maxNumResults = case searchLimit of SOME x => x | NONE => 1000
       val ignT = Heuristic.ignore maxNumGoals maxNumResults maxCompSize unistructured
-      (*val debug = case targetPattOption of SOME tpt => print("YESSSSS") |NONE => print("NOOOO")*)
-      val targetTypeSystem = #typeSystem (State.targetTypeSystemOf st)
+       val targetTypeSystem = #typeSystem (State.targetTypeSystemOf st)
       fun ignPT (x,L) = case targetPattOption of
                       SOME tpt => not (matchesTargetKw targetTypeSystem tpt x) orelse ignT (x,L) 
                     | NONE => ignT (x,L)
@@ -512,7 +520,7 @@ fun analogyTransfer (goalLimit,compositionLimit,searchLimit) eager unistructured
       val maxCompSize = case compositionLimit of SOME x => x | NONE => 300
       val maxNumResults = case searchLimit of SOME x => x | NONE => 1000
       val ignT = Heuristic.ignore maxNumGoals maxNumResults maxCompSize unistructured
-      (*val debug = case targetPattOption of SOME tpt => print("YESSSSS") |NONE => print("NOOOO")*)
+      val debug = case targetPattOption of SOME tpt => print("TARGET PATTERN:\n" ^ (Construction.toString tpt)^"\n") |NONE => print(";\n")
       val targetTypeSystem = #typeSystem (State.targetTypeSystemOf st)
       fun ignPT (x,L) = case targetPattOption of
                       SOME tpt => not (matchesTargetKw targetTypeSystem tpt x) orelse ignT (x,L) 
@@ -528,11 +536,12 @@ fun analogyTransfer (goalLimit,compositionLimit,searchLimit) eager unistructured
 
 fun take3 list = List.take (list, 3)
 
-fun embeddingPartial TS target (rule, lookup) = 
-let val no = List.find (fn x => third (Pattern.findEmbedding TS rule x) <> NONE) (splitKnowledge target) in
+fun embeddingPartial TS target ([rule], lookup) = 
+let val no = List.find (fn x => third (Pattern.findEmbedding TS rule x) <> NONE) (splitKnowledge target (*[target]*)) in
 if no <> NONE then
-( let val SOME(nom) = no
+(let val SOME(nom) = no
       val (f1, f2, SOME(patt)) = Pattern.findEmbedding TS rule nom in SOME(patt, lookup) end) else NONE end
+      | embeddingPartial TS target (rule, lookup) = let val debug = PolyML.print rule in raise Err("degenerated result") end
 
 (*List.mapPartal (fn x => x)
   
@@ -541,7 +550,7 @@ case (res, lk) of
 (x::xs, [y]::ys) => (((x,y)) :: zipRsLk x ys)
 | ([],[]) => []*)
 
-fun zipNested [res] [lk] = zip res lk
+fun zipNested (res, lk) = ListPair.map (ListPair.zipEq) (res,lk) (*ListPair.Map*)
 
 
 (*val debug = print(Construction.toString List.hd (List.hd embeddignsPartial))*)
@@ -552,27 +561,66 @@ fun analogySearch limits eager unistructured targetPatt st  =
 let val source = State.constructionOf st
     val target = targetPatt
     val tTypS = #typeSystem (State.targetTypeSystemOf st)
-    (*transfer on split rules*)
+    val debug = PolyML.print_depth 20
+    (*transfer on split rules
+    val debug = PolyML.print source*)
     val rulesToMatch = splitKnowledge source 
-    val res = (analogyTransfer limits eager unistructured NONE st)
+    (* val debug = print("\nfirst rule in source is "^(Construction.toString (List.hd rulesToMatch))^"\n")
+    val debug = PolyML.print List.hd rulesToMatch*)
+    val debug = print("wait for big transfer to run...\n") 
+    val res = (structureTransfer limits eager unistructured NONE st)
+    val debug = print("got through big transfer;\n") 
+    (*val debug = if Construction.same source (List.hd rulesToMatch) then print("WHAT THE F") else raise Err("Different")*)
     val splitStates = List.map (State.updateConstruction st) rulesToMatch 
-    val transferSeq = List.map ((structureTransfer limits eager unistructured NONE)) splitStates (*list of sequences of states for each rule*)
-    val transferred = List.map Seq.list_of transferSeq
-    val results =  List.map (Composition.resultingConstructions o List.hd) (List.map (State.patternCompsOf o List.hd) transferred)
-    (*create lookups*) 
+     (*val debug = PolyML.print (List.hd splitStates)
+    val debug = PolyML.print (st)
+    val debug = print("Found this many source rules:\n"^(Int.toString(List.length splitStates)))*)
+    val debug = print("\ngot through split states;\n") 
+    val transferSeq = List.map (structureTransfer limits eager unistructured NONE) splitStates (*list of sequences of states for each rule*)
+    (*val debug = print("Found this many transferred  Sequences:\n"^(Int.toString(List.length transferSeq)))*)
+    val debug = print("got through each rule transfer, first is:\n") 
+    val transferred = List.map Seq.list_of transferSeq (*State.T list list*)
+    val debug = print("This many rules got tranferred:\n"^(Int.toString (List.length (List.hd transferred))))
+    val debug = print("First rule has this many seq results:\n"^(Int.toString (List.length (List.hd transferred))))
+    (*val debug = print("and now mine:\n") 
+    val debug = PolyML.print (transferred)*)
+    val debug = print("turned into transfers list of lists;\n") 
+    val compsList = List.map (List.map State.patternCompsOf) transferred (*this can fold into results later*)
+    (*val debug = PolyML.print compsList*)
+    val results =  List.map (List.map (List.map (List.hd o Composition.resultingConstructions))) compsList
+    val debug = print("number of results' rules: "^(Int.toString (List.length (results)))) (* ^"\nAnd the results, in a list for each rule\n:")
+   val debug = PolyML.print results*)
+     val debug = print("extracted results;\n") 
+    (*create lookups*)
     val goals = List.map (List.map State.goalsOf) transferred 
     val pairs = List.map (List.map (List.map Construction.leavesOfConstruction)) goals
+    (*val debug = PolyML.print pairs*)
     val lookup = List.map (List.map (List.map firstTwo)) pairs
+    val debug = print("extracted lookup for those;\n") 
+    val debug = PolyML.print lookup
+    (*val debug = print(results)*)
+    val debug = print("created lookups;\n")
     (*embedd*)
-    val toEmbed = zipNested results lookup
-    (*val toEmbed = List.map (ListPair.zipEq) (zip results lookup)*)
-    val embeddings = (List.map (embeddingPartial tTypS target)) toEmbed
-    val embeddings = List.mapPartial (fn x => x) embeddings
-    (*val maps = List.mapPartial secondOpt (embeddings)*)
+    (*val toEmbed = List.map (ListPair.map (ListPair.zip)) (results,lookup)*)
+    val toEmbed = ListPair.map (ListPair.zipEq) (results, lookup)
+    (*val debug = PolyML.print toEmbed*)
+    (*val debug = print (toEmbed)*)
+    (*val debug = print("type sys tar:\n")
+    val debug = PolyML.print (#name (State.targetTypeSystemOf st))*)
+    val embeddingsOpt = List.map (List.map (embeddingPartial tTypS target)) toEmbed
+    val embeddings = List.map (List.mapPartial (fn x => x)) embeddingsOpt
+    val debug = print("extracted embeddings;\n") 
+    (*val debug = PolyML.print (List.length embeddings)*)
+    val debug = PolyML.print embeddings
+    (*val maps = List.map (List.mapPartial second) (embeddings) *)
     val crawlMap = List.map (crawlWrap)
-    val STembeddings = crawlMap (embeddings)
+    val STembeddings = List.map crawlMap (embeddings)
+    val debug = print("list of embedding pairs:\n") 
+    val debug = PolyML.print STembeddings
+    val debug = print("crawled through;\n") 
+    val intro = print("\n======================\n ANALOGY MAPPINGS FOUND:\n")
   in 
-  agreeEmbeddings res (STembeddings) end;
+  agreeEmbeddings res (List.concat STembeddings) (*in res *)end;
 
 
   fun quickTransfer (goalLimit,compositionLimit,searchLimit) unistructured targetPattOption st =

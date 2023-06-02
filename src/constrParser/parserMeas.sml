@@ -132,16 +132,16 @@ structure parserMeas : PARSERMEAS =
                           [parseRule p 1 (depth+1) left, Construction.Source ("eqs"^p^d, "equals"), parseRule p 2 (depth+1)  right])  end
       else if exists str #"E" then 
                           let val right = SafterSepS #"E" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("exd"^p^d, "extend"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":seg")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "obj"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("exd"^p^d, "extend"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":seg")]) end
       else if exists str #"C" then 
                           let val right = SafterSepS #"C" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "obj"], "formula")), token =("tchp"^p^d, "formula")}, [Construction.Source ("chp"^p^d, "chop"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":seg")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "obj"], "formula")), token =("tchp"^p^d, "formula")}, [Construction.Source ("chp"^p^d, "chop"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":seg")]) end
       else if exists str #"L" then 
                           let val right = SafterSepS #"L" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tlog"^p^d, "formula")}, [Construction.Source ("lg"^p^d, "longer"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg")]) end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["binRel", "obj", "obj"], "formula")), token =("tlog"^p^d, "formula")}, [Construction.Source ("lg"^p^d, "longer"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg")]) end 
       else if exists str #"S" then 
                           let val right = SafterSepS #"S" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["prefixBinRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("sh"^p^d, "shorter"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg")]) (*issue here*)  end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixBinRel", (["binRel", "obj", "obj"], "formula")), token =("tshr"^p^d, "formula")},[Construction.Source ("sh"^p^d, "shorter"), Construction.Source("s"^p^"1"^d, String.substring (right, 0,2)^":seg"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^":seg")]) (*issue here*)  end 
       else if String.size stri < 3  then 
                           Construction.Source ("CPs"^p^d, String.extract(stri, 0, NONE)^":seg")
       else  if String.size stri = 0 then raise StringParseError("TRIED TO PARSE EMPTY STRING") else Construction.Source("s"^p^d, "seg") end;

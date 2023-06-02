@@ -60,21 +60,21 @@ val rule6 = parserMeas.stringIntoConstruction "r6 V s1 V s2 V s3 E s1 s2 s3 > L 
 
 ============================================================================
 MOTIONPATH:
-val rule1 = parserMotion.stringIntoConstruction "r1 V s1 V s2 F s1 s2 * C s2 s1";
+val rule1 = parserMotion.stringIntoConstruction "r1 V p1 V s2 F p1 p2 * C p2 p1";
 
-val rule2 = parserMotion.stringIntoConstruction "r2 V s1 V s2 V s3 a s1 s2 s3* T s3 s2 s1";
+val rule2 = parserMotion.stringIntoConstruction "r2 V p1 V p2 V p3 a p1 p2 p3* T p3 p2 p1";
 
-val rule3 = parserMotion.stringIntoConstruction "r3 V s1 V s2 C s1 s2 v F s1 s2 v s1 = s2";
+val rule3 = parserMotion.stringIntoConstruction "r3 V p1 V p2 C p1 p2 v F p1 p2 v p1 = p2";
 
-val rule4 = parserMotion.stringIntoConstruction "r4 V s1 ~ F u1 s1";
+val rule4 = parserMotion.stringIntoConstruction "r4 V p1 ~ F o1 p1";
 
-val rule5 = parserMotion.stringIntoConstruction "r5 V s1 V s2 C s1 s2 > ~C s2 s1";
+val rule5 = parserMotion.stringIntoConstruction "r5 V p1 V p2 C p1 p2 > ~C p2 p1";
 
-val rule6 = parserMotion.stringIntoConstruction "r6 V s1 V s2 V s3 a s1 s2 s3 & ~ p1 = o1 > F s3 s2 & F s3 s1";
+val rule6 = parserMotion.stringIntoConstruction "r6 V p1 V p2 V p3 a p1 p2 p3 & ~ p1 = o1 > F s3 s2 & F s3 s1";
 
-parserMotion.joinAnds [rule1, rule2, rule3, rule4, rule5, rule6];
+parserMotion.joinAnds [rule1, rule2, rule3, rule4, rule5, rule6, rule7];
 
-parserMotion.stringIntoConstruction "r1 V p1 V p2 F p1 p2 * F p2 p1 A r2 V p1 V p2 V p3 a p1 p2 p3* T s3 s2 s1 A r3 V s1 V s2 ~ T s1 s2 > ~ F s2 s1 > s1 = s2 A r4 V s1 ~ F u1 s1 A r5 V s1 V s2 T s1 s2 > ~ T s2 s1 A r6 V p1 V p2 V p3 a p1 o1 p3 & ~ p2 = o1 > F p3 p2 & F p3 p1 A r7 V p1 V p3 a p1 o1 p3 > p1 = p3"
+parserMotion.stringIntoConstruction "r1 V p1 V p2 F p1 p2 * F p2 p1 A r2 V p1 V p2 V p3 a p1 p2 p3* T p3 p2 p1 A r3 V p1 V p2 ~ T p1 p2 > ~ F p2 p1 > p1 = p2 A r4 V p1 ~ F o1 p1 A r5 V p1 V p2 T p1 p2 > ~ T p2 p1 A r6 V p1 V p2 V p3 a p1 o1 p3 & ~ p2 = o1 > F p3 p2 & F p3 p1 A r7 V p1 V p3 a p1 o1 p3 > p1 = p3"
 
 parserMotion.stringIntoConstruction "r7 V p1 V p3 a p1 o1 p3 > p1 = p3";
 
@@ -129,14 +129,14 @@ Construction.toString it;
 ===================================================================================
 SOLARSYS:
 
-r1 M n > M e
-r2 M e > z1
+r1 M n1 > N e1
+r2 N e1 > z1
 r3 V t1 C e1 n1 t1 > z1
 r4 V t1 D e1 n1 t1 > z1
 
 r5 R e1 n1
 
-val stri = "r1 N n > N e A r2 N e > z1 A r3 V t1 C e1 n1 t1 > z1 A r4 V t1 D e1 n1 t1 > z1"
+val stri = "r1 N n1 > N e1 A r2 N e1 > z1 A r3 V t1 C e1 n1 t1 > z1 A r4 V t1 D e1 n1 t1 > z1"
 parserSolar.stringIntoConstruction stri;
 Construction.toString it;
 ===================================================================================

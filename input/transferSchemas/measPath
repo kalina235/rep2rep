@@ -176,7 +176,13 @@ tSchema equivSwap:(measStickG,motionPathG,interMeasPath) =
     consequent :metaTrue <-asStrong[t:formula,t':formula]
     strength -300
     
-
+tSchema similarUnary:(measStickG,motionPathG,interMeasPath) =
+    source t:formula <- logicApplyUnary[u: unary, f:formula] 
+    target t':formula <-  logicApplyUnary[u': unary, f':formula] 
+    antecedent :metaTrue <-close[f:formula,f':formula],
+               :metaTrue <-closeOp[u:unary,u':unary]
+    consequent :metaTrue <-close[t:formula,t':formula]
+    strength 80
     
 
 

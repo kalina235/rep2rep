@@ -1,0 +1,101 @@
+Date : 2023-03-05 20:44:09
+Directory : /home/kalina/rep2rep_fork/rep2rep
+Total : 53 files,  16525 codes, 1406 comments, 2094 blanks, all 20025 lines
+
+Languages
++-------------+------------+------------+------------+------------+------------+
+| language    | files      | code       | comment    | blank      | total      |
++-------------+------------+------------+------------+------------+------------+
+| Standard ML |         42 |      9,625 |        567 |      1,297 |     11,489 |
+| TeX         |          4 |      5,160 |        596 |        409 |      6,165 |
+| LaTeX       |          4 |      1,642 |        223 |        365 |      2,230 |
+| Makefile    |          1 |         48 |          0 |         10 |         58 |
+| Python      |          1 |         37 |         20 |          6 |         63 |
+| Markdown    |          1 |         13 |          0 |          7 |         20 |
++-------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                       | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                          |         53 |     16,525 |      1,406 |      2,094 |     20,025 |
+| . (Files)                                                                  |          2 |         61 |          0 |         17 |         78 |
+| doc                                                                        |          7 |      6,390 |        769 |        633 |      7,792 |
+| doc/RST intro                                                              |          7 |      6,390 |        769 |        633 |      7,792 |
+| input                                                                      |          1 |        153 |          0 |         30 |        183 |
+| input/transferSchemas                                                      |          1 |        153 |          0 |         30 |        183 |
+| output                                                                     |          1 |        412 |         50 |        141 |        603 |
+| output/latex                                                               |          1 |        412 |         50 |        141 |        603 |
+| src                                                                        |         41 |      9,415 |        581 |      1,256 |     11,252 |
+| src (Files)                                                                |          2 |         93 |         15 |         16 |        124 |
+| src/constrParser                                                           |          3 |        279 |         78 |         49 |        406 |
+| src/core                                                                   |          6 |      1,644 |         74 |        247 |      1,965 |
+| src/latex                                                                  |          1 |        207 |          0 |         40 |        247 |
+| src/oruga                                                                  |          5 |      1,193 |         46 |        157 |      1,396 |
+| src/probability                                                            |          1 |        158 |          1 |          9 |        168 |
+| src/semanticRelations                                                      |          3 |         50 |         20 |         10 |         80 |
+| src/server                                                                 |          3 |      2,463 |         57 |         59 |      2,579 |
+| src/transfer                                                               |          6 |        956 |         50 |        161 |      1,167 |
+| src/util                                                                   |         11 |      2,372 |        240 |        508 |      3,120 |
+| test                                                                       |          1 |         94 |          6 |         17 |        117 |
++----------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------+-------------+------------+------------+------------+------------+
+| filename                                                                   | language    | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------+-------------+------------+------------+------------+------------+
+| /home/kalina/rep2rep_fork/rep2rep/Makefile                                 | Makefile    |         48 |          0 |         10 |         58 |
+| /home/kalina/rep2rep_fork/rep2rep/README.md                                | Markdown    |         13 |          0 |          7 |         20 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/CommandsForACM.sty         | TeX         |        450 |         89 |        174 |        713 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/RST-intro-part1.tex        | LaTeX       |        617 |        152 |         64 |        833 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/RST-intro-part2.tex        | LaTeX       |        318 |          7 |         35 |        360 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/acmart.cls                 | TeX         |      2,827 |         60 |          6 |      2,893 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/dotAndFOAcommands.tex      | LaTeX       |        295 |         14 |        125 |        434 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/exampleCommands.sty        | TeX         |      1,817 |        426 |        208 |      2,451 |
+| /home/kalina/rep2rep_fork/rep2rep/doc/RST intro/mnotes.sty                 | TeX         |         66 |         21 |         21 |        108 |
+| /home/kalina/rep2rep_fork/rep2rep/input/transferSchemas/measPath           | Standard ML |        153 |          0 |         30 |        183 |
+| /home/kalina/rep2rep_fork/rep2rep/output/latex/commands.tex                | LaTeX       |        412 |         50 |        141 |        603 |
+| /home/kalina/rep2rep_fork/rep2rep/src/constrParser/logicManage.sml         | Standard ML |         35 |          6 |          9 |         50 |
+| /home/kalina/rep2rep_fork/rep2rep/src/constrParser/parserMeas.sml          | Standard ML |        122 |         36 |         20 |        178 |
+| /home/kalina/rep2rep_fork/rep2rep/src/constrParser/parserMotion.sml        | Standard ML |        122 |         36 |         20 |        178 |
+| /home/kalina/rep2rep_fork/rep2rep/src/core/composition.sml                 | Standard ML |        171 |          5 |         38 |        214 |
+| /home/kalina/rep2rep_fork/rep2rep/src/core/construction.sml                | Standard ML |        394 |          6 |         59 |        459 |
+| /home/kalina/rep2rep_fork/rep2rep/src/core/cspace.sml                      | Standard ML |        149 |          3 |         31 |        183 |
+| /home/kalina/rep2rep_fork/rep2rep/src/core/interCSpace.sml                 | Standard ML |         85 |          0 |         16 |        101 |
+| /home/kalina/rep2rep_fork/rep2rep/src/core/pattern.sml                     | Standard ML |        564 |         38 |         44 |        646 |
+| /home/kalina/rep2rep_fork/rep2rep/src/core/type.sml                        | Standard ML |        281 |         22 |         59 |        362 |
+| /home/kalina/rep2rep_fork/rep2rep/src/latex/latex.sml                      | Standard ML |        207 |          0 |         40 |        247 |
+| /home/kalina/rep2rep_fork/rep2rep/src/main.sml                             | Standard ML |         49 |          9 |          6 |         64 |
+| /home/kalina/rep2rep_fork/rep2rep/src/oruga/CParsers.sml                   | Standard ML |         78 |          8 |         23 |        109 |
+| /home/kalina/rep2rep_fork/rep2rep/src/oruga/SMLCParsers.sml                | Standard ML |         66 |          0 |         11 |         77 |
+| /home/kalina/rep2rep_fork/rep2rep/src/oruga/document.sml                   | Standard ML |        880 |         36 |         97 |      1,013 |
+| /home/kalina/rep2rep_fork/rep2rep/src/oruga/lift.sml                       | Standard ML |         47 |          2 |          7 |         56 |
+| /home/kalina/rep2rep_fork/rep2rep/src/oruga/parser.sml                     | Standard ML |        122 |          0 |         19 |        141 |
+| /home/kalina/rep2rep_fork/rep2rep/src/probability/prob_parser.sml          | Standard ML |        158 |          1 |          9 |        168 |
+| /home/kalina/rep2rep_fork/rep2rep/src/semanticRelations/filterTschemas.sml | Standard ML |          4 |          0 |          0 |          4 |
+| /home/kalina/rep2rep_fork/rep2rep/src/semanticRelations/findPairs.py       | Python      |         37 |         20 |          6 |         63 |
+| /home/kalina/rep2rep_fork/rep2rep/src/semanticRelations/intoFiles.sml      | Standard ML |          9 |          0 |          4 |         13 |
+| /home/kalina/rep2rep_fork/rep2rep/src/server/prob_renderers.sml            | Standard ML |      2,308 |         48 |         37 |      2,393 |
+| /home/kalina/rep2rep_fork/rep2rep/src/server/renderers.sml                 | Standard ML |         28 |          8 |          8 |         44 |
+| /home/kalina/rep2rep_fork/rep2rep/src/server/server.sml                    | Standard ML |        127 |          1 |         14 |        142 |
+| /home/kalina/rep2rep_fork/rep2rep/src/test.sml                             | Standard ML |         44 |          6 |         10 |         60 |
+| /home/kalina/rep2rep_fork/rep2rep/src/transfer/heuristic.sml               | Standard ML |        123 |          4 |         30 |        157 |
+| /home/kalina/rep2rep_fork/rep2rep/src/transfer/knowledge.sml               | Standard ML |         90 |          3 |         22 |        115 |
+| /home/kalina/rep2rep_fork/rep2rep/src/transfer/search.sml                  | Standard ML |        153 |          0 |         13 |        166 |
+| /home/kalina/rep2rep_fork/rep2rep/src/transfer/state.sml                   | Standard ML |        115 |         13 |         18 |        146 |
+| /home/kalina/rep2rep_fork/rep2rep/src/transfer/structure_transfer.sml      | Standard ML |        381 |         30 |         57 |        468 |
+| /home/kalina/rep2rep_fork/rep2rep/src/transfer/transfer_proof.sml          | Standard ML |         94 |          0 |         21 |        115 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/diagnostic.sml                  | Standard ML |         43 |          0 |         12 |         55 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/dictionary.sml                  | Standard ML |        316 |         73 |         51 |        440 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/finiteset.sml                   | Standard ML |        153 |         17 |         35 |        205 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/http.sml                        | Standard ML |        345 |          5 |         56 |        406 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/logging.sml                     | Standard ML |         43 |          0 |         19 |         62 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/random.sml                      | Standard ML |        101 |         27 |         13 |        141 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/rep2replib.sml                  | Standard ML |        399 |         16 |        115 |        530 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/result.sml                      | Standard ML |        106 |          0 |         29 |        135 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/rpc.sml                         | Standard ML |        478 |         30 |         71 |        579 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/sequence.sml                    | Standard ML |        357 |         71 |        100 |        528 |
+| /home/kalina/rep2rep_fork/rep2rep/src/util/set.sml                         | Standard ML |         31 |          1 |          7 |         39 |
+| /home/kalina/rep2rep_fork/rep2rep/test/prob_renderers.sml                  | Standard ML |         94 |          6 |         17 |        117 |
+| Total                                                                      |             |     16,525 |      1,406 |      2,094 |     20,025 |
++----------------------------------------------------------------------------+-------------+------------+------------+------------+------------+

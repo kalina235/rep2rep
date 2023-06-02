@@ -1,0 +1,14 @@
+import transferSchemas/ruthSolar
+import solarSystem
+import ruthAtom
+
+construction ruleAllS:solarSystemG = ruleAllS:rr:formula <-logicInfixOp[teqr111:formula <- infixBinRel[tchpr1112:obj <- prefixUnRel[mser1112:mass, CPsr11123:sun], eqsr111:more, tchpr1122:obj <- prefixUnRel[mser1122:mass, CPsr11223:planet]], A1:and, rule2andrest:formula <- logicInfixOp[teqr211:formula <- infixBinRel[tchpr2112:obj <- prefixUnRel[mser2112:mass, CPsr21123:planet], eqsr211:more, CPsr2122:zero], A2:and, rule3andrest:formula <- logicInfixOp[tqntr311:formula <- logicApplyQuant[qr311:forall, sr311:t1:time, teqr3112:formula <- infixBinRel[textr31113:formula <- prefixTerRel[grvr31113:gravity, sr311113:planet, sr311123:sun, sr311133:t1:time], eqsr3112:more, CPsr31123:zero]], A3:and, tqntr411:formula <- logicApplyQuant[qr411:forall, sr411:t1:time, teqr4112:formula <- infixBinRel[textr41113:formula <- prefixTerRel[disr41113:distance, sr411113:planet, sr411123:sun, sr411133:t1:time], eqsr4112:more, CPsr41123:zero]]]]]
+
+transfer
+    sourceConstruction ruleAllS
+    targetConSpec solarSystemG
+    interConSpec interRuthSol
+    goal :metaTrue <- close[ruleAllS:rr:formula, t':formula]
+    output solSysTest
+    limit 150
+    matchTarget ttarget:formula <- logicInfixOp[teqr111:formula <- infixBinRel[tchpr1112:obj <- prefixUnRel[mser1112:mass, CPsr11123:sun], eqsr111:more, tchpr1122:obj <- prefixUnRel[mser1122:mass, CPsr11223:planet]], A1:and, rule2andrest:formula <- logicInfixOp[teqr211:formula <- infixBinRel[tchpr2112:obj <- prefixUnRel[mser2112:mass, CPsr21123:planet], eqsr211:more, CPsr2122:zero], A2:and, rule3andrest:formula <- logicInfixOp[tqntr311:formula <- logicApplyQuant[qr311:forall, sr311:t1:time, teqr3112:formula <- infixBinRel[textr31113:formula <- prefixTerRel[grvr31113:gravity, sr311113:planet, sr311123:sun, sr311133:t1:time], eqsr3112:more, CPsr31123:zero]], A3:and, tqntr411:formula <- logicApplyQuant[qr411:forall, sr411:t1:time, teqr4112:formula <- infixBinRel[textr41113:formula <- prefixTerRel[disr41113:distance, sr411113:planet, sr411123:sun, sr411133:t1:time], eqsr4112:more, CPsr41123:zero]]]]]

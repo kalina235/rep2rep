@@ -109,17 +109,17 @@ structure parserRuth : PARSERRUTH =
       else if exists str #">" then 
                           let val left = SbeforeSepS #">" stri
                               val right = SafterSepS #">" stri in
-                          print(left^"  AND "^right^"\n"); Construction.TCPair({constructor = ("infixBinRel", (["obj", "more", "obj"], "formula")), token =("teq"^p^d, "formula")}, 
+                          print(left^"  AND "^right^"\n"); Construction.TCPair({constructor = ("infixBinRel", (["obj", "binary", "obj"], "formula")), token =("teq"^p^d, "formula")}, 
                           [parseRule p 1 (depth+1) left, Construction.Source ("eqs"^p^d, "more"), parseRule p 2 (depth+1)  right])  end
       else if exists str #"D" then 
                           let val right = SafterSepS #"D" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("dis"^p^d, "distance"), Construction.Source("s"^p^"1"^d, "electron"), Construction.Source("s"^p^"2"^d, "nucleus"), Construction.Source("s"^p^"3"^d, ":time")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("dis"^p^d, "distance"), Construction.Source("s"^p^"1"^d, "electron"), Construction.Source("s"^p^"2"^d, "nucleus"), Construction.Source("s"^p^"3"^d, ":time")]) end
       else if exists str #"C" then 
                           let val right = SafterSepS #"C" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["prefixTerRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("col"^p^d, "coloumb"), Construction.Source("s"^p^"1"^d, "electron"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^"nucleus"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixTerRel", (["terRel", "obj", "obj", "time"], "formula")), token =("text"^p^d, "formula")}, [Construction.Source ("col"^p^d, "coloumb"), Construction.Source("s"^p^"1"^d, "electron"), Construction.Source("s"^p^"2"^d, String.substring (right, 2,2)^"nucleus"), Construction.Source("s"^p^"3"^d, String.substring (right, 4,2)^":time")]) end
        else if exists str #"N" then 
                           let val right = SafterSepS #"N" stri in
-                          print(right^"\n");Construction.TCPair({constructor = ("prefixUnRel", (["prefixBinRel", "obj"], "object")), token =("tlog"^p^d, "object")}, [Construction.Source ("msn"^p^d, "mass"), parseRule p 1 (depth+1) (String.substring (right, 0,2))]) end 
+                          print(right^"\n");Construction.TCPair({constructor = ("prefixUnRel", (["unRel", "obj"], "obj")), token =("tlog"^p^d, "obj")}, [Construction.Source ("msn"^p^d, "mass"), parseRule p 1 (depth+1) (String.substring (right, 0,2))]) end 
       else if String.size stri < 3  then 
                         (if Char.contains stri #"e" then Construction.Source ("CPs"^p^d, "electron") else
                           if Char.contains stri #"n" then Construction.Source ("CPs"^p^d, "nucleus") else
