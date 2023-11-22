@@ -9,7 +9,9 @@ sig
   type ctyp = Type.typ list * Type.typ
   type constructor
   type token
-  type conSpecData = {name : string, typeSystemData : Type.typeSystemData, constructors : constructor FiniteSet.set}
+  type conSpecData = {name : string,
+                      typeSystemData : Type.typeSystemData,
+                      constructors : constructor FiniteSet.set}
 
   val ctyp_rpc : ctyp Rpc.Datatype.t;
   val constructor_rpc : constructor Rpc.Datatype.t;
@@ -40,9 +42,10 @@ structure CSpace : CSPACE =
 struct
   type ctyp = Type.typ list * Type.typ
   type constructor = string * ctyp
-  (*datatype atom = Token of string | Variable of string;*)
   type token = string * Type.typ
-  type conSpecData = {name : string, typeSystemData : Type.typeSystemData, constructors : constructor FiniteSet.set}
+  type conSpecData = {name : string,
+                      typeSystemData : Type.typeSystemData,
+                      constructors : constructor FiniteSet.set}
 
   val ctyp_rpc = Rpc.Datatype.alias
                      "CSpace.ctyp"
@@ -92,7 +95,7 @@ struct
   fun stringOfConstructor (c,(tys,ty)) = c ^ " : " ^ (String.stringOfList Type.nameOfType tys) ^ " -> " ^ ty
 
 
-  fun wellDefinedConSpec {name,typeSystemData,constructors} =
+  fun wellDefinedConSpec {name,typeSystemData,constructors,...} =
     let
       val Ty = #Ty (#typeSystem typeSystemData)
       fun clashes (s,ctyp) (s',ctyp') =

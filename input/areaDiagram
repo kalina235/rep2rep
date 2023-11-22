@@ -4,7 +4,7 @@ import shade
 
 typeSystem areaDiagram =
   imports arith, eventT, shade
-  types _:tag, _:area, _:rect, _:point, empty, _:coloured
+  types _:tag, _:area, _:rect, _:point, empty
   order empty < area, event < tag
 
 conSpec areaDiagramG:areaDiagram =
@@ -14,6 +14,38 @@ conSpec areaDiagramG:areaDiagram =
     cPoint:[numExp, numExp] -> point,
     cRect: [point, point] -> rect,
     overlayRect: [area, rect, tag, shading] -> area,
-    colour: [coloured, tag, shading] -> coloured,
-    addColour: [area, coloured] -> area,
     combine: [area, area] -> area
+
+cognitiveData areaDiagramG =
+    registration
+        reverseTag : emergent,
+        cPoint : icon,
+        cRect : icon,
+        overlayRect : emergent,
+        colour : icon,
+        addColour : emergent,
+        combine : spatial-index,
+        infixOp : notational-index,
+        infixRel : notational-index,
+        addParentheses : emergent,
+        multiply : notational-index
+    quantityScale
+        tag : nominal,
+        area : nominal,
+        rect : nominal,
+        point : nominal,
+        empty : nominal,
+        coloured : nominal,
+        numExp : ratio,
+        real10 : ratio,
+        nat10 : ratio,
+        plus : interval,
+        minus : interval,
+        times : ratio,
+        div : ratio,
+        leq : ordinal,
+        equals : nominal
+    complexity
+        cPoint : -3,
+        overlayRect : -1,
+        combine : -4

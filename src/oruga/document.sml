@@ -1,10 +1,7 @@
 import "oruga.parser";
 import "oruga.lift";
 import "latex.latex";
-import "constrParser.parserMeas";
-import "latex.latex";
-import "util.sequence";
-import "constrParser.logicManage";
+import "cognitive.costs";
 
 signature DOCUMENT =
 sig
@@ -52,9 +49,11 @@ struct
   val tSchemaKW = "tSchema"
   val constructionKW = "construction"
   val transferKW = "transfer"
+  val cognitiveDataKW = "cognitiveData"
   val commentKW = "comment"
   val bigKeywords = [importKW,typeSystemKW,conSpecKW,iSchemaKW,
-                     tSchemaKW,constructionKW,transferKW,commentKW]
+                     tSchemaKW,constructionKW,transferKW,cognitiveDataKW,
+                     commentKW]
 
   val typesKW = "types"
   val subTypeKW = "order"
@@ -97,7 +96,12 @@ struct
   val transferKeywords = [sourceConstructionKW,goalKW,outputKW,limitKW,searchLimitKW,goalLimitKW,compositionLimitKW,eagerKW,
                           iterativeKW,unistructuredKW,matchTargetKW,targetConSpecKW,
                           sourceConSpecKW,interConSpecKW,saveKW,inverseKW]
-            
+
+  val registrationKW = "registration"
+  val quantityScaleKW = "quantityScale"
+  val complexityKW = "complexity"
+  val cognitiveDataKeywords = [registrationKW,quantityScaleKW,complexityKW]
+
   fun breakListOn s [] = ([],"",[])
     | breakListOn s (w::ws) =
         if w = s
@@ -150,10 +154,6 @@ struct
   fun parseCTyp s = case Parser.list parseTyp s of
                       (ty::tys) => (tys,ty)
                     | _ => raise ParseError ("bad constructor sig: " ^ s)
-
-  fun parseConstructor s = case String.breakOn ":" s of
-                              (cs,":",ctys) => CSpace.makeConstructor (normaliseString cs, parseCTyp ctys)
-                            | _ => raise ParseError ("no sig for constructor: " ^ s)
 
    fun findConstructorInConSpec s cspec =
      valOf (CSpace.findConstructorWithName s cspec)
@@ -247,14 +247,16 @@ struct
         conSpecsData : CSpace.conSpecData list,
         knowledge : Knowledge.base,
         constructionsData : constructionData list,
-        transferRequests : (string list) list}
+        transferRequests : (string list) list,
+        cognitiveData : CognitiveCosts.data}
 
   val emptyDocContent =
       {typeSystemsData = [],
        conSpecsData = [],
        knowledge = Knowledge.empty,
        constructionsData = [],
-       transferRequests = []}
+       transferRequests = [],
+       cognitiveData = CognitiveCosts.empty}
 
   val typeSystemsDataOf = #typeSystemsData
   val conSpecsDataOf = #conSpecsData
@@ -461,17 +463,19 @@ struct
       conSpecsData = #conSpecsData dc,
       knowledge = #knowledge dc,
       constructionsData = #constructionsData dc,
-      transferRequests = #transferRequests dc}
+      transferRequests = #transferRequests dc,
+      cognitiveData = #cognitiveData dc}
   end
 
   fun parseConstructor s =
-    case String.breakOn ":" s of
-      (cname,":",csig) =>
-        (case String.breakOn "->" csig of
-            (inTyps,"->",outTyp) => CSpace.makeConstructor (cname, CSpace.makeCTyp (Parser.list Type.fromString inTyps, Type.fromString outTyp))
-          | _ => raise ParseError ("bad signature for constructor: " ^ s)
-        )
-    | _ => raise ParseError ("badly specified constructor: " ^ s)
+    (case String.breakOn ":" s of
+          (cname,":",csig) =>
+            (case String.breakOn "->" csig of
+                (inTyps,"->",outTyp) => CSpace.makeConstructor (cname, CSpace.makeCTyp (Parser.list Type.fromString inTyps, Type.fromString outTyp))
+              | _ => raise ParseError ("bad signature for constructor: " ^ s)
+            )
+        | _ => raise ParseError ("badly specified constructor: " ^ s))
+
 
 
   fun addConSpec (R, tss) dc =
@@ -496,14 +500,19 @@ struct
                  end
             else getConstructors L
 
+      fun processConstructorData [] = ([], fn _ => "")
+        | processConstructorData ((c,r)::cL) =
+        let val (cs,f) = processConstructorData cL
+            fun updf x = if CSpace.sameConstructors x c then r else f x
+        in (c::cs,updf)
+        end
+
       val newConstructors = FiniteSet.ofList (getConstructors blocks)
       val importBlocks = getImports blocks
       val importedConSpecNames = map #name importBlocks
       val importedConstructorSets = map #constructors importBlocks
       val allConstructors = foldl (uncurry FiniteSet.union) FiniteSet.empty (newConstructors :: importedConstructorSets)
 
-      (*val chars = List.concat (map String.explode tss)
-      val crs = map parseConstructor (Parser.splitLevelWithSepFunApply (fn x => x) (fn x => x = #",") chars)*)
       val _ = FiniteSet.map ((fn x => Logging.write ("  " ^ x ^ "\n")) o CSpace.stringOfConstructor) allConstructors
       val cspec = {name = name,
                    typeSystemData = getTypeSystemDataWithName dc typeSystemN,
@@ -525,7 +534,8 @@ struct
       conSpecsData = List.mergeNoEQUAL (fn (x,y) => String.compare (#name x, #name y)) [updatedConSpec] (#conSpecsData dc),
       knowledge = Knowledge.addConSpecImports (#knowledge dc) (name,importedConSpecNames),
       constructionsData = #constructionsData dc,
-      transferRequests = #transferRequests dc}
+      transferRequests = #transferRequests dc,
+      cognitiveData = #cognitiveData dc}
   end
 
   fun addInferenceSchema (N,cs) dc =
@@ -596,7 +606,8 @@ struct
       conSpecsData = #conSpecsData dc,
       knowledge = Knowledge.addInferenceSchema (#knowledge dc) ischData strengthVal,
       constructionsData = #constructionsData dc,
-      transferRequests = #transferRequests dc}
+      transferRequests = #transferRequests dc,
+      cognitiveData = #cognitiveData dc}
   end
 
   fun addTransferSchema (N,cs) dc =
@@ -679,7 +690,8 @@ struct
       conSpecsData = #conSpecsData dc,
       knowledge = Knowledge.addTransferSchema (#knowledge dc) tschData strengthVal,
       constructionsData = #constructionsData dc,
-      transferRequests = #transferRequests dc}
+      transferRequests = #transferRequests dc,
+      cognitiveData = #cognitiveData dc}
   end
 
   fun insertConstruction ctRecord DC =
@@ -687,7 +699,8 @@ struct
         conSpecsData = #conSpecsData DC,
         knowledge = #knowledge DC,
         constructionsData = List.mergeNoEQUAL (fn (x,y) => String.compare (#name x, #name y)) [ctRecord] (#constructionsData DC),
-        transferRequests = #transferRequests DC}
+        transferRequests = #transferRequests DC,
+        cognitiveData = #cognitiveData DC}
 
   fun addConstruction (N, bs) dc =
   let val nn = case N of [x] => x | _ => raise ParseError ("invalid name for construction " ^ String.concat N)
@@ -718,7 +731,8 @@ struct
       conSpecsData = #conSpecsData dc,
       knowledge = #knowledge dc,
       constructionsData = #constructionsData dc,
-      transferRequests = #transferRequests dc @ [ws]}
+      transferRequests = #transferRequests dc @ [ws],
+      cognitiveData = #cognitiveData dc}
 
   exception BadGoal
   fun processTransferRequests ws DC =
@@ -946,6 +960,63 @@ struct
   in updDC
   end
 
+  fun addCognitiveData (N,cs) dc =
+    let val conSpecN = (case N of [x] => x | _ => raise ParseError ("invalid name for constructor specification : " ^ String.concat N ^ " given for cognitiveData") )
+        val blocks = gatherMaterialByKeywords cognitiveDataKeywords cs
+        fun parseRegistration [] = (fn _ => NONE)
+          | parseRegistration (x::L) =
+              (case String.breakOn ":" x of
+                  (c,":",r) => (fn (w,y) => if w = conSpecN andalso CSpace.nameOfConstructor y = c then SOME r else parseRegistration L (w,y))
+                | _ => raise ParseError ("c : r expected to denote registration r for constructor c for conSpec "^ conSpecN ^": " ^ x))
+        fun parseQS [] = (fn _ => NONE)
+          | parseQS (x::L) =
+              (case String.breakOn ":" x of
+                  (t,":",s) => (fn (w,y) => if w = conSpecN andalso Type.nameOfType y = t then SOME s else parseQS L (w,y))
+                | _ => raise ParseError ("t : s expected to denote quantity scale s for type t for conSpec "^ conSpecN ^": " ^ x))
+        fun parseComplexity [] = (fn _ => NONE)
+          | parseComplexity (x::L) =
+              (case String.breakOn ":" x of
+                  (c,":",cx) => (case Real.fromString cx of
+                                    SOME r => (fn (w,y) => if w = conSpecN andalso CSpace.nameOfConstructor y = c then SOME r else parseComplexity L (w,y))
+                                  | NONE => raise ParseError ("real number expected for expression complexity: " ^ x))
+                | _ => raise ParseError ("c : x expected to denote compexity x for constructor c for conSpec "^ conSpecN ^": " ^ x))
+        fun getRegistration [] = (fn _ => NONE)
+          | getRegistration ((x,r)::L) =
+              if x = SOME registrationKW
+              then let val rChars = String.explode (String.concat (removeOuterBrackets r))
+                       val rL = Parser.splitLevelWithSepFunApply (fn x => x) (fn x => x = #",") rChars
+                   in parseRegistration rL
+                   end
+              else getRegistration L
+        fun getQS [] = (fn _ => NONE)
+          | getQS ((x,s)::L) =
+              if x = SOME quantityScaleKW
+              then let val sChars = String.explode (String.concat (removeOuterBrackets s))
+                       val sL = Parser.splitLevelWithSepFunApply (fn x => x) (fn x => x = #",") sChars
+                   in parseQS sL
+                   end
+              else getQS L
+        fun getComplexity [] = (fn _ => NONE)
+          | getComplexity ((x,s)::L) =
+              if x = SOME complexityKW
+              then let val sChars = String.explode (String.concat (removeOuterBrackets s))
+                       val sL = Parser.splitLevelWithSepFunApply (fn x => x) (fn x => x = #",") sChars
+                   in parseComplexity sL
+                   end
+              else getComplexity L
+        val cognitiveData = {registration = getRegistration blocks,
+                             quantityScale = getQS blocks,
+                             complexity = getComplexity blocks}
+    in {typeSystemsData = #typeSystemsData dc,
+        conSpecsData = #conSpecsData dc,
+        knowledge = #knowledge dc,
+        constructionsData = #constructionsData dc,
+        transferRequests = #transferRequests dc,
+        cognitiveData = CognitiveCosts.joinCognitiveData cognitiveData (#cognitiveData dc)
+        }
+    end
+
+
   fun tsdCmp (T,T') = String.compare (#name T, #name T')
   fun csdCmp (C,C') = String.compare (#name C, #name C')
   fun ctCmp (c,c') = String.compare (#name c, #name c')
@@ -954,21 +1025,22 @@ struct
                              conSpecsData = sp,
                              knowledge = kb,
                              constructionsData = cs,
-                             transferRequests = tr} :: L) =
+                             transferRequests = tr,
+                             cognitiveData = cd} :: L) =
     (case joinDocumentContents L of
       {typeSystemsData = ts',
        conSpecsData = sp',
        knowledge = kb',
        constructionsData = cs',
-       transferRequests = tr'} =>
+       transferRequests = tr',
+       cognitiveData = cd'} =>
           {typeSystemsData = List.mergeNoEQUAL tsdCmp ts ts',
            conSpecsData = List.mergeNoEQUAL csdCmp sp sp',
            knowledge = Knowledge.join kb kb',
            constructionsData = List.mergeNoEQUAL ctCmp cs cs',
-           transferRequests = tr @ tr'})
+           transferRequests = tr @ tr',
+           cognitiveData = CognitiveCosts.joinCognitiveData cd cd'})
   | joinDocumentContents [] = emptyDocContent
-
-
 
   fun read filename =
   let val file_str =
@@ -1000,6 +1072,7 @@ struct
              if x = SOME iSchemaKW then addInferenceSchema (n,ws) dc else
              if x = SOME tSchemaKW then addTransferSchema (n,ws) dc else
              if x = SOME constructionKW then addConstruction (n,ws) dc else
+             if x = SOME cognitiveDataKW then addCognitiveData (n,ws) dc else
              if x = SOME transferKW then addTransferRequests c dc else
              if x = SOME commentKW then dc else raise ParseError "error: this shouldn't have happened"
           end handle Bind => raise ParseError "expected name = content, found multiple words before ="
