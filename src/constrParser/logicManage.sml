@@ -3,6 +3,7 @@ signature LOGICMANAGE =
 sig 
    (* val extractPrincipalTypes : string -> string -> unit*)
     val fix : Construction.construction -> string
+    val hash : Construction.construction -> int
      (*val filterWarnings : string -> Rpc.endpoint (*given document name, throw out tSchemas with warnings *)*)
 end;
 
@@ -33,14 +34,36 @@ structure logicManage : LOGICMANAGE =
     fun charListToNum [] = 0
       | charListToNum (x::xy) = Char.ord x + charListToNum xy
 
-(*val sigHash =  hash construction into a number mod big prime
-    fun hash h power con typesys upp =
-      case con of
-             Construction.Source(tok, ty) => (Type.typ tok)
-            | Construction.TCPair({token, constructor =(a,  (xs, ct))}, clist) => ((String.concat (List.map hash clist)))
-            | _ => raise StringParseError("You probably have a loop")*)
+(**)
 
   (*val sigconstructtionToFormula= flatten a tree into an expression*)*)
+
+    fun power (x, 0) = 1  
+    | power (x, n) = x * power(x, n-1) mod 10000019; 
+
+    fun typeToNum num typ =
+      let val str = String.explode typ in
+      case str of
+        [] => num mod 27
+        | x::xs => typeToNum (num + Char.ord x) (String.implode xs) end
+
+    fun mapMap f [] = []
+      | mapMap f (x::xs) = (f x) :: (List.map f xs)
+
+    fun sum [] = 0
+      | sum (x::xs) = x + sum xs
+
+    fun childHash func clist =
+        case clist of 
+          [] => []
+        | x :: xs =>  (power (func x, (List.length clist))) :: (List.map func clist);
+
+    fun hash conn =
+        case conn of
+              Construction.Source(tok, ty) =>  typeToNum 0 ty
+            | Construction.TCPair({token, constructor =(a,  (xs, ct))}, clist) => (sum (childHash hash clist)) mod 10000019
+            | _ => raise StringParseError("You probably have a loop")
+
     fun constructionToFormula con = 
         case con of
              Construction.Source(tok, ty) => if String.substring(tok, 0, 1) = "s" then "v"^(String.substring (ty, 0, 2)) else ty (*is subtype of object*)
